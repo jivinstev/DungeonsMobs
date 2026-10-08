@@ -68,8 +68,11 @@ public class DungeonsMobs {
 		ModCapabilities.ATTACHMENTS.register(modEventBus);
 		modEventBus.addListener(NetworkHandler::register);
 
-		if (ModHelper.hasMod("enchantwithmob"))
+		if (ModHelper.hasMod("enchantwithmob")) {
 			ModMobEnchants.register(modEventBus);
+			// Registered here, not by @EventBusSubscriber: scanning the class needs Enchant With Mob's classes.
+			NeoForge.EVENT_BUS.addListener(net.firefoxsalesman.dungeonsmobs.data.AncientDataHelper::onAddReloadListeners);
+		}
 
 		NeoForge.EVENT_BUS.register(this);
 		modEventBus.addListener(this::addCreative);
