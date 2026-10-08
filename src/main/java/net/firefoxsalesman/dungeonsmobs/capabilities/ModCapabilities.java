@@ -1,9 +1,7 @@
 package net.firefoxsalesman.dungeonsmobs.capabilities;
 
 import net.firefoxsalesman.dungeonsmobs.DungeonsMobs;
-import net.firefoxsalesman.dungeonsmobs.capabilities.ancient.Ancient;
 import net.firefoxsalesman.dungeonsmobs.capabilities.convertible.Convertible;
-import net.firefoxsalesman.dungeonsmobs.capabilities.properties.MobProps;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.neoforged.neoforge.common.util.INBTSerializable;
