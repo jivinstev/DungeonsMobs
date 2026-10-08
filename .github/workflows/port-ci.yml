@@ -58,11 +58,11 @@ jobs:
           java-version: "21"
       - name: Software OpenGL for the client gate
         run: sudo apt-get update && sudo apt-get install -y xvfb mesa-utils libgl1-mesa-dri
-      - name: dungeonslibs 1.4.0 from the dungeonslibs-1.4.0-mc1.21.1 release into mavenLocal (pinned by sha256)
+      - name: dungeonslibs 1.4.0 from the dungeonslibs-1.4.0-mc1.21.1-r3 release into mavenLocal (pinned by sha256)
         run: |
           mkdir -p "$HOME/.m2/repository/net/firefoxsalesman/dungeonslibs/dungeonslibs/1.4.0"
-          curl -fsSL -o "$HOME/.m2/repository/net/firefoxsalesman/dungeonslibs/dungeonslibs/1.4.0/dungeonslibs-1.4.0.jar" "https://github.com/jivinstev/DungeonsLibs/releases/download/dungeonslibs-1.4.0-mc1.21.1/dungeonslibs-1.4.0.jar"
-          echo "f4fe55e14d3b92f8d06afb753edd08f51dc7574cd4c43cae5a5fccad20f3b949  $HOME/.m2/repository/net/firefoxsalesman/dungeonslibs/dungeonslibs/1.4.0/dungeonslibs-1.4.0.jar" | sha256sum -c -
+          curl -fsSL -o "$HOME/.m2/repository/net/firefoxsalesman/dungeonslibs/dungeonslibs/1.4.0/dungeonslibs-1.4.0.jar" "https://github.com/jivinstev/DungeonsLibs/releases/download/dungeonslibs-1.4.0-mc1.21.1-r3/dungeonslibs-1.4.0.jar"
+          echo "ff7ea311bcd0fe3ccd198e2d7548e709b524771b058af6c0a061edcfeb1ad1a6  $HOME/.m2/repository/net/firefoxsalesman/dungeonslibs/dungeonslibs/1.4.0/dungeonslibs-1.4.0.jar" | sha256sum -c -
           echo '<project><modelVersion>4.0.0</modelVersion><groupId>net.firefoxsalesman.dungeonslibs</groupId><artifactId>dungeonslibs</artifactId><version>1.4.0</version><packaging>jar</packaging></project>' > "$HOME/.m2/repository/net/firefoxsalesman/dungeonslibs/dungeonslibs/1.4.0/dungeonslibs-1.4.0.pom"
       - name: Build and gates
         run: |
