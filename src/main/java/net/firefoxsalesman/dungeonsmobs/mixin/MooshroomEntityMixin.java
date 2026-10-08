@@ -14,7 +14,7 @@ import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.TemptGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.animal.Cow;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.animal.MushroomCow;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -24,9 +24,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(MushroomCow.class)
-public abstract class MooshroomEntityMixin extends Cow {
+public abstract class MooshroomEntityMixin extends PathfinderMob {
 
-	public MooshroomEntityMixin(EntityType<? extends Cow> pEntityType, Level pLevel) {
+	public MooshroomEntityMixin(EntityType<? extends PathfinderMob> pEntityType, Level pLevel) {
 		super(pEntityType, pLevel);
 	}
 
