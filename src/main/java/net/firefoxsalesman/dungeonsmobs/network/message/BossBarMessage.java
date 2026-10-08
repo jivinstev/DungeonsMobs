@@ -1,22 +1,29 @@
 package net.firefoxsalesman.dungeonsmobs.network.message;
 
 import java.util.UUID;
-import java.util.function.Supplier;
 
-import net.minecraft.world.entity.player.Player;
-import net.firefoxsalesman.dungeonsmobs.client.renderer.BossBarRenderer;
-import net.minecraft.client.Minecraft;
+import net.firefoxsalesman.dungeonsmobs.client.BossBarClientHandler;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.PacketFlow;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Mob;
-import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 /**
  * This was largely borrowed from Goety, because I am a talentless hack.
  * Many thanks to Polarice.
  */
-public class BossBarMessage {
+public class BossBarMessage implements CustomPacketPayload {
+	public static final CustomPacketPayload.Type<BossBarMessage> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath("dungeonsmobs", "boss_bar"));
+	public static final StreamCodec<FriendlyByteBuf, BossBarMessage> STREAM_CODEC = StreamCodec.ofMember(BossBarMessage::encode, BossBarMessage::decode);
+
+	@Override
+	public CustomPacketPayload.Type<? extends CustomPacketPayload> type() {
+		return TYPE;
+	}
+
 	private final UUID bar;
 	private final int boss;
 	private final boolean remove;
@@ -41,24 +48,9 @@ public class BossBarMessage {
 		return new BossBarMessage(buffer.readUUID(), buffer.readInt(), buffer.readBoolean());
 	}
 
-	public static boolean onPacketReceived(BossBarMessage message, Supplier<NetworkEvent.Context> contextSupplier) {
-		NetworkEvent.Context context = contextSupplier.get();
-		if (context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
-			context.enqueueWork(() -> {
-				Player player = Minecraft.getInstance().player;
-				if (player != null) {
-					Entity boss = player.level().getEntity(message.boss);
-					if (boss instanceof Mob mob) {
-						if (message.remove) {
-							BossBarRenderer.removeBossBar(message.bar, mob);
-						} else {
-							BossBarRenderer.addBossBar(message.bar, mob);
-
-						}
-					}
-				}
-			});
+	public static void onPacketReceived(BossBarMessage message, IPayloadContext ctx) {
+		if (ctx.flow() == PacketFlow.CLIENTBOUND) {
+			ctx.enqueueWork(() -> BossBarClientHandler.handle(message.bar, message.boss, message.remove));
 		}
-		return true;
 	}
 }

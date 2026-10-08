@@ -1,5 +1,7 @@
 package net.firefoxsalesman.dungeonsmobs.client.renderer.piglin;
 
+import net.minecraft.core.registries.BuiltInRegistries;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,7 +22,6 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.minecraftforge.registries.ForgeRegistries;
 
 public class CustomPiglinRenderer extends PiglinRenderer {
 	public static final Map<EntityType<?>, Map<String, ResourceLocation>> RESOURCE_LOCATION_MAP = new HashMap<>();
@@ -64,7 +65,7 @@ public class CustomPiglinRenderer extends PiglinRenderer {
 							String path = getPath(skinVariantName);
 							return (skinVariantName.equals("piglin")
 									|| skinVariantName.equals("zombified_piglin"))
-											? new ResourceLocation(path)
+											? ResourceLocation.parse(path)
 											: GeneralHelper.modLoc(path);
 						});
 	}
@@ -74,7 +75,7 @@ public class CustomPiglinRenderer extends PiglinRenderer {
 	}
 
 	private String getSkinVariantName(Mob mobEntity) {
-		String skinVariantName = ForgeRegistries.ENTITY_TYPES.getKey(mobEntity.getType()).getPath();
+		String skinVariantName = BuiltInRegistries.ENTITY_TYPE.getKey(mobEntity.getType()).getPath();
 		skinVariantName = maybeAddArmorPrefix(mobEntity, skinVariantName);
 		skinVariantName = maybeAddHunterSuffix(mobEntity, skinVariantName);
 		return skinVariantName;
@@ -83,12 +84,12 @@ public class CustomPiglinRenderer extends PiglinRenderer {
 	private String maybeAddArmorPrefix(Mob mobEntity, String in) {
 		Item helmetItem = mobEntity.getItemBySlot(EquipmentSlot.HEAD).getItem();
 		if (helmetItem.equals(Items.GOLDEN_HELMET)
-				|| helmetItem.equals(ForgeRegistries.ITEMS.getValue(
-						new ResourceLocation("dungeonsgear", "cracked_gold_piglin_helmet")))) {
+				|| helmetItem.equals(BuiltInRegistries.ITEM.get(
+						ResourceLocation.fromNamespaceAndPath("dungeonsgear", "cracked_gold_piglin_helmet")))) {
 			return "gold_armored_" + in;
 		} else if (helmetItem.equals(Items.NETHERITE_HELMET)
-				|| helmetItem.equals(ForgeRegistries.ITEMS.getValue(
-						new ResourceLocation("dungeonsgear",
+				|| helmetItem.equals(BuiltInRegistries.ITEM.get(
+						ResourceLocation.fromNamespaceAndPath("dungeonsgear",
 								"cracked_netherite_piglin_helmet")))) {
 			return "netherite_armored_" + in;
 		}

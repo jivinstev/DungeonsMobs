@@ -10,12 +10,13 @@ public class WarpedEffect extends MobEffect {
     }
 
     @Override
-    public void applyEffectTick(LivingEntity pLivingEntity, int pAmplifier) {
+    public boolean applyEffectTick(LivingEntity pLivingEntity, int pAmplifier) {
         pLivingEntity.hurt(pLivingEntity.damageSources().magic(), 1.0F);
+        return true;
     }
 
     @Override
-    public boolean isDurationEffectTick(int pDuration, int pAmplifier) {
+    public boolean shouldApplyEffectTickThisTick(int pDuration, int pAmplifier) {
         int j = 40 >> pAmplifier;
         if (j > 0) {
             return pDuration % j == 0;

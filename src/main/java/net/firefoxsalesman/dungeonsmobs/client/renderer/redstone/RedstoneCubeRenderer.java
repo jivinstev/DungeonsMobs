@@ -13,8 +13,8 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class RedstoneCubeRenderer extends MobRenderer<RedstoneCubeEntity, RedstoneCubeModel<RedstoneCubeEntity>> {
@@ -33,8 +33,8 @@ public class RedstoneCubeRenderer extends MobRenderer<RedstoneCubeEntity, Redsto
 
 	@Override
 	protected void setupRotations(RedstoneCubeEntity redstoneCubeEntity, PoseStack matrixStackIn, float ageInTicks,
-			float rotationYaw, float partialTicks) {
-		super.setupRotations(redstoneCubeEntity, matrixStackIn, ageInTicks, rotationYaw, partialTicks);
+			float rotationYaw, float partialTicks, float scale) {
+		super.setupRotations(redstoneCubeEntity, matrixStackIn, ageInTicks, rotationYaw, partialTicks, scale);
 		if (redstoneCubeEntity.isRolling()) {
 			float rotationPerTick = 360.0F / 20.0F;
 			float rotationAmount = ((float) redstoneCubeEntity.tickCount + partialTicks) * -rotationPerTick;

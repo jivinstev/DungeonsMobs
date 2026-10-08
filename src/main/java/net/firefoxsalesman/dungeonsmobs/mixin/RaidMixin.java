@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 @Mixin(Raid.class)
 public class RaidMixin {
-	private static final String RAID_WAVE_MEMBER_TYPE_FIELD = "f_37815_";
+	private static final String RAID_WAVE_MEMBER_TYPE_FIELD = "spawnsPerWaveBeforeBonus";
 	@Shadow
 	@Final
 	private ServerLevel level;

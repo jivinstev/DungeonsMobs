@@ -1,24 +1,24 @@
 package net.firefoxsalesman.dungeonsmobs.capabilities.properties;
 
+import java.util.Optional;
 import net.minecraft.world.entity.Entity;
-import net.minecraftforge.common.util.LazyOptional;
+import net.minecraft.world.entity.LivingEntity;
 
 import static net.firefoxsalesman.dungeonsmobs.capabilities.ModCapabilities.MOB_PROPS_CAPABILITY;
 
 public class MobPropsHelper {
 
-	public static LazyOptional<MobProps> getMobPropsCapabilityLazy(Entity entity) {
-		if (MOB_PROPS_CAPABILITY == null) {
-			return LazyOptional.empty();
+	public static Optional<MobProps> getMobPropsCapabilityLazy(Entity entity) {
+		if (MOB_PROPS_CAPABILITY == null || !(entity instanceof LivingEntity)) {
+			return Optional.empty();
 		}
-		LazyOptional<MobProps> lazyCap = entity.getCapability(MOB_PROPS_CAPABILITY);
-		return lazyCap;
+		return Optional.of(entity.getData(MOB_PROPS_CAPABILITY));
 	}
 
 	public static MobProps getMobPropsCapability(Entity entity) {
-		LazyOptional<MobProps> lazyCap = entity.getCapability(MOB_PROPS_CAPABILITY);
-		if (lazyCap.isPresent()) {
-			return lazyCap.orElseThrow(() -> new IllegalStateException(
+		Optional<MobProps> mobProps = getMobPropsCapabilityLazy(entity);
+		if (mobProps.isPresent()) {
+			return mobProps.orElseThrow(() -> new IllegalStateException(
 					"Couldn't get the MobProps capability from the Entity!"));
 		}
 		return null;

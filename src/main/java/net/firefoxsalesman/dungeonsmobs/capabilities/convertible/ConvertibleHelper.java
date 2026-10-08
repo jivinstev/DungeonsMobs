@@ -12,11 +12,13 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.monster.AbstractSkeleton;
 import net.minecraft.world.entity.monster.Zombie;
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
+import net.neoforged.fml.util.ObfuscationReflectionHelper;
+import net.neoforged.neoforge.event.EventHooks;
 
 public class ConvertibleHelper {
 	public static Convertible getConvertibleCapability(Entity entity) {
-		return entity.getCapability(ModCapabilities.CONVERTIBLE_CAPABILITY).orElse(new Convertible());
+		Convertible convertible = entity.getData(ModCapabilities.CONVERTIBLE_CAPABILITY.get());
+		return convertible != null ? convertible : new Convertible();
 	}
 
 	public static void onDrownedAndConvertedTo(Mob original, Mob convertedTo) {
@@ -33,7 +35,7 @@ public class ConvertibleHelper {
 			handleZombieAttributes(convertedToZombie);
 			setZombieCanBreakDoors(originalZombie, convertedToZombie);
 		}
-		net.minecraftforge.event.ForgeEventFactory.onLivingConvert(original, convertedTo);
+		EventHooks.onLivingConvert(original, convertedTo);
 	}
 
 	private static void handleZombieAttributes(Zombie convertedToZombie) {

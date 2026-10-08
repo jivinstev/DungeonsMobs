@@ -16,18 +16,20 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.core.animatable.GeoAnimatable;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.AnimationState;
-import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.animatable.GeoAnimatable;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.AnimatableManager.ControllerRegistrar;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class PoisonQuillEntity extends StraightMovingProjectileEntity implements GeoEntity {
@@ -113,8 +115,9 @@ public class PoisonQuillEntity extends StraightMovingProjectileEntity implements
 		if (!level().isClientSide) {
 			super.onHitEntity(entity);
 			boolean flag;
-			flag = entity.hurt(ModDamageSources.source(level(), ModDamageSources.POISON_QUILL, this,
-					(LivingEntity) MoreObjects.firstNonNull(getOwner(), this)), 5.0F);
+			DamageSource source = ModDamageSources.source(level(), ModDamageSources.POISON_QUILL, this,
+					MoreObjects.firstNonNull(getOwner(), this));
+			flag = entity.hurt(source, 5.0F);
 			if (entity instanceof LivingEntity) {
 				int i = 0;
 				if (level().getDifficulty() == Difficulty.NORMAL) {
@@ -131,7 +134,7 @@ public class PoisonQuillEntity extends StraightMovingProjectileEntity implements
 			if (flag) {
 				if (entity.isAlive() && getOwner() != null
 						&& getOwner() instanceof LivingEntity) {
-					doEnchantDamageEffects((LivingEntity) getOwner(), entity);
+					EnchantmentHelper.doPostAttackEffects((ServerLevel) level(), entity, source);
 				}
 			}
 
@@ -139,8 +142,8 @@ public class PoisonQuillEntity extends StraightMovingProjectileEntity implements
 		}
 	}
 
-	protected void defineSynchedData() {
-		entityData.define(KELP, false);
+	protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+		builder.define(KELP, false);
 	}
 
 	public boolean isKelp() {

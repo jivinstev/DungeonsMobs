@@ -12,10 +12,13 @@ import net.firefoxsalesman.dungeonslibs.items.interfaces.ISoulConsumer;
 import net.firefoxsalesman.dungeonslibs.network.BreakItemMessage;
 import net.firefoxsalesman.dungeonslibs.summon.SummonHelper;
 import net.firefoxsalesman.dungeonslibs.utils.SoundHelper;
-import net.firefoxsalesman.dungeonslibs.network.NetworkHandler;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -25,7 +28,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.List;
 import java.util.UUID;
@@ -66,11 +69,11 @@ public class NecromancerStaffItem extends ArtifactItem implements IHasInventoryS
 					if (summoned != null) {
 						SoundHelper.playCreatureSound(itemUseContextPlayer,
 								ModSoundEvents.NECROMANCER_SUMMON.get());
-						itemUseContextItem.hurtAndBreak(1, itemUseContextPlayer,
-								(entity) -> NetworkHandler.INSTANCE.send(
-										PacketDistributor.TRACKING_ENTITY_AND_SELF
-												.with(() -> entity),
-										new BreakItemMessage(entity.getId(),
+						itemUseContextItem.hurtAndBreak(1, (ServerLevel) world,
+								itemUseContextPlayer instanceof ServerPlayer serverPlayer ? serverPlayer : null,
+								(item) -> PacketDistributor.sendToPlayersTrackingEntityAndSelf(
+										itemUseContextPlayer,
+										new BreakItemMessage(itemUseContextPlayer.getId(),
 												itemUseContextItem)));
 						ArtifactItem.putArtifactOnCooldown(itemUseContextPlayer,
 								itemUseContextItem.getItem());
@@ -82,7 +85,7 @@ public class NecromancerStaffItem extends ArtifactItem implements IHasInventoryS
 											.getType() == EntityType.ZOMBIE)
 									.collect(Collectors.toList());
 							zombieEntities.forEach(entity -> {
-								entity.teleportToWithTicket(
+								entity.moveTo(
 										(double) blockPos.getX() + 0.5D,
 										(double) blockPos.getY() + 0.05D,
 										(double) blockPos.getZ() + 0.5D);
@@ -105,14 +108,14 @@ public class NecromancerStaffItem extends ArtifactItem implements IHasInventoryS
 		return 0;
 	}
 
-	public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(int slotIndex) {
+	public Multimap<Holder<Attribute>, AttributeModifier> getDefaultAttributeModifiers(int slotIndex) {
 		return getAttributeModifiersForSlot(getUUIDForSlot(slotIndex));
 	}
 
-	private ImmutableMultimap<Attribute, AttributeModifier> getAttributeModifiersForSlot(UUID slot_uuid) {
-		ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-		builder.put(SUMMON_CAP.get(), new AttributeModifier(slot_uuid, "Artifact modifier", 3,
-				AttributeModifier.Operation.ADDITION));
+	private ImmutableMultimap<Holder<Attribute>, AttributeModifier> getAttributeModifiersForSlot(UUID slot_uuid) {
+		ImmutableMultimap.Builder<Holder<Attribute>, AttributeModifier> builder = ImmutableMultimap.builder();
+		builder.put(SUMMON_CAP, new AttributeModifier(ResourceLocation.fromNamespaceAndPath("dungeonsmobs", "artifact_modifier"), 3,
+				AttributeModifier.Operation.ADD_VALUE));
 		return builder.build();
 	}
 

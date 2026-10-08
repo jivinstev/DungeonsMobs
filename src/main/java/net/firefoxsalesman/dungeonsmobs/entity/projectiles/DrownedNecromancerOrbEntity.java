@@ -4,23 +4,23 @@ import net.firefoxsalesman.dungeonsmobs.ModSoundEvents;
 import net.firefoxsalesman.dungeonsmobs.client.particle.ModParticleTypes;
 import net.firefoxsalesman.dungeonsmobs.entity.ModEntities;
 import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.network.NetworkHooks;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.EntityTypeTags;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.core.animatable.GeoAnimatable;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.AnimationState;
-import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.animatable.GeoAnimatable;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.AnimatableManager.ControllerRegistrar;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class DrownedNecromancerOrbEntity extends StraightMovingProjectileEntity implements GeoEntity {
@@ -112,7 +112,7 @@ public class DrownedNecromancerOrbEntity extends StraightMovingProjectileEntity 
 	}
 
 	public void onHitEntity(Entity entity) {
-		if (entity instanceof Mob && ((Mob) entity).getMobType() == MobType.UNDEAD) {
+		if (entity instanceof Mob && entity.getType().is(EntityTypeTags.UNDEAD)) {
 
 		} else if (!level().isClientSide) {
 			super.onHitEntity(entity);
@@ -123,7 +123,7 @@ public class DrownedNecromancerOrbEntity extends StraightMovingProjectileEntity 
 				flag = entity.hurt(damageSources().mobProjectile(this, livingentity), 8.0F);
 				if (flag) {
 					if (entity.isAlive()) {
-						this.doEnchantDamageEffects(livingentity, entity);
+						EnchantmentHelper.doPostAttackEffects((ServerLevel) this.level(), entity, damageSources().mobProjectile(this, livingentity));
 					}
 				}
 			} else {
@@ -156,8 +156,4 @@ public class DrownedNecromancerOrbEntity extends StraightMovingProjectileEntity 
 		return ModSoundEvents.DROWNED_NECROMANCER_STEAM_MISSILE_IMPACT.get();
 	}
 
-	@Override
-	public Packet<ClientGamePacketListener> getAddEntityPacket() {
-		return NetworkHooks.getEntitySpawningPacket(this);
-	}
 }

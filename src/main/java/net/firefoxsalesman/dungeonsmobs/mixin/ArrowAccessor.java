@@ -1,15 +1,13 @@
 package net.firefoxsalesman.dungeonsmobs.mixin;
 
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.projectile.Arrow;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import java.util.Set;
-
-@Mixin(Arrow.class)
+@Mixin(AbstractArrow.class)
 public interface ArrowAccessor {
 
-	@Accessor
-	Set<MobEffectInstance> getEffects();
+	@Accessor("pickupItemStack")
+	ItemStack dungeonsmobs$getPickupItemStack();
 }

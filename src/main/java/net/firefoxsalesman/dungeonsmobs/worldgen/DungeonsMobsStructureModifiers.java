@@ -1,6 +1,8 @@
 package net.firefoxsalesman.dungeonsmobs.worldgen;
 
-import com.mojang.serialization.Codec;
+import net.minecraft.core.registries.BuiltInRegistries;
+
+import com.mojang.serialization.MapCodec;
 
 import net.firefoxsalesman.dungeonsmobs.mod.ModStructureModifiers;
 import net.minecraft.core.Holder;
@@ -9,10 +11,9 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.structure.Structure;
-import net.minecraftforge.common.world.ModifiableStructureInfo;
-import net.minecraftforge.common.world.StructureModifier;
-import net.minecraftforge.common.world.StructureSettingsBuilder;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.common.world.ModifiableStructureInfo;
+import net.neoforged.neoforge.common.world.StructureModifier;
+import net.neoforged.neoforge.common.world.StructureSettingsBuilder;
 
 import java.util.List;
 
@@ -32,7 +33,7 @@ public class DungeonsMobsStructureModifiers {
         }
 
         @Override
-        public Codec<? extends StructureModifier> codec() {
+        public MapCodec<? extends StructureModifier> codec() {
             return ModStructureModifiers.ADD_SPAWNS_STRUCTURE_MODIFIER_TYPE.get();
         }
     }
@@ -46,14 +47,14 @@ public class DungeonsMobsStructureModifiers {
                     StructureSettingsBuilder.StructureSpawnOverrideBuilder spawnOverrides = structureSettings.getSpawnOverrides(mobCategory);
                     if(spawnOverrides != null){
                         List<MobSpawnSettings.SpawnerData> spawns = spawnOverrides.getSpawns();
-                        spawns.removeIf(spawnerData -> this.entityTypes.contains(ForgeRegistries.ENTITY_TYPES.getHolder(spawnerData.type).get()));
+                        spawns.removeIf(spawnerData -> this.entityTypes.contains(BuiltInRegistries.ENTITY_TYPE.wrapAsHolder(spawnerData.type)));
                     }
                 }
             }
         }
 
         @Override
-        public Codec<? extends StructureModifier> codec() {
+        public MapCodec<? extends StructureModifier> codec() {
             return ModStructureModifiers.REMOVE_SPAWNS_STRUCTURE_MODIFIER_TYPE.get();
         }
     }

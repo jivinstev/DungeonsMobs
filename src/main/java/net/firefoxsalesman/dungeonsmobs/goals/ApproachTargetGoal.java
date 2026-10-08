@@ -35,7 +35,7 @@ public class ApproachTargetGoal extends MeleeAttackGoal {
     }
 
     @Override
-    protected void checkAndPerformAttack(LivingEntity p_190102_1_, double p_190102_2_) {
+    protected void checkAndPerformAttack(LivingEntity p_190102_1_) {
         resetAttackCooldown();
     }
 }

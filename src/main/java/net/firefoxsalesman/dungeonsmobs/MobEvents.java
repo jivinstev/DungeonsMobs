@@ -19,17 +19,19 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Snowball;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.event.entity.ProjectileImpactEvent;
-import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraftforge.event.level.ExplosionEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
+import net.neoforged.neoforge.event.EventHooks;
+import net.neoforged.neoforge.event.level.ExplosionEvent;
+import net.neoforged.neoforge.event.tick.EntityTickEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 
-@Mod.EventBusSubscriber(modid = DungeonsMobs.MOD_ID)
+@EventBusSubscriber(modid = DungeonsMobs.MOD_ID)
 public class MobEvents {
 	@SubscribeEvent
-	public static void onLivingUpdate(LivingEvent.LivingTickEvent event) {
-		LivingEntity livingEntity = event.getEntity();
+	public static void onLivingUpdate(EntityTickEvent.Pre event) {
+	    if (!(event.getEntity() instanceof net.minecraft.world.entity.LivingEntity living)) return;
+		LivingEntity livingEntity = living;
 		if (livingEntity instanceof Mob && ConvertibleHelper.convertsInWater((Mob) livingEntity)) {
 			Mob mob = (Mob) livingEntity;
 			if (!mob.level().isClientSide && mob.isAlive() && !mob.isNoAi()) {
@@ -46,7 +48,7 @@ public class MobEvents {
 							.getDrowningConvertTo(mob);
 
 					if (convertibleCap.getConversionTime() < 0
-							&& net.minecraftforge.event.ForgeEventFactory.canLivingConvert(
+							&& EventHooks.canLivingConvert(
 									mob, convertToType,
 									convertibleCap::setConversionTime)) {
 						convertibleCap.doConversion(mob, convertToType,
@@ -104,7 +106,7 @@ public class MobEvents {
 
 	@SubscribeEvent
 	public static void onExplosionDetonate(ExplosionEvent.Detonate event) {
-		if (event.getExplosion().getExploder() instanceof IcyCreeperEntity) {
+		if (event.getExplosion().getDirectSourceEntity() instanceof IcyCreeperEntity) {
 			if (!DungeonsMobsConfig.COMMON.ENABLE_ICY_CREEPER_GRIEFING.get()) {
 				event.getAffectedBlocks().clear();
 			}

@@ -2,10 +2,11 @@ package net.firefoxsalesman.dungeonsmobs.mobenchants;
 
 import static net.firefoxsalesman.dungeonsmobs.DungeonsMobs.PROXY;
 
+import baguchi.enchantwithmob.mobenchant.MobEnchant;
 import net.firefoxsalesman.dungeonslibs.utils.AreaOfEffectHelper;
 import net.firefoxsalesman.dungeonsmobs.capabilities.properties.MobProps;
 import net.firefoxsalesman.dungeonsmobs.capabilities.properties.MobPropsHelper;
-import baguchan.enchantwithmob.mobenchant.MobEnchant;
+
 import net.firefoxsalesman.dungeonsmobs.mod.ModMobEnchants;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -14,12 +15,12 @@ import net.minecraft.world.entity.LivingEntity;
 
 public class ChillingMobEnchant extends MobEnchant {
 
-	public ChillingMobEnchant(Properties properties) {
+	public ChillingMobEnchant(MobEnchant.Properties properties) {
 		super(properties);
 	}
 
 	public static void doEffect(LivingEntity entity) {
-		NewMobEnchantUtils.executeIfPresentWithLevel(entity, ModMobEnchants.CHILLING.get(), (level) -> {
+		NewMobEnchantUtils.executeIfPresentWithLevel(entity, ModMobEnchants.CHILLING.getKey(), (level) -> {
 			MobProps comboCap = MobPropsHelper.getMobPropsCapability(entity);
 			if (comboCap == null)
 				return;

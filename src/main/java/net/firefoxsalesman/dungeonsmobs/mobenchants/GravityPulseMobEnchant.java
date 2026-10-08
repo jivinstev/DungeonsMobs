@@ -2,7 +2,6 @@ package net.firefoxsalesman.dungeonsmobs.mobenchants;
 
 import static net.firefoxsalesman.dungeonsmobs.DungeonsMobs.PROXY;
 
-import baguchan.enchantwithmob.mobenchant.MobEnchant;
 import net.firefoxsalesman.dungeonslibs.utils.AreaOfEffectHelper;
 import net.firefoxsalesman.dungeonsmobs.capabilities.properties.MobProps;
 import net.firefoxsalesman.dungeonsmobs.capabilities.properties.MobPropsHelper;
@@ -12,12 +11,8 @@ import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 
-public class GravityPulseMobEnchant extends MobEnchant {
+public class GravityPulseMobEnchant {
 	private static final double PULL_IN_SPEED_FACTOR = 0.1;
-
-	public GravityPulseMobEnchant(Properties properties) {
-		super(properties);
-	}
 
 	private static void pullVictimTowardsTarget(LivingEntity target, LivingEntity nearbyEntity,
 			SimpleParticleType particleType, Integer level) {
@@ -31,7 +26,7 @@ public class GravityPulseMobEnchant extends MobEnchant {
 	}
 
 	public static void doEffect(LivingEntity entity) {
-		NewMobEnchantUtils.executeIfPresentWithLevel(entity, ModMobEnchants.GRAVITY_PULSE.get(), (level) -> {
+		NewMobEnchantUtils.executeIfPresentWithLevel(entity, ModMobEnchants.GRAVITY_PULSE.getKey(), (level) -> {
 			MobProps comboCap = MobPropsHelper.getMobPropsCapability(entity);
 			if (comboCap == null)
 				return;

@@ -18,6 +18,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -46,15 +47,16 @@ import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.event.EventHooks;
 import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.core.animatable.GeoAnimatable;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
-import software.bernie.geckolib.core.animation.Animation.LoopType;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.AnimationState;
-import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.animatable.GeoAnimatable;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.AnimatableManager.ControllerRegistrar;
+import software.bernie.geckolib.animation.Animation.LoopType;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 public abstract class AbstractMonstrosityEntity extends Raider implements GeoEntity {
@@ -72,7 +74,7 @@ public abstract class AbstractMonstrosityEntity extends Raider implements GeoEnt
 	public AbstractMonstrosityEntity(EntityType<? extends AbstractMonstrosityEntity> pEntityType, Level pLevel,
 			String firingAnimation, int fireAnimationLength, int fireActionPoint) {
 		super(pEntityType, pLevel);
-		setMaxUpStep(1.25F);
+		this.getAttribute(Attributes.STEP_HEIGHT).setBaseValue(1.25D);
 		xpReward = 40;
 		this.firingAnimation = firingAnimation;
 		fireAnimationTimer = new AnimationTimer(fireAnimationLength);
@@ -132,7 +134,7 @@ public abstract class AbstractMonstrosityEntity extends Raider implements GeoEnt
 		return Monster.createMonsterAttributes().add(Attributes.KNOCKBACK_RESISTANCE, 0.85D)
 				.add(Attributes.MAX_HEALTH, 300.0D).add(Attributes.MOVEMENT_SPEED, 0.2F)
 				.add(Attributes.ATTACK_DAMAGE, 20.0D).add(Attributes.FOLLOW_RANGE, 32.0D)
-				.add(AttributeRegistry.SUMMON_CAP.get(), 5);
+				.add(AttributeRegistry.SUMMON_CAP, 5);
 	}
 
 	@Override
@@ -190,7 +192,7 @@ public abstract class AbstractMonstrosityEntity extends Raider implements GeoEnt
 	}
 
 	@Override
-	public void applyRaidBuffs(int pWave, boolean pUnusedFalse) {
+	public void applyRaidBuffs(ServerLevel pLevel, int pWave, boolean pUnusedFalse) {
 	}
 
 	@Override
@@ -232,9 +234,9 @@ public abstract class AbstractMonstrosityEntity extends Raider implements GeoEnt
 	}
 
 	@Override
-	protected void defineSynchedData() {
-		super.defineSynchedData();
-		entityData.define(MELEEATTACKING, false);
+	protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+		super.defineSynchedData(builder);
+		builder.define(MELEEATTACKING, false);
 	}
 
 	@Override
@@ -285,21 +287,20 @@ public abstract class AbstractMonstrosityEntity extends Raider implements GeoEnt
 			}
 
 			attackTimer.dec();
-			checkAndPerformAttack(livingentity, distanceToSqr(livingentity.getX(),
-					livingentity.getBoundingBox().minY, livingentity.getZ()));
+			checkAndPerformAttack(livingentity);
 
 		}
 
 		@Override
-		protected void checkAndPerformAttack(LivingEntity enemy, double distToEnemySqr) {
-			if (attackTimer.animationsUseable() && distToEnemySqr <= getAttackReachSqr(enemy)
+		protected void checkAndPerformAttack(LivingEntity enemy) {
+			if (attackTimer.animationsUseable() && AbstractMonstrosityEntity.this.isWithinMeleeAttackRange(enemy)
 					&& !isMeleeAttacking()) {
 				setMeleeAttacking(true);
 				attackTimer.reset();
 				playSound(ModSoundEvents.REDSTONE_MONSTROSITY_SHORT_GROWL.get());
 			}
 
-			if ((distToEnemySqr <= getAttackReachSqr(enemy)
+			if ((AbstractMonstrosityEntity.this.isWithinMeleeAttackRange(enemy)
 					|| getBoundingBox().intersects(enemy.getBoundingBox()))
 					&& attackTimer.tickEquals(40)) {
 				AreaAttackHelper.areaAttack(7, 7, 7, 7, 360, 1.0F, this.mob);
@@ -333,8 +334,8 @@ public abstract class AbstractMonstrosityEntity extends Raider implements GeoEnt
 	private void handleLeafCollision() {
 		if (isAlive()) {
 
-			if (horizontalCollision && net.minecraftforge.event.ForgeEventFactory
-					.getMobGriefingEvent(level(), this)) {
+			if (horizontalCollision && level() instanceof ServerLevel serverLevel
+					&& EventHooks.canEntityGrief(serverLevel, this)) {
 				boolean destroyedLeafBlock = false;
 				AABB axisalignedbb = getBoundingBox().inflate(0.2D);
 

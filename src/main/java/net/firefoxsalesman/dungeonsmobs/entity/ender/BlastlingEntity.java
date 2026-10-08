@@ -23,11 +23,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.Vec3;
-import software.bernie.geckolib.core.animatable.GeoAnimatable;
-import software.bernie.geckolib.core.animation.Animation.LoopType;
-import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.animation.AnimationState;
-import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.animatable.GeoAnimatable;
+import software.bernie.geckolib.animation.Animation.LoopType;
+import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.animation.PlayState;
 
 import java.util.EnumSet;
 import java.util.function.Predicate;
@@ -61,10 +61,6 @@ public class BlastlingEntity extends AbstractEnderlingEntity implements RangedAt
 				.setAlertOthers().setUnseenMemoryTicks(500));
 		targetSelector.addGoal(1,
 				new EnderlingTargetGoal<>(this, Player.class, true).setUnseenMemoryTicks(500));
-	}
-
-	public MobType getMobType() {
-		return MobType.UNDEAD;
 	}
 
 	public static AttributeSupplier.Builder setCustomAttributes() {
@@ -181,9 +177,9 @@ public class BlastlingEntity extends AbstractEnderlingEntity implements RangedAt
 
 	}
 
-	protected void defineSynchedData() {
-		super.defineSynchedData();
-		entityData.define(SHOOT_TIME, 0);
+	protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+		super.defineSynchedData(builder);
+		builder.define(SHOOT_TIME, 0);
 	}
 
 	public int getShootTime() {

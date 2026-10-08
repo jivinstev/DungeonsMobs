@@ -1,8 +1,7 @@
 package net.firefoxsalesman.dungeonsmobs.entity.projectiles;
 
 import net.firefoxsalesman.dungeonsmobs.entity.ModEntities;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -14,13 +13,13 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.network.NetworkHooks;
+import net.neoforged.neoforge.event.EventHooks;
 import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.core.animatable.GeoAnimatable;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.animatable.GeoAnimatable;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.AnimatableManager.ControllerRegistrar;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class RedstoneMonstrosityProjectileEntity extends Projectile implements GeoEntity {
@@ -65,7 +64,7 @@ public class RedstoneMonstrosityProjectileEntity extends Projectile implements G
 	}
 
 	@Override
-	protected void defineSynchedData() {
+	protected void defineSynchedData(SynchedEntityData.Builder builder) {
 	}
 
 	@Override
@@ -81,11 +80,6 @@ public class RedstoneMonstrosityProjectileEntity extends Projectile implements G
 	}
 
 	@Override
-	public Packet<ClientGamePacketListener> getAddEntityPacket() {
-		return NetworkHooks.getEntitySpawningPacket(this);
-	}
-
-	@Override
 	public void tick() {
 		super.tick();
 
@@ -93,7 +87,7 @@ public class RedstoneMonstrosityProjectileEntity extends Projectile implements G
 
 		HitResult raytraceresult = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
 		if (raytraceresult != null && raytraceresult.getType() != HitResult.Type.MISS
-				&& !net.minecraftforge.event.ForgeEventFactory.onProjectileImpact(this,
+				&& !EventHooks.onProjectileImpact(this,
 						raytraceresult)) {
 			onHit(raytraceresult);
 		}

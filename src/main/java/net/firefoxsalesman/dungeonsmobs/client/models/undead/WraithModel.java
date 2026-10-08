@@ -6,8 +6,8 @@ import net.firefoxsalesman.dungeonsmobs.entity.undead.WraithEntity;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.constant.DataTickets;
-import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
-import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.cache.object.GeoBone;
+import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.model.data.EntityModelData;
 
@@ -33,18 +33,18 @@ public class WraithModel extends GeoModel<WraithEntity> {
 			AnimationState<WraithEntity> customPredicate) {
 		super.setCustomAnimations(entity, uniqueID, customPredicate);
 
-		CoreGeoBone head = getAnimationProcessor().getBone("bipedHead");
-		CoreGeoBone cape = getAnimationProcessor().getBone("bipedCape");
+		GeoBone head = getAnimationProcessor().getBone("bipedHead");
+		GeoBone cape = getAnimationProcessor().getBone("bipedCape");
 
 		cape.setHidden(true);
 
-		CoreGeoBone leftHand = getAnimationProcessor().getBone("bipedHandLeft");
-		CoreGeoBone rightHand = getAnimationProcessor().getBone("bipedHandRight");
+		GeoBone leftHand = getAnimationProcessor().getBone("bipedHandLeft");
+		GeoBone rightHand = getAnimationProcessor().getBone("bipedHandRight");
 
-		if (entity.tickCount % 2 == 0 && rightHand instanceof CoreGeoBone && leftHand instanceof CoreGeoBone
+		if (entity.tickCount % 2 == 0 && rightHand instanceof GeoBone && leftHand instanceof GeoBone
 				&& entity.isSpellcasting()) {
-			CoreGeoBone leftHandBone = ((CoreGeoBone) leftHand);
-			CoreGeoBone rightHandBone = ((CoreGeoBone) rightHand);
+			GeoBone leftHandBone = ((GeoBone) leftHand);
+			GeoBone rightHandBone = ((GeoBone) rightHand);
 			entity.level().addParticle(ParticleTypes.SOUL_FIRE_FLAME, leftHandBone.getPosX(),
 					leftHandBone.getPosY(), leftHandBone.getPosZ(),
 					entity.getRandom().nextGaussian() * 0.01,

@@ -1,6 +1,6 @@
 package net.firefoxsalesman.dungeonsmobs.mobenchants;
 
-import baguchan.enchantwithmob.mobenchant.MobEnchant;
+import baguchi.enchantwithmob.mobenchant.MobEnchant;
 import net.firefoxsalesman.dungeonslibs.init.ModDamageSources;
 import net.firefoxsalesman.dungeonslibs.utils.DamageSourceHelper;
 import net.firefoxsalesman.dungeonsmobs.DungeonsMobs;
@@ -18,7 +18,7 @@ import net.minecraft.world.level.Level;
 public class ThunderingMobEnchant extends MobEnchant {
 	private static final float THUNDER_CHANCE = 0.3f;
 
-	public ThunderingMobEnchant(Properties properties) {
+	public ThunderingMobEnchant(MobEnchant.Properties properties) {
 		super(properties);
 	}
 
@@ -53,7 +53,7 @@ public class ThunderingMobEnchant extends MobEnchant {
 		if (entity instanceof LivingEntity attacker
 				&& ThunderingMobEnchant.isMelee(source, entity.damageSources())
 				&& !(source.is(ModDamageSources.ELECTRIC_SHOCK)))
-			NewMobEnchantUtils.executeIfPresentWithLevel(attacker, ModMobEnchants.THUNDERING.get(),
+			NewMobEnchantUtils.executeIfPresentWithLevel(attacker, ModMobEnchants.THUNDERING.getKey(),
 					(level) -> {
 						if (attacker.getRandom().nextFloat() <= THUNDER_CHANCE) {
 							electrify(attacker, defender, amount * level);

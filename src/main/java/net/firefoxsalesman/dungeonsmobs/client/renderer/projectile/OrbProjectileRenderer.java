@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
-import software.bernie.geckolib.core.object.Color;
+import software.bernie.geckolib.util.Color;
 
 public class OrbProjectileRenderer extends ProjectileRenderer<NecromancerOrbEntity> {
 
@@ -28,16 +28,14 @@ public class OrbProjectileRenderer extends ProjectileRenderer<NecromancerOrbEnti
 	}
 
 	@Override
-	public void preRender(PoseStack poseStack, NecromancerOrbEntity animatable, BakedGeoModel model,
-			MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick,
-			int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void preRender(PoseStack poseStack, NecromancerOrbEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
 		float scaleFactor = 1.0F;
 		if (animatable.lifeTime <= 3) {
 			scaleFactor = 0.0F;
 		}
 		poseStack.scale(scaleFactor, scaleFactor, scaleFactor);
 		super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick,
-				packedLight, packedOverlay, red, green, blue, alpha);
+				packedLight, packedOverlay, colour);
 	}
 
 	@Override

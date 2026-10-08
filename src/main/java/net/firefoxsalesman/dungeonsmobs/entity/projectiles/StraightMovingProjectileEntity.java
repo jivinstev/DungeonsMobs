@@ -4,8 +4,7 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
@@ -18,10 +17,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.entity.PartEntity;
-import net.minecraftforge.network.NetworkHooks;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.entity.PartEntity;
+import net.neoforged.neoforge.event.EventHooks;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -72,7 +71,7 @@ public abstract class StraightMovingProjectileEntity extends Projectile {
 		setRot(owner.getYRot(), owner.getXRot());
 	}
 
-	protected void defineSynchedData() {
+	protected void defineSynchedData(SynchedEntityData.Builder builder) {
 	}
 
 	public void setPower(double powerX, double powerY, double powerZ) {
@@ -158,12 +157,12 @@ public abstract class StraightMovingProjectileEntity extends Projectile {
 				|| (entity == null || !entity.isRemoved()) && level().hasChunkAt(blockPosition())) {
 			super.tick();
 			if (shouldBurn()) {
-				setSecondsOnFire(1);
+				setRemainingFireTicks(20);
 			}
 
 			HitResult raytraceresult = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
 			if (raytraceresult.getType() != HitResult.Type.MISS
-					&& !net.minecraftforge.event.ForgeEventFactory.onProjectileImpact(this,
+					&& !EventHooks.onProjectileImpact(this,
 							raytraceresult)) {
 				onHit(raytraceresult);
 			}
@@ -347,7 +346,4 @@ public abstract class StraightMovingProjectileEntity extends Projectile {
 		return 1.0F;
 	}
 
-	public Packet<ClientGamePacketListener> getAddEntityPacket() {
-		return NetworkHooks.getEntitySpawningPacket(this);
-	}
 }

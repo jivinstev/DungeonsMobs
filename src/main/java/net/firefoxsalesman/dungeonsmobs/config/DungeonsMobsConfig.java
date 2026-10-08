@@ -1,6 +1,6 @@
 package net.firefoxsalesman.dungeonsmobs.config;
 
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 import java.util.List;
 
@@ -11,35 +11,35 @@ import com.google.common.collect.Lists;
 public class DungeonsMobsConfig {
 
 	public static class Common {
-		public static ForgeConfigSpec.ConfigValue<List<? extends String>> REDSTONE_MONSTROSITY_MOB_SUMMONS;
-		public static ForgeConfigSpec.ConfigValue<List<? extends String>> MOOSHROOM_MONSTROSITY_MOB_SUMMONS;
-		public static ForgeConfigSpec.ConfigValue<List<? extends String>> WILDFIRE_MOB_SUMMONS;
-		public static ForgeConfigSpec.ConfigValue<List<? extends String>> ENDERSENT_MOB_SUMMONS;
-		public static ForgeConfigSpec.ConfigValue<List<? extends String>> NECROMANCER_MOB_SUMMONS;
-		public static ForgeConfigSpec.ConfigValue<List<? extends String>> DROWNED_NECROMANCER_MOB_SUMMONS;
+		public static ModConfigSpec.ConfigValue<List<? extends String>> REDSTONE_MONSTROSITY_MOB_SUMMONS;
+		public static ModConfigSpec.ConfigValue<List<? extends String>> MOOSHROOM_MONSTROSITY_MOB_SUMMONS;
+		public static ModConfigSpec.ConfigValue<List<? extends String>> WILDFIRE_MOB_SUMMONS;
+		public static ModConfigSpec.ConfigValue<List<? extends String>> ENDERSENT_MOB_SUMMONS;
+		public static ModConfigSpec.ConfigValue<List<? extends String>> NECROMANCER_MOB_SUMMONS;
+		public static ModConfigSpec.ConfigValue<List<? extends String>> DROWNED_NECROMANCER_MOB_SUMMONS;
 
-		public final ForgeConfigSpec.ConfigValue<Boolean> ENABLE_ICY_CREEPER_GRIEFING;
-		public final ForgeConfigSpec.ConfigValue<Boolean> ENABLE_BIOME_SPECIFIC_RAIDERS;
-		public final ForgeConfigSpec.ConfigValue<Boolean> ENABLE_ARMORED_PILLAGERS_IN_RAIDS;
-		public final ForgeConfigSpec.ConfigValue<Boolean> ENABLE_ARMORED_VINDICATORS_IN_RAIDS;
-		public final ForgeConfigSpec.ConfigValue<Boolean> ENABLE_MOUNTAINEERS_IN_RAIDS;
-		public final ForgeConfigSpec.ConfigValue<Boolean> ENABLE_ROYAL_GUARDS_IN_RAIDS;
-		public final ForgeConfigSpec.ConfigValue<Boolean> ENABLE_GEOMANCERS_IN_RAIDS;
-		public final ForgeConfigSpec.ConfigValue<Boolean> ENABLE_MAGES_IN_RAIDS;
-		public final ForgeConfigSpec.ConfigValue<Boolean> ENABLE_ILLUSIONERS_IN_RAIDS;
-		public final ForgeConfigSpec.ConfigValue<Boolean> ENABLE_ICEOLOGERS_IN_RAIDS;
-		public final ForgeConfigSpec.ConfigValue<Boolean> ENABLE_WINDCALLERS_IN_RAIDS;
-		public final ForgeConfigSpec.ConfigValue<Boolean> ENABLE_SQUALL_GOLEMS_IN_RAIDS;
-		public final ForgeConfigSpec.ConfigValue<Boolean> ENABLE_REDSTONE_GOLEMS_IN_RAIDS;
-		public final ForgeConfigSpec.ConfigValue<Boolean> ENABLE_REDSTONE_MONSTROSITIES_IN_RAIDS;
+		public final ModConfigSpec.ConfigValue<Boolean> ENABLE_ICY_CREEPER_GRIEFING;
+		public final ModConfigSpec.ConfigValue<Boolean> ENABLE_BIOME_SPECIFIC_RAIDERS;
+		public final ModConfigSpec.ConfigValue<Boolean> ENABLE_ARMORED_PILLAGERS_IN_RAIDS;
+		public final ModConfigSpec.ConfigValue<Boolean> ENABLE_ARMORED_VINDICATORS_IN_RAIDS;
+		public final ModConfigSpec.ConfigValue<Boolean> ENABLE_MOUNTAINEERS_IN_RAIDS;
+		public final ModConfigSpec.ConfigValue<Boolean> ENABLE_ROYAL_GUARDS_IN_RAIDS;
+		public final ModConfigSpec.ConfigValue<Boolean> ENABLE_GEOMANCERS_IN_RAIDS;
+		public final ModConfigSpec.ConfigValue<Boolean> ENABLE_MAGES_IN_RAIDS;
+		public final ModConfigSpec.ConfigValue<Boolean> ENABLE_ILLUSIONERS_IN_RAIDS;
+		public final ModConfigSpec.ConfigValue<Boolean> ENABLE_ICEOLOGERS_IN_RAIDS;
+		public final ModConfigSpec.ConfigValue<Boolean> ENABLE_WINDCALLERS_IN_RAIDS;
+		public final ModConfigSpec.ConfigValue<Boolean> ENABLE_SQUALL_GOLEMS_IN_RAIDS;
+		public final ModConfigSpec.ConfigValue<Boolean> ENABLE_REDSTONE_GOLEMS_IN_RAIDS;
+		public final ModConfigSpec.ConfigValue<Boolean> ENABLE_REDSTONE_MONSTROSITIES_IN_RAIDS;
 
-		public final ForgeConfigSpec.ConfigValue<Boolean> ENABLE_FIREWORK_ILLUSIONERS;
-		public final ForgeConfigSpec.ConfigValue<Boolean> ENABLE_STRONGER_HUSKS;
-		public final ForgeConfigSpec.ConfigValue<Boolean> ENABLE_RANGED_SPIDERS;
-		public final ForgeConfigSpec.ConfigValue<Boolean> ENABLE_HOSTILE_MOOSHROOMS;
-		public static ForgeConfigSpec.ConfigValue<Boolean> ENABLE_ITEM_TAB;
+		public final ModConfigSpec.ConfigValue<Boolean> ENABLE_FIREWORK_ILLUSIONERS;
+		public final ModConfigSpec.ConfigValue<Boolean> ENABLE_STRONGER_HUSKS;
+		public final ModConfigSpec.ConfigValue<Boolean> ENABLE_RANGED_SPIDERS;
+		public final ModConfigSpec.ConfigValue<Boolean> ENABLE_HOSTILE_MOOSHROOMS;
+		public static ModConfigSpec.ConfigValue<Boolean> ENABLE_ITEM_TAB;
 
-		public Common(ForgeConfigSpec.Builder builder) {
+		public Common(ModConfigSpec.Builder builder) {
 			// MOB CONFIGURATION
 			builder.comment("Mob Configuration").push("mob_configuration");
 			WILDFIRE_MOB_SUMMONS = builder
@@ -175,11 +175,11 @@ public class DungeonsMobsConfig {
 		}
 	}
 
-	public static final ForgeConfigSpec COMMON_SPEC;
+	public static final ModConfigSpec COMMON_SPEC;
 	public static final Common COMMON;
 
 	static {
-		final Pair<Common, ForgeConfigSpec> commonSpecPair = new ForgeConfigSpec.Builder()
+		final Pair<Common, ModConfigSpec> commonSpecPair = new ModConfigSpec.Builder()
 				.configure(Common::new);
 		COMMON_SPEC = commonSpecPair.getRight();
 		COMMON = commonSpecPair.getLeft();

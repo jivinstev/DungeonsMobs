@@ -4,8 +4,8 @@ import net.firefoxsalesman.dungeonsmobs.client.models.jungle.QuickGrowingVineMod
 import net.firefoxsalesman.dungeonslibs.client.renderer.layers.GeoEyeLayer;
 import net.firefoxsalesman.dungeonsmobs.utils.GeneralHelper;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class QuickGrowingVineRenderer extends AbstractVineRenderer<QuickGrowingVineModel> {

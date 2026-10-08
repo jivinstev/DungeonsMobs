@@ -5,8 +5,8 @@ import static net.firefoxsalesman.dungeonsmobs.utils.GeneralHelper.modLoc;
 import net.firefoxsalesman.dungeonsmobs.entity.jungle.AbstractVineEntity;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.constant.DataTickets;
-import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
-import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.cache.object.GeoBone;
+import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.model.data.EntityModelData;
 
 public class PoisonQuillVineModel extends AbstractVineModel {
@@ -30,8 +30,8 @@ public class PoisonQuillVineModel extends AbstractVineModel {
 			AnimationState<AbstractVineEntity> customPredicate) {
 		super.setCustomAnimations(entity, uniqueID, customPredicate);
 
-		CoreGeoBone head = getAnimationProcessor().getBone("head");
-		CoreGeoBone headRotator = getAnimationProcessor().getBone("headRotator");
+		GeoBone head = getAnimationProcessor().getBone("head");
+		GeoBone headRotator = getAnimationProcessor().getBone("headRotator");
 
 		EntityModelData extraData = customPredicate.getData(DataTickets.ENTITY_MODEL_DATA);
 		if (extraData.headPitch() != 0 || extraData.netHeadYaw() != 0) {

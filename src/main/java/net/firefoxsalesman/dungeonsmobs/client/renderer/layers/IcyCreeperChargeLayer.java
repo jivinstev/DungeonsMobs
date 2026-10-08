@@ -6,12 +6,12 @@ import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.EnergySwirlLayer;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class IcyCreeperChargeLayer extends EnergySwirlLayer<IcyCreeperEntity, CreeperModel<IcyCreeperEntity>> {
-    private static final ResourceLocation POWER_LOCATION = new ResourceLocation("textures/entity/creeper/creeper_armor.png");
+    private static final ResourceLocation POWER_LOCATION = ResourceLocation.parse("textures/entity/creeper/creeper_armor.png");
     private final EntityModel<IcyCreeperEntity> model;
 
     public IcyCreeperChargeLayer(RenderLayerParent<IcyCreeperEntity, CreeperModel<IcyCreeperEntity>> p_i50947_1_, CreeperModel<IcyCreeperEntity> model) {

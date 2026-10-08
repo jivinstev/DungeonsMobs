@@ -17,9 +17,7 @@ public class WraithFireRenderer extends ProjectileRenderer<WraithFireEntity> {
 	}
 
 	@Override
-	public void preRender(PoseStack poseStack, WraithFireEntity animatable, BakedGeoModel model,
-			MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick,
-			int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void preRender(PoseStack poseStack, WraithFireEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
 		float scaleFactor = 1.0F;
 		poseStack.scale(scaleFactor, scaleFactor, scaleFactor);
 	}

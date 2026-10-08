@@ -21,11 +21,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.Vec3;
-import software.bernie.geckolib.core.animatable.GeoAnimatable;
-import software.bernie.geckolib.core.animation.Animation.LoopType;
-import software.bernie.geckolib.core.animation.AnimationState;
-import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.animatable.GeoAnimatable;
+import software.bernie.geckolib.animation.Animation.LoopType;
+import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.animation.PlayState;
 
 import java.util.EnumSet;
 import java.util.function.Predicate;
@@ -53,10 +53,6 @@ public class SnarelingEntity extends AbstractEnderlingEntity {
 				new EnderlingTargetGoal<>(this, Player.class, true).setUnseenMemoryTicks(500));
 	}
 
-	public MobType getMobType() {
-		return MobType.ARTHROPOD;
-	}
-
 	@Override
 	protected void playStepSound(BlockPos position, BlockState state) {
 		playSound(getStepSound(), 0.75F, 1.0F);
@@ -82,13 +78,13 @@ public class SnarelingEntity extends AbstractEnderlingEntity {
 		super.baseTick();
 
 		if (getTarget() != null && getTarget().isAlive() && distanceTo(getTarget()) > 5
-				&& getTarget().hasEffect(ModEffects.ENSNARED.get())
+				&& getTarget().hasEffect(ModEffects.ENSNARED)
 				&& random.nextInt(10) == 0) {
 			teleport(getTarget().getX() - 3 + random.nextInt(6), getTarget().getY(),
 					getTarget().getZ() - 3 + random.nextInt(6));
 		}
 
-		if (getTarget() != null && getTarget().isAlive() && !getTarget().hasEffect(ModEffects.ENSNARED.get())
+		if (getTarget() != null && getTarget().isAlive() && !getTarget().hasEffect(ModEffects.ENSNARED)
 				&& hasLineOfSight(getTarget()) && getShootTime() <= 0 && random.nextInt(10) == 0) {
 			setShootTime(80);
 			playSound(ModSoundEvents.SNARELING_PREPARE_SHOOT.get(), 2.0F,
@@ -128,9 +124,9 @@ public class SnarelingEntity extends AbstractEnderlingEntity {
 		level().addFreshEntity(snowballentity);
 	}
 
-	protected void defineSynchedData() {
-		super.defineSynchedData();
-		entityData.define(SHOOT_TIME, 0);
+	protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+		super.defineSynchedData(builder);
+		builder.define(SHOOT_TIME, 0);
 	}
 
 	public int getShootTime() {
@@ -165,11 +161,15 @@ public class SnarelingEntity extends AbstractEnderlingEntity {
 			return getShootTime() <= 0 && super.canContinueToUse();
 		}
 
-		protected double getAttackReachSqr(LivingEntity p_179512_1_) {
+		private double getAttackReachSqr(LivingEntity p_179512_1_) {
 			return mob.getBbWidth() * 3.0F * mob.getBbWidth() * 3.0F + p_179512_1_.getBbWidth();
 		}
 
-		protected void checkAndPerformAttack(LivingEntity p_190102_1_, double p_190102_2_) {
+		// the goal's attack hook no longer takes the distance, so work it out here
+		@Override
+		protected void checkAndPerformAttack(LivingEntity p_190102_1_) {
+			double p_190102_2_ = mob.distanceToSqr(p_190102_1_.getX(), p_190102_1_.getBoundingBox().minY,
+					p_190102_1_.getZ());
 			double d0 = getAttackReachSqr(p_190102_1_);
 			if (p_190102_2_ <= d0 && isTimeToAttack() && getShootTime() <= 0) {
 				resetAttackCooldown();
@@ -242,7 +242,7 @@ public class SnarelingEntity extends AbstractEnderlingEntity {
 					return getTarget() != null
 							&& getTarget().isAlive()
 							&& !getTarget()
-									.hasEffect(ModEffects.ENSNARED.get())
+									.hasEffect(ModEffects.ENSNARED)
 							&& path != null;
 				}
 			}
@@ -250,7 +250,7 @@ public class SnarelingEntity extends AbstractEnderlingEntity {
 
 		public boolean canContinueToUse() {
 			return getTarget() != null && getTarget().isAlive()
-					&& !getTarget().hasEffect(ModEffects.ENSNARED.get())
+					&& !getTarget().hasEffect(ModEffects.ENSNARED)
 					&& !pathNav.isDone();
 		}
 

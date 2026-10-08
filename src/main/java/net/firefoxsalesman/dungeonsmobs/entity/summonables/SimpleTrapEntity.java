@@ -8,16 +8,16 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobType;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.level.Level;
-import software.bernie.geckolib.core.animatable.GeoAnimatable;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
-import software.bernie.geckolib.core.animation.Animation.LoopType;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.AnimationState;
-import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.animatable.GeoAnimatable;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.AnimatableManager.ControllerRegistrar;
+import software.bernie.geckolib.animation.Animation.LoopType;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class SimpleTrapEntity extends AbstractTrapEntity {
@@ -32,8 +32,8 @@ public class SimpleTrapEntity extends AbstractTrapEntity {
 	}
 
 	@Override
-	protected void defineSynchedData() {
-		entityData.define(TRAP_TYPE, 0);
+	protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+		builder.define(TRAP_TYPE, 0);
 	}
 
 	@Override
@@ -106,7 +106,7 @@ public class SimpleTrapEntity extends AbstractTrapEntity {
 	@Override
 	public boolean canTrapEntity(LivingEntity entity) {
 		if (getTrapType() == 0) {
-			return super.canTrapEntity(entity) && entity.getMobType() != MobType.ARTHROPOD;
+			return super.canTrapEntity(entity) && !entity.getType().is(EntityTypeTags.ARTHROPOD);
 		} else if (getTrapType() == 1) {
 			return super.canTrapEntity(entity) && !entity.getType().is(EntityTags.PLANT_MOBS);
 		} else {

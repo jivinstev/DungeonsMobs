@@ -1,6 +1,7 @@
 package net.firefoxsalesman.dungeonsmobs.mixin;
 
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceLocation;
 import net.firefoxsalesman.dungeonslibs.utils.ModHelper;
 import net.firefoxsalesman.dungeonsmobs.entity.SpawnEquipmentHelper;
@@ -16,6 +17,7 @@ import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.Arrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -30,10 +32,14 @@ public abstract class WitherSkeletonEntityMixin extends AbstractSkeleton {
 	}
 
 	@Inject(at = @At("RETURN"), method = "getArrow")
-	private void getWitherArrow(ItemStack ammoStack, float p_213624_2_, CallbackInfoReturnable<AbstractArrow> cir) {
+	private void getWitherArrow(ItemStack ammoStack, float p_213624_2_, ItemStack weaponStack,
+			CallbackInfoReturnable<AbstractArrow> cir) {
 		AbstractArrow arrow = cir.getReturnValue();
 		arrow.clearFire();
-		if (arrow instanceof Arrow && ((ArrowAccessor) arrow).getEffects().isEmpty()) {
+		if (arrow instanceof Arrow && !((ArrowAccessor) arrow).dungeonsmobs$getPickupItemStack()
+				.getOrDefault(DataComponents.POTION_CONTENTS,
+						PotionContents.EMPTY)
+				.getAllEffects().iterator().hasNext()) {
 			int difficultyFactor = 0;
 			if (this.level().getDifficulty() == Difficulty.NORMAL) {
 				difficultyFactor = 5;
@@ -57,8 +63,8 @@ public abstract class WitherSkeletonEntityMixin extends AbstractSkeleton {
 		ItemStack bowStack = new ItemStack(Items.BOW);
 		ItemStack swordStack = new ItemStack(Items.STONE_SWORD);
 		if (ModHelper.hasMod("dungeonsgear")) {
-			bowStack = new ItemStack(ForgeRegistries.ITEMS
-					.getValue(new ResourceLocation("dungeonsgear", "red_snake")));
+			bowStack = new ItemStack(BuiltInRegistries.ITEM
+					.get(ResourceLocation.fromNamespaceAndPath("dungeonsgear", "red_snake")));
 		}
 		return (double) this.random.nextFloat() < 0.5D ? bowStack : swordStack;
 	}

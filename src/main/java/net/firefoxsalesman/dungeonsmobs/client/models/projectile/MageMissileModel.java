@@ -4,8 +4,8 @@ import static net.firefoxsalesman.dungeonsmobs.utils.GeneralHelper.modLoc;
 
 import net.firefoxsalesman.dungeonsmobs.entity.projectiles.MageMissileEntity;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
-import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.cache.object.GeoBone;
+import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.model.GeoModel;
 
 public class MageMissileModel extends GeoModel<MageMissileEntity> {
@@ -29,7 +29,7 @@ public class MageMissileModel extends GeoModel<MageMissileEntity> {
 	public void setCustomAnimations(MageMissileEntity entity, long uniqueID,
 			AnimationState<MageMissileEntity> customPredicate) {
 		super.setCustomAnimations(entity, uniqueID, customPredicate);
-		CoreGeoBone everything = getAnimationProcessor().getBone("everything");
+		GeoBone everything = getAnimationProcessor().getBone("everything");
 
 		everything.setRotY(-1.5708F);
 	}

@@ -63,6 +63,6 @@ public class MobAncientData {
 	}
 
 	private static ResourceLocation mcLoc(String path) {
-		return new ResourceLocation(path);
+		return ResourceLocation.parse(path);
 	}
 }

@@ -1,9 +1,9 @@
 package net.firefoxsalesman.dungeonsmobs.mobenchants;
 
-import baguchan.enchantwithmob.mobenchant.MobEnchant;
+import baguchi.enchantwithmob.mobenchant.MobEnchant;
 import net.firefoxsalesman.dungeonsmobs.mod.ModMobEnchants;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 
 public class CriticalHitMobEnchant extends MobEnchant {
 	private static final float CRIT_CHANCE = 0.05f;
@@ -12,11 +12,11 @@ public class CriticalHitMobEnchant extends MobEnchant {
 		super(properties);
 	}
 
-	public static void doEffect(LivingEntity defender, LivingEntity attacker, LivingDamageEvent event) {
-		NewMobEnchantUtils.executeIfPresentWithLevel(attacker, ModMobEnchants.CRITICAL_HIT.get(),
+	public static void doEffect(LivingEntity defender, LivingEntity attacker, LivingDamageEvent.Pre event) {
+		NewMobEnchantUtils.executeIfPresentWithLevel(attacker, ModMobEnchants.CRITICAL_HIT.getKey(),
 				(level) -> {
 					if (attacker.getRandom().nextFloat() <= CRIT_CHANCE * (level + 1)) {
-						event.setAmount(event.getAmount() * 3);
+						event.setNewDamage(event.getNewDamage() * 3);
 					}
 				});
 	}

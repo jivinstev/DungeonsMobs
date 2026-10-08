@@ -1,6 +1,6 @@
 package net.firefoxsalesman.dungeonsmobs.mobenchants;
 
-import baguchan.enchantwithmob.mobenchant.MobEnchant;
+import baguchi.enchantwithmob.mobenchant.MobEnchant;
 import net.firefoxsalesman.dungeonslibs.utils.AreaOfEffectHelper;
 import net.firefoxsalesman.dungeonsmobs.mod.ModMobEnchants;
 import net.minecraft.world.entity.LivingEntity;
@@ -13,7 +13,7 @@ public class HealsAlliesMobEnchant extends MobEnchant {
 	}
 
 	public static void doEffect(LivingEntity defender, float amount) {
-		NewMobEnchantUtils.executeIfPresentWithLevel(defender, ModMobEnchants.HEALS_ALLIES.get(), (level) -> {
+		NewMobEnchantUtils.executeIfPresentWithLevel(defender, ModMobEnchants.HEALS_ALLIES.getKey(), (level) -> {
 			AreaOfEffectHelper.applyToNearbyEntities(defender, 1.5F,
 					AreaOfEffectHelper.getCanHealPredicate(defender),
 					(LivingEntity nearbyEntity) -> nearbyEntity

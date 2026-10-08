@@ -6,8 +6,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.TridentItem;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
-import net.minecraftforge.common.util.NonNullLazy;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
+import net.neoforged.neoforge.common.util.Lazy;
 
 import java.util.function.Consumer;
 
@@ -31,7 +31,7 @@ public class ColoredTridentItem extends TridentItem implements IHasInventorySpri
 	@Override
 	public void initializeClient(Consumer<IClientItemExtensions> consumer) {
 		consumer.accept(new IClientItemExtensions() {
-			static final NonNullLazy<BlockEntityWithoutLevelRenderer> renderer = NonNullLazy.of(
+			static final Lazy<BlockEntityWithoutLevelRenderer> renderer = Lazy.of(
 					() -> new CustomISTER(Minecraft.getInstance().getBlockEntityRenderDispatcher(),
 							Minecraft.getInstance().getEntityModels()));
 

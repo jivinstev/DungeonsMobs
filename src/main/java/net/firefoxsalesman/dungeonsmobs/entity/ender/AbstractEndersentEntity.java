@@ -77,11 +77,11 @@ public class AbstractEndersentEntity extends VanillaEnderlingEntity implements K
 		return entityData.get(ATTACKING);
 	}
 
-	protected void defineSynchedData() {
-		super.defineSynchedData();
-		entityData.define(TELEPORTING, 0);
-		entityData.define(ATTACKING, false);
-		entityData.define(SMASHING, false);
+	protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+		super.defineSynchedData(builder);
+		builder.define(TELEPORTING, 0);
+		builder.define(ATTACKING, false);
+		builder.define(SMASHING, false);
 	}
 
 	public int isTeleporting() {
@@ -225,8 +225,7 @@ public class AbstractEndersentEntity extends VanillaEnderlingEntity implements K
 			teleportTick = 0;
 		}
 
-		@Override
-		protected double getAttackReachSqr(LivingEntity pEntity) {
+		private double getAttackReachSqr(LivingEntity pEntity) {
 			return mob.getBbWidth() * 5.0F * mob.getBbWidth() * 5.0F + pEntity.getBbWidth();
 		}
 
@@ -238,7 +237,8 @@ public class AbstractEndersentEntity extends VanillaEnderlingEntity implements K
 		}
 
 		@Override
-		protected void checkAndPerformAttack(LivingEntity pEntity, double pDistToEnemySqr) {
+		protected void checkAndPerformAttack(LivingEntity pEntity) {
+			double pDistToEnemySqr = mob.distanceToSqr(pEntity);
 			double d0 = getAttackReachSqr(pEntity);
 			if (oldTarget != null && teleportTick == 0) {
 				entity.setTarget(oldTarget);

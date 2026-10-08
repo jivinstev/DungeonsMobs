@@ -17,9 +17,7 @@ public class WindcallerArmorGearRenderer extends ArmorGearRenderer<WindcallerArm
 	}
 
 	@Override
-	public void renderFinal(PoseStack poseStack, WindcallerArmorGear animatable, BakedGeoModel model,
-			MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight,
-			int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderFinal(PoseStack poseStack, WindcallerArmorGear animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay, int colour) {
 		GeoModel<WindcallerArmorGear> geoModelProvider = getGeoModel();
 		if (geoModelProvider instanceof WindcallerArmorGearModel
 				&& getCurrentEntity() instanceof LivingEntity) {
@@ -27,7 +25,6 @@ public class WindcallerArmorGearRenderer extends ArmorGearRenderer<WindcallerArm
 					.setWearer((LivingEntity) getCurrentEntity());
 		}
 		super.renderFinal(poseStack, animatable, model, bufferSource, buffer, partialTick, packedLight,
-				packedOverlay, red,
-				green, blue, alpha);
+				packedOverlay, colour);
 	}
 }

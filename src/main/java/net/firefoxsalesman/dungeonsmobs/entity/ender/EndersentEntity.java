@@ -22,7 +22,7 @@ public class EndersentEntity extends AbstractEndersentEntity {
 		return Monster.createMonsterAttributes().add(Attributes.KNOCKBACK_RESISTANCE, 0.85D)
 				.add(Attributes.MAX_HEALTH, 60.0D).add(Attributes.MOVEMENT_SPEED, 0.2F)
 				.add(Attributes.ATTACK_DAMAGE, 10.0D).add(Attributes.FOLLOW_RANGE, 32.0D)
-				.add(AttributeRegistry.SUMMON_CAP.get(), 5);
+				.add(AttributeRegistry.SUMMON_CAP, 5);
 	}
 
 	protected void registerGoals() {

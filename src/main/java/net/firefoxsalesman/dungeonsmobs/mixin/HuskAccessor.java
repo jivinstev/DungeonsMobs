@@ -14,7 +14,7 @@ public class HuskAccessor {
 	@Inject(at = @At("RETURN"), method = "<init>")
 	private void init(CallbackInfo callbackInfo) {
 		if (DungeonsMobsConfig.COMMON.ENABLE_STRONGER_HUSKS.get()) {
-			((EntityAccessor) this).setDimensions(new EntityDimensions(0.6F * 1.2F, 1.95F * 1.2F, false));
+			((EntityAccessor) this).setDimensions(EntityDimensions.scalable(0.6F * 1.2F, 1.95F * 1.2F));
 		}
 	}
 

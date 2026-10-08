@@ -1,15 +1,18 @@
 package net.firefoxsalesman.dungeonsmobs.utils;
 
-import com.google.common.collect.Lists;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.FireworkExplosion;
+import net.minecraft.world.item.component.Fireworks;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -26,27 +29,21 @@ public class ModProjectileHelper {
 	public static ItemStack createRocket(int explosions, DyeColor... dyeColor) {
 		ItemStack rocket = new ItemStack(Items.FIREWORK_ROCKET);
 		ItemStack star = new ItemStack(Items.FIREWORK_STAR);
-		CompoundTag starExplosionNBT = star.getOrCreateTagElement("Explosion");
-		starExplosionNBT.putInt("Type", FireworkRocketItem.Shape.BURST.getId());
-		CompoundTag rocketFireworksNBT = rocket.getOrCreateTagElement("Fireworks");
-		ListTag rocketExplosionsNBT = new ListTag();
-		CompoundTag actualStarExplosionNBT = star.getTagElement("Explosion");
-		if (actualStarExplosionNBT != null) {
-			// making firework pink
-			List<Integer> colorList = Lists.newArrayList();
-			for (int i = 0; i < dyeColor.length; i++) {
-				int pinkFireworkColor = dyeColor[i].getFireworkColor();
-				colorList.add(pinkFireworkColor);
-			}
-			actualStarExplosionNBT.putIntArray("Colors", colorList);
-			actualStarExplosionNBT.putIntArray("FadeColors", colorList);
-			// adding actualStarExplosionNBT to rocketExplosionsNBT
-			for (int i = 0; i < explosions; i++) {
-				rocketExplosionsNBT.add(actualStarExplosionNBT);
-			}
+		// making firework pink
+		IntList colorList = new IntArrayList();
+		for (DyeColor color : dyeColor) {
+			colorList.add(color.getFireworkColor());
 		}
-		if (!rocketExplosionsNBT.isEmpty()) {
-			rocketFireworksNBT.put("Explosions", rocketExplosionsNBT);
+		FireworkExplosion starExplosion = new FireworkExplosion(FireworkExplosion.Shape.BURST, colorList, colorList,
+				false, false);
+		star.set(DataComponents.FIREWORK_EXPLOSION, starExplosion);
+		// adding starExplosion to the rocket's explosion list
+		List<FireworkExplosion> rocketExplosions = new ArrayList<>();
+		for (int i = 0; i < explosions; i++) {
+			rocketExplosions.add(starExplosion);
+		}
+		if (!rocketExplosions.isEmpty()) {
+			rocket.set(DataComponents.FIREWORKS, new Fireworks(0, rocketExplosions));
 		}
 		return rocket;
 	}

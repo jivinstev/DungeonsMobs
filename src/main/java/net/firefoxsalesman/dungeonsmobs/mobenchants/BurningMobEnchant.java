@@ -1,6 +1,6 @@
 package net.firefoxsalesman.dungeonsmobs.mobenchants;
 
-import baguchan.enchantwithmob.mobenchant.MobEnchant;
+import baguchi.enchantwithmob.mobenchant.MobEnchant;
 import net.firefoxsalesman.dungeonsmobs.capabilities.properties.MobProps;
 import net.firefoxsalesman.dungeonsmobs.capabilities.properties.MobPropsHelper;
 import net.firefoxsalesman.dungeonsmobs.mod.ModMobEnchants;
@@ -12,12 +12,13 @@ import static net.firefoxsalesman.dungeonsmobs.DungeonsMobs.PROXY;
 import static net.firefoxsalesman.dungeonsmobs.mobenchants.NewMobEnchantUtils.executeIfPresentWithLevel;
 
 public class BurningMobEnchant extends MobEnchant {
-	public BurningMobEnchant(Properties properties) {
+
+	public BurningMobEnchant(MobEnchant.Properties properties) {
 		super(properties);
 	}
 
 	public static void doEffect(LivingEntity entity) {
-		executeIfPresentWithLevel(entity, ModMobEnchants.BURNING.get(), (level) -> {
+		executeIfPresentWithLevel(entity, ModMobEnchants.BURNING.getKey(), (level) -> {
 			MobProps comboCap = MobPropsHelper.getMobPropsCapability(entity);
 			if (comboCap == null)
 				return;

@@ -1,5 +1,7 @@
 package net.firefoxsalesman.dungeonsmobs.items;
 
+import net.minecraft.core.registries.Registries;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -18,41 +20,46 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RenderTooltipEvent;
-import net.minecraftforge.event.entity.player.ItemTooltipEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.neoforge.client.event.RenderTooltipEvent;
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.tags.EnchantmentTags;
+import net.neoforged.fml.common.EventBusSubscriber;
 
-@Mod.EventBusSubscriber(modid = DungeonsMobs.MOD_ID, value = Dist.CLIENT)
+@EventBusSubscriber(modid = DungeonsMobs.MOD_ID, value = Dist.CLIENT)
 public class GildedItemHelper {
 
 	public static final ResourceLocation GILDED_ITEM_RESOURCELOCATION = GeneralHelper.modLoc("gilded_item");
 
-	public static ItemStack getGildedItem(RandomSource random, ItemStack itemStack) {
+	public static ItemStack getGildedItem(RandomSource random, ItemStack itemStack, HolderLookup.Provider registries) {
 		BuiltInEnchantments cap = BuiltInEnchantmentsHelper.getBuiltInEnchantmentsCapability(itemStack);
-		List<EnchantmentInstance> list1 = getAvailableEnchantmentResults(1, 1, itemStack, true);
+		List<EnchantmentInstance> list1 = getAvailableEnchantmentResults(1, 1, itemStack, true, registries);
 		Optional<EnchantmentInstance> randomItem = WeightedRandom.getRandomItem(random, list1, list1.size());
 		randomItem.ifPresent(randomEnchantment -> {
 			cap.addBuiltInEnchantment(GILDED_ITEM_RESOURCELOCATION, randomEnchantment);
-			itemStack.setHoverName(Component.translatable("dungeonsmobs.gilded").append(" ")
+			itemStack.set(DataComponents.CUSTOM_NAME, Component.translatable("dungeonsmobs.gilded").append(" ")
 					.append(itemStack.getHoverName()));
 		});
 		return itemStack;
 	}
 
 	private static List<EnchantmentInstance> getAvailableEnchantmentResults(int minLevel, int maxLevel,
-			ItemStack itemStack, boolean includeTreasures) {
+			ItemStack itemStack, boolean includeTreasures, HolderLookup.Provider registries) {
 		List<EnchantmentInstance> list = Lists.newArrayList();
 		boolean flag = itemStack.getItem() == Items.BOOK;
 
-		for (Enchantment enchantment : ForgeRegistries.ENCHANTMENTS) {
-			if ((!enchantment.isTreasureOnly() || includeTreasures) && enchantment.isDiscoverable()
-					&& (enchantment.canApplyAtEnchantingTable(itemStack)
-							|| (flag && enchantment.isAllowedOnBooks()))) {
-				for (int i = Math.min(enchantment.getMaxLevel(), maxLevel); i > Math
-						.min(enchantment.getMinLevel(), minLevel) - 1; --i) {
+		HolderLookup.RegistryLookup<Enchantment> lookup = registries.lookupOrThrow(Registries.ENCHANTMENT);
+		for (Holder.Reference<Enchantment> enchantment : lookup.listElements().toList()) {
+			Enchantment value = enchantment.value();
+			if ((!enchantment.is(EnchantmentTags.TREASURE) || includeTreasures) && enchantment.is(EnchantmentTags.IN_ENCHANTING_TABLE)
+					&& (value.canEnchant(itemStack)
+							|| (flag && value.definition().supportedItems().contains(Items.BOOK.builtInRegistryHolder())))) {
+				for (int i = Math.min(value.getMaxLevel(), maxLevel); i > Math
+						.min(value.getMinLevel(), minLevel) - 1; --i) {
 					list.add(new EnchantmentInstance(enchantment, i));
 				}
 			}
@@ -68,7 +75,7 @@ public class GildedItemHelper {
 		List<EnchantmentInstance> builtInEnchantments = cap
 				.getBuiltInEnchantments(GILDED_ITEM_RESOURCELOCATION);
 		builtInEnchantments.forEach(enchantmentData -> {
-			event.getToolTip().add(enchantmentData.enchantment.getFullname(enchantmentData.level).copy()
+			event.getToolTip().add(Enchantment.getFullname(enchantmentData.enchantment, enchantmentData.level).copy()
 					.withStyle(ChatFormatting.GOLD));
 		});
 	}

@@ -16,9 +16,7 @@ public class KelpTrapRenderer extends ProjectileRenderer<KelpTrapEntity> {
 	}
 
 	@Override
-	public void preRender(PoseStack poseStack, KelpTrapEntity animatable, BakedGeoModel model,
-			MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick,
-			int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void preRender(PoseStack poseStack, KelpTrapEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
 		float scaleFactor = 2.0F;
 		poseStack.scale(scaleFactor, scaleFactor, scaleFactor);
 	}

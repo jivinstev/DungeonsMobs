@@ -15,7 +15,7 @@ public class EntityMixin {
 	@Inject(at = @At("RETURN"), method = "fireImmune", cancellable = true)
 	private void fireImmune(CallbackInfoReturnable<Boolean> ci) {
 		if ((Entity) ((Object) this) instanceof LivingEntity living)
-			NewMobEnchantUtils.executeIfPresentWithLevel(living, ModMobEnchants.FIRE_TRAIL.get(),
+			NewMobEnchantUtils.executeIfPresentWithLevel(living, ModMobEnchants.FIRE_TRAIL.getKey(),
 					level -> ci.setReturnValue(true));
 	}
 }

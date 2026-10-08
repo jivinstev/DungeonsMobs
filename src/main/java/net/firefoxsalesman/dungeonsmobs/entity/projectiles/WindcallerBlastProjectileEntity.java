@@ -3,8 +3,6 @@ package net.firefoxsalesman.dungeonsmobs.entity.projectiles;
 import net.firefoxsalesman.dungeonsmobs.client.particle.ModParticleTypes;
 import net.firefoxsalesman.dungeonsmobs.entity.ModEntities;
 import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -12,7 +10,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
-import net.minecraftforge.network.NetworkHooks;
+import net.minecraft.world.phys.Vec3;
 
 public class WindcallerBlastProjectileEntity extends AbstractHurtingProjectile {
 
@@ -31,13 +29,15 @@ public class WindcallerBlastProjectileEntity extends AbstractHurtingProjectile {
 
 	public WindcallerBlastProjectileEntity(Level world, LivingEntity shooter, double offsetX, double offsetY,
 			double offsetZ) {
-		super(ModEntities.WINDCALLER_BLAST_PROJECTILE.get(), shooter, offsetX, offsetY, offsetZ, world);
+		super(ModEntities.WINDCALLER_BLAST_PROJECTILE.get(), shooter,
+				new Vec3(offsetX, offsetY, offsetZ), world);
 		this.setNoGravity(true);
 	}
 
 	public WindcallerBlastProjectileEntity(Level world, double x, double y, double z, double offsetX,
 			double offsetY, double offsetZ) {
-		super(ModEntities.WINDCALLER_BLAST_PROJECTILE.get(), x, y, z, offsetX, offsetY, offsetZ, world);
+		super(ModEntities.WINDCALLER_BLAST_PROJECTILE.get(), x, y, z,
+				new Vec3(offsetX, offsetY, offsetZ), world);
 		this.setNoGravity(true);
 	}
 
@@ -126,8 +126,4 @@ public class WindcallerBlastProjectileEntity extends AbstractHurtingProjectile {
 		return false;
 	}
 
-	@Override
-	public Packet<ClientGamePacketListener> getAddEntityPacket() {
-		return NetworkHooks.getEntitySpawningPacket(this);
-	}
 }

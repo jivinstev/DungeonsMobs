@@ -17,6 +17,7 @@ import net.minecraft.world.entity.projectile.FireworkRocketEntity;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 
 @Mixin(Illusioner.class)
@@ -32,7 +33,7 @@ public class IllusionerMixin extends SpellcasterIllager {
 	}
 
 	@Override
-	public void applyRaidBuffs(int pWave, boolean pUnusedFalse) {
+	public void applyRaidBuffs(ServerLevel pLevel, int pWave, boolean pUnusedFalse) {
 	}
 
 	@Override

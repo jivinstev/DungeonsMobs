@@ -1,7 +1,5 @@
 package net.firefoxsalesman.dungeonsmobs.entity.water;
 
-import org.joml.Vector3f;
-
 import net.firefoxsalesman.dungeonsmobs.ModSoundEvents;
 import net.firefoxsalesman.dungeonsmobs.entity.SpawnEquipmentHelper;
 import net.firefoxsalesman.dungeonsmobs.goals.AquaticMoveHelperController;
@@ -14,7 +12,6 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
@@ -22,6 +19,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
@@ -34,12 +32,11 @@ import net.minecraft.world.entity.monster.AbstractSkeleton;
 import net.minecraft.world.entity.monster.CrossbowAttackMob;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
 
 public class SunkenSkeletonEntity extends AbstractSkeleton implements CrossbowAttackMob, IAquaticMob {
@@ -73,9 +70,9 @@ public class SunkenSkeletonEntity extends AbstractSkeleton implements CrossbowAt
 	public SunkenSkeletonEntity(EntityType<? extends SunkenSkeletonEntity> entityType, Level world) {
 		super(entityType, world);
 		isConstructed = true;
-		setMaxUpStep(1.0F);
+		this.getAttribute(Attributes.STEP_HEIGHT).setBaseValue(1.0D);
 		moveControl = new AquaticMoveHelperController<>(this);
-		setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
+		setPathfindingMalus(PathType.WATER, 0.0F);
 		waterNavigation = new WaterBoundPathNavigation(this, world);
 		groundNavigation = new GroundPathNavigation(this, world);
 	}
@@ -180,9 +177,9 @@ public class SunkenSkeletonEntity extends AbstractSkeleton implements CrossbowAt
 	}
 
 	@Override
-	protected void defineSynchedData() {
-		super.defineSynchedData();
-		entityData.define(CHARGING_CROSSBOW, false);
+	protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+		super.defineSynchedData(builder);
+		builder.define(CHARGING_CROSSBOW, false);
 	}
 
 	@Override
@@ -232,26 +229,7 @@ public class SunkenSkeletonEntity extends AbstractSkeleton implements CrossbowAt
 		entityData.set(CHARGING_CROSSBOW, chargingCrossbow);
 	}
 
-	@Override
-	public void shootCrossbowProjectile(LivingEntity target, ItemStack crossbow, Projectile projectile,
-			float inaccuracy) {
-		shootCrossbowProjectile(this, target, projectile, inaccuracy, 1.6F);
-	}
-
-	@Override
-	public void shootCrossbowProjectile(LivingEntity pUser, LivingEntity p_234279_2_,
-			Projectile projectile, float projectileAngle, float p_234279_5_) {
-		double d0 = p_234279_2_.getX() - pUser.getX();
-		double d1 = p_234279_2_.getZ() - pUser.getZ();
-		double d2 = Mth.sqrt((float) (d0 * d0 + d1 * d1));
-		double d3 = p_234279_2_.getY(0.3333333333333333D) - projectile.getY() + d2 * (double) 0.2F;
-		Vector3f vector3f = getProjectileShotVector(pUser, new Vec3(d0, d3, d1), projectileAngle);
-		projectile.shoot(vector3f.x(), vector3f.y(), vector3f.z(), p_234279_5_,
-				(float) (14 - pUser.level().getDifficulty().getId() * 4));
-		pUser.playSound(isInWater() ? ModSoundEvents.SUNKEN_SKELETON_SHOOT.get()
-				: SoundEvents.CROSSBOW_SHOOT, 1.0F,
-				1.0F / (pUser.getRandom().nextFloat() * 0.4F + 0.8F));
-	}
+	// aiming comes from CrossbowItem#shootProjectile (target-led, same spread as the old helper)
 
 	@Override
 	public void onCrossbowAttackPerformed() {
@@ -264,6 +242,10 @@ public class SunkenSkeletonEntity extends AbstractSkeleton implements CrossbowAt
 			super.performRangedAttack(target, p_82196_2_);
 		} else {
 			performCrossbowAttack(this, 1.6F);
+			// the underwater shot sound used to replace the crossbow one
+			if (isInWater())
+				playSound(ModSoundEvents.SUNKEN_SKELETON_SHOOT.get(), 1.0F,
+						1.0F / (getRandom().nextFloat() * 0.4F + 0.8F));
 		}
 	}
 

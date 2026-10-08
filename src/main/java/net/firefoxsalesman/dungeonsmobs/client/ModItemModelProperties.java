@@ -8,25 +8,25 @@ public class ModItemModelProperties {
 
 	public static void registerProperties() {
 		ItemProperties.register(ModItems.ROYAL_GUARD_SHIELD.get(),
-				new ResourceLocation("blocking"),
+				ResourceLocation.parse("blocking"),
 				(stack, clientWorld, livingEntity, i) -> {
 					return livingEntity != null && livingEntity.isUsingItem()
 							&& livingEntity.getUseItem() == stack ? 1.0F : 0.0F;
 				});
 		ItemProperties.register(ModItems.VANGUARD_SHIELD.get(),
-				new ResourceLocation("blocking"),
+				ResourceLocation.parse("blocking"),
 				(stack, clientWorld, livingEntity, i) -> {
 					return livingEntity != null && livingEntity.isUsingItem()
 							&& livingEntity.getUseItem() == stack ? 1.0F : 0.0F;
 				});
 		ItemProperties.register(ModItems.YELLOW_TRIDENT.get(),
-				new ResourceLocation("throwing"),
+				ResourceLocation.parse("throwing"),
 				(stack, clientWorld, livingEntity, i) -> {
 					return livingEntity != null && livingEntity.isUsingItem()
 							&& livingEntity.getUseItem() == stack ? 1.0F : 0.0F;
 				});
 		ItemProperties.register(ModItems.PURPLE_TRIDENT.get(),
-				new ResourceLocation("throwing"),
+				ResourceLocation.parse("throwing"),
 				(stack, clientWorld, livingEntity, i) -> {
 					return livingEntity != null && livingEntity.isUsingItem()
 							&& livingEntity.getUseItem() == stack ? 1.0F : 0.0F;

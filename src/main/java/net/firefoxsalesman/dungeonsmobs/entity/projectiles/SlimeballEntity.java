@@ -2,11 +2,10 @@ package net.firefoxsalesman.dungeonsmobs.entity.projectiles;
 
 import net.firefoxsalesman.dungeonsmobs.entity.ModEntities;
 import net.minecraft.Util;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -22,9 +21,9 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.network.NetworkHooks;
+import net.minecraft.world.phys.Vec3;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(value = Dist.CLIENT, _interface = ItemSupplier.class)
 public class SlimeballEntity extends AbstractHurtingProjectile implements ItemSupplier {
@@ -40,15 +39,15 @@ public class SlimeballEntity extends AbstractHurtingProjectile implements ItemSu
 	}
 
 	public SlimeballEntity(Level world, double x, double y, double z, double accelX, double accelY, double accelZ) {
-		super(ModEntities.SLIMEBALL.get(), x, y, z, accelX, accelY, accelZ, world);
+		super(ModEntities.SLIMEBALL.get(), x, y, z, new Vec3(accelX, accelY, accelZ), world);
 	}
 
 	public SlimeballEntity(Level world, LivingEntity shooter, double accelX, double accelY, double accelZ) {
-		super(ModEntities.SLIMEBALL.get(), shooter, accelX, accelY, accelZ, world);
+		super(ModEntities.SLIMEBALL.get(), shooter, new Vec3(accelX, accelY, accelZ), world);
 	}
 
 	public void setStack(ItemStack stack) {
-		if (stack.getItem() != Items.SLIME_BALL || stack.hasTag()) {
+		if (stack.getItem() != Items.SLIME_BALL || stack.has(DataComponents.CUSTOM_DATA)) {
 			this.getEntityData().set(STACK, Util.make(stack.copy(), (itemStack) -> {
 				itemStack.setCount(1);
 			}));
@@ -65,15 +64,15 @@ public class SlimeballEntity extends AbstractHurtingProjectile implements ItemSu
 		return itemstack.isEmpty() ? new ItemStack(Items.SLIME_BALL) : itemstack;
 	}
 
-	protected void defineSynchedData() {
-		this.getEntityData().define(STACK, ItemStack.EMPTY);
+	protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+		builder.define(STACK, ItemStack.EMPTY);
 	}
 
 	public void addAdditionalSaveData(CompoundTag compound) {
 		super.addAdditionalSaveData(compound);
 		ItemStack itemstack = this.getStack();
 		if (!itemstack.isEmpty()) {
-			compound.put("Item", itemstack.save(new CompoundTag()));
+			compound.put("Item", itemstack.save(this.registryAccess()));
 		}
 
 	}
@@ -83,7 +82,7 @@ public class SlimeballEntity extends AbstractHurtingProjectile implements ItemSu
 	 */
 	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
-		ItemStack itemstack = ItemStack.of(compound.getCompound("Item"));
+		ItemStack itemstack = ItemStack.parseOptional(this.registryAccess(), compound.getCompound("Item"));
 		this.setStack(itemstack);
 	}
 
@@ -143,8 +142,4 @@ public class SlimeballEntity extends AbstractHurtingProjectile implements ItemSu
 		return false;
 	}
 
-	@Override
-	public Packet<ClientGamePacketListener> getAddEntityPacket() {
-		return NetworkHooks.getEntitySpawningPacket(this);
-	}
 }

@@ -5,8 +5,7 @@ import com.google.common.collect.Lists;
 import net.firefoxsalesman.dungeonsmobs.interfaces.ITrapsTarget;
 import net.firefoxsalesman.dungeonslibs.client.AnimationTimer;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -14,7 +13,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.network.NetworkHooks;
+
 import software.bernie.geckolib.animatable.GeoEntity;
 
 import java.util.List;
@@ -169,7 +168,7 @@ public abstract class AbstractTrapEntity extends Entity implements GeoEntity {
 	}
 
 	@Override
-	protected void defineSynchedData() {
+	protected void defineSynchedData(SynchedEntityData.Builder builder) {
 
 	}
 
@@ -183,7 +182,4 @@ public abstract class AbstractTrapEntity extends Entity implements GeoEntity {
 
 	}
 
-	public Packet<ClientGamePacketListener> getAddEntityPacket() {
-		return NetworkHooks.getEntitySpawningPacket(this);
-	}
 }

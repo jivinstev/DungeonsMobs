@@ -1,10 +1,11 @@
 package net.firefoxsalesman.dungeonsmobs.capabilities.ancient;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.entity.Mob;
-import net.minecraftforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 
 import static net.firefoxsalesman.dungeonsmobs.capabilities.ModCapabilities.ANCIENT_CAPABILITY;
 
@@ -39,7 +40,7 @@ public class Ancient implements INBTSerializable<CompoundTag> {
 	}
 
 	@Override
-	public CompoundTag serializeNBT() {
+	public CompoundTag serializeNBT(HolderLookup.Provider provider) {
 		if (ANCIENT_CAPABILITY == null) {
 			return new CompoundTag();
 		}
@@ -52,7 +53,7 @@ public class Ancient implements INBTSerializable<CompoundTag> {
 	}
 
 	@Override
-	public void deserializeNBT(CompoundTag tag) {
+	public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
 		this.setAncient(tag.getBoolean("ancient"));
 		if (tag.contains("displayName")) {
 			this.displayName = Component.literal(tag.getString("displayName"));

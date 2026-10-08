@@ -3,8 +3,6 @@ package net.firefoxsalesman.dungeonsmobs.entity.projectiles;
 import net.firefoxsalesman.dungeonsmobs.ModSoundEvents;
 import net.firefoxsalesman.dungeonsmobs.mod.ModItems;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.AreaEffectCloud;
@@ -15,16 +13,17 @@ import net.minecraft.world.entity.projectile.ItemSupplier;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.network.NetworkHooks;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 
 import static net.firefoxsalesman.dungeonsmobs.entity.ModEntities.BLUE_NETHERSHROOM;
@@ -50,14 +49,16 @@ public class BlueNethershroomEntity extends ThrowableItemProjectile {
 		return ModItems.BLUE_NETHERSHROOM.get();
 	}
 
-	protected float getGravity() {
+	protected double getDefaultGravity() {
 		return 0.05F;
 	}
 
 	protected void onHit(HitResult rtr) {
 		super.onHit(rtr);
 		ItemStack itemstack = getItem();
-		List<MobEffectInstance> list = PotionUtils.getMobEffects(itemstack);
+		PotionContents contents = itemstack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY);
+		List<MobEffectInstance> list = new ArrayList<>();
+		contents.getAllEffects().forEach(list::add);
 		if (!list.isEmpty()) {
 			if (!level().isClientSide) {
 				Entity target = null;
@@ -90,15 +91,11 @@ public class BlueNethershroomEntity extends ThrowableItemProjectile {
 		aoeCloud.setWaitTime(10);
 		aoeCloud.setRadiusPerTick(-aoeCloud.getRadius() / (float) aoeCloud.getDuration());
 
-		for (MobEffectInstance customEffects : PotionUtils.getCustomEffects(itemStack)) {
+		for (MobEffectInstance customEffects : itemStack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY).customEffects()) {
 			aoeCloud.addEffect(new MobEffectInstance(customEffects));
 		}
 
 		level().addFreshEntity(aoeCloud);
 	}
 
-	@Override
-	public Packet<ClientGamePacketListener> getAddEntityPacket() {
-		return NetworkHooks.getEntitySpawningPacket(this);
-	}
 }

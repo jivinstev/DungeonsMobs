@@ -10,7 +10,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobType;
+
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
@@ -24,11 +24,11 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import software.bernie.geckolib.core.animatable.GeoAnimatable;
-import software.bernie.geckolib.core.animation.AnimationState;
-import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.animation.Animation.LoopType;
-import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.animatable.GeoAnimatable;
+import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.animation.Animation.LoopType;
+import software.bernie.geckolib.animation.PlayState;
 
 public class WatchlingEntity extends AbstractEnderlingEntity {
 	private Mob owner;
@@ -48,10 +48,6 @@ public class WatchlingEntity extends AbstractEnderlingEntity {
 				.setAlertOthers().setUnseenMemoryTicks(500));
 		targetSelector.addGoal(1,
 				new EnderlingTargetGoal<>(this, Player.class, true).setUnseenMemoryTicks(500));
-	}
-
-	public MobType getMobType() {
-		return MobType.UNDEAD;
 	}
 
 	public static AttributeSupplier.Builder setCustomAttributes() {
@@ -125,7 +121,7 @@ public class WatchlingEntity extends AbstractEnderlingEntity {
 			return super.canContinueToUse();
 		}
 
-		protected double getAttackReachSqr(LivingEntity p_179512_1_) {
+		private double getAttackReachSqr(LivingEntity p_179512_1_) {
 			return mob.getBbWidth() * 3.0F * mob.getBbWidth() * 3.0F + p_179512_1_.getBbWidth();
 		}
 
@@ -135,7 +131,10 @@ public class WatchlingEntity extends AbstractEnderlingEntity {
 			setRunning(10);
 		}
 
-		protected void checkAndPerformAttack(LivingEntity entity, double pDistToEnemySqr) {
+		// the goal's attack hook no longer takes the distance, so work it out here
+		@Override
+		protected void checkAndPerformAttack(LivingEntity entity) {
+			double pDistToEnemySqr = mob.distanceToSqr(entity.getX(), entity.getBoundingBox().minY, entity.getZ());
 			double d0 = getAttackReachSqr(entity);
 			if (pDistToEnemySqr <= d0 && isAttacking() == 4) {
 				resetAttackCooldown();

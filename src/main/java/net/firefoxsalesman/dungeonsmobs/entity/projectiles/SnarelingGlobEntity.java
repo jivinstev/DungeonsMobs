@@ -7,8 +7,6 @@ import net.firefoxsalesman.dungeonsmobs.mod.ModEffects;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -20,9 +18,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.network.NetworkHooks;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 public class SnarelingGlobEntity extends ThrowableItemProjectile {
 
@@ -40,7 +37,7 @@ public class SnarelingGlobEntity extends ThrowableItemProjectile {
 
 	@OnlyIn(Dist.CLIENT)
 	private ParticleOptions getParticle() {
-		ItemStack itemstack = getItemRaw();
+		ItemStack itemstack = getItem();
 		return itemstack.isEmpty() ? ParticleTypes.ITEM_SLIME
 				: new ItemParticleOption(ParticleTypes.ITEM, itemstack);
 	}
@@ -65,7 +62,7 @@ public class SnarelingGlobEntity extends ThrowableItemProjectile {
 		}
 
 		if (entity instanceof LivingEntity && !entity.level().isClientSide) {
-			((LivingEntity) entity).addEffect(new MobEffectInstance(ModEffects.ENSNARED.get(), 100));
+			((LivingEntity) entity).addEffect(new MobEffectInstance(ModEffects.ENSNARED, 100));
 		}
 	}
 
@@ -80,8 +77,4 @@ public class SnarelingGlobEntity extends ThrowableItemProjectile {
 
 	}
 
-	@Override
-	public Packet<ClientGamePacketListener> getAddEntityPacket() {
-		return NetworkHooks.getEntitySpawningPacket(this);
-	}
 }

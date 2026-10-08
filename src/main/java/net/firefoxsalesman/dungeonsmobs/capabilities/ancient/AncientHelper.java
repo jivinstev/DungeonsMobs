@@ -9,7 +9,7 @@ import net.minecraft.world.entity.Mob;
 
 public class AncientHelper {
 	public static Ancient getAncientCapability(Entity entity) {
-		return entity.getCapability(ModCapabilities.ANCIENT_CAPABILITY).orElse(new Ancient());
+		return entity.getData(ModCapabilities.ANCIENT_CAPABILITY);
 	}
 
 	private static void makeAncient(LivingEntity entity, boolean unique) {

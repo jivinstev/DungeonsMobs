@@ -6,9 +6,11 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.level.block.Blocks;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class MagicFireBlock extends BaseFireBlock {
+	public static final MapCodec<MagicFireBlock> CODEC = simpleCodec(MagicFireBlock::new);
 	private int tick = 50;
 
 	public MagicFireBlock(Properties pProperties) {
@@ -22,6 +24,11 @@ public class MagicFireBlock extends BaseFireBlock {
 		System.out.println(tick);
 		if (tick <= 0)
 			pLevel.setBlock(pPos, Blocks.AIR.defaultBlockState(), 2);
+	}
+
+	@Override
+	protected MapCodec<? extends BaseFireBlock> codec() {
+		return CODEC;
 	}
 
 	@Override

@@ -1,6 +1,5 @@
 package net.firefoxsalesman.dungeonsmobs.mobenchants;
 
-import baguchan.enchantwithmob.mobenchant.MobEnchant;
 import net.firefoxsalesman.dungeonslibs.utils.AbilityHelper;
 import net.firefoxsalesman.dungeonslibs.utils.AreaOfEffectHelper;
 import net.firefoxsalesman.dungeonslibs.utils.SoundHelper;
@@ -11,11 +10,12 @@ import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
+import baguchi.enchantwithmob.mobenchant.MobEnchant;
 
 public class ShockwaveMobEnchant extends MobEnchant {
 	private static final float SHOCKWAVE_CHANCE = 0.3f;
 
-	public ShockwaveMobEnchant(Properties properties) {
+	public ShockwaveMobEnchant(MobEnchant.Properties properties) {
 		super(properties);
 	}
 
@@ -49,7 +49,7 @@ public class ShockwaveMobEnchant extends MobEnchant {
 		if (entity instanceof LivingEntity attacker) {
 			if (attacker.getLastHurtMobTimestamp() == attacker.tickCount)
 				return;
-			NewMobEnchantUtils.executeIfPresentWithLevel(attacker, ModMobEnchants.SHOCKWAVE.get(),
+			NewMobEnchantUtils.executeIfPresentWithLevel(attacker, ModMobEnchants.SHOCKWAVE.getKey(),
 					level -> {
 						if (attacker.getRandom().nextFloat() <= SHOCKWAVE_CHANCE) {
 

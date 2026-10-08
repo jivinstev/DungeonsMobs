@@ -8,8 +8,7 @@ import net.firefoxsalesman.dungeonslibs.client.AnimationTimer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -20,24 +19,24 @@ import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.Portal;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.TheEndGatewayBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.network.NetworkHooks;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.core.animatable.GeoAnimatable;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
-import software.bernie.geckolib.core.animation.Animation.LoopType;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.AnimationState;
-import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.animatable.GeoAnimatable;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.AnimatableManager.ControllerRegistrar;
+import software.bernie.geckolib.animation.Animation.LoopType;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.function.Predicate;
@@ -179,14 +178,13 @@ public class IceCloudEntity extends Entity implements GeoEntity {
 			BlockPos blockpos = ((BlockHitResult) raytraceresult).getBlockPos();
 			BlockState blockstate = this.level().getBlockState(blockpos);
 			if (blockstate.is(Blocks.NETHER_PORTAL)) {
-				this.handleInsidePortal(blockpos);
+				this.setAsInsidePortal((Portal) blockstate.getBlock(), blockpos);
 				flag = true;
 			} else if (blockstate.is(Blocks.END_GATEWAY)) {
 				BlockEntity blockEntity = this.level().getBlockEntity(blockpos);
 				if (blockEntity instanceof TheEndGatewayBlockEntity
-						&& TheEndGatewayBlockEntity.canEntityTeleport(this)) {
-					TheEndGatewayBlockEntity.teleportEntity(this.level(), blockpos, blockstate,
-							this, (TheEndGatewayBlockEntity) blockEntity);
+						&& blockstate.getBlock() instanceof Portal portal) {
+					this.setAsInsidePortal(portal, blockpos);
 				}
 
 				flag = true;
@@ -345,7 +343,7 @@ public class IceCloudEntity extends Entity implements GeoEntity {
 	}
 
 	@Override
-	protected void defineSynchedData() {
+	protected void defineSynchedData(SynchedEntityData.Builder builder) {
 
 	}
 
@@ -357,11 +355,6 @@ public class IceCloudEntity extends Entity implements GeoEntity {
 	@Override
 	protected void addAdditionalSaveData(CompoundTag p_213281_1_) {
 
-	}
-
-	@Override
-	public Packet<ClientGamePacketListener> getAddEntityPacket() {
-		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
 }

@@ -88,8 +88,7 @@ public class SummonCommandHelper {
 					((Mob) entity).finalizeSpawn(commandSource.getLevel(),
 							commandSource.getLevel().getCurrentDifficultyAt(
 									entity.blockPosition()),
-							MobSpawnType.COMMAND, (SpawnGroupData) null,
-							(CompoundTag) null);
+							MobSpawnType.COMMAND, (SpawnGroupData) null);
 				}
 				if (entity instanceof LivingEntity livingEntity) {
 					consumer.accept(livingEntity);

@@ -33,7 +33,7 @@ public class AbstractMonstrosityRenderer<T extends AbstractMonstrosityEntity> ex
 				getRenderer().reRender(bakedModel, poseStack, bufferSource, animatable,
 						emmissiveRenderType,
 						bufferSource.getBuffer(emmissiveRenderType), partialTick, 15728640,
-						OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+						OverlayTexture.NO_OVERLAY, -1);
 			}
 		});
 		addRenderLayer(new PulsatingGlowLayer<>(this, REDSTONE_TEXTURE, 0.1F, 0.5F, 0.0F));

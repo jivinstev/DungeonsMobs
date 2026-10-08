@@ -1,6 +1,5 @@
 package net.firefoxsalesman.dungeonsmobs.mobenchants;
 
-import baguchan.enchantwithmob.mobenchant.MobEnchant;
 import net.firefoxsalesman.dungeonslibs.utils.AreaOfEffectHelper;
 import net.firefoxsalesman.dungeonsmobs.DungeonsMobs;
 import net.firefoxsalesman.dungeonsmobs.mod.ModMobEnchants;
@@ -11,12 +10,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 
-public class ChainsMobEnchant extends MobEnchant {
+public class ChainsMobEnchant {
 	private static float CHAINS_CHANCE = 0.3F;
-
-	public ChainsMobEnchant(Properties properties) {
-		super(properties);
-	}
 
 	private static void chainNearbyEntities(LivingEntity attacker, LivingEntity target, float distance,
 			int timeMultiplier) {
@@ -39,7 +34,7 @@ public class ChainsMobEnchant extends MobEnchant {
 
 	public static void doEffect(LivingEntity attacker, Entity defender) {
 		if (defender instanceof LivingEntity livingDefender)
-			NewMobEnchantUtils.executeIfPresentWithLevel(attacker, ModMobEnchants.CHAINS.get(), level -> {
+			NewMobEnchantUtils.executeIfPresentWithLevel(attacker, ModMobEnchants.CHAINS.getKey(), level -> {
 				if (attacker.getRandom().nextFloat() <= CHAINS_CHANCE)
 					chainNearbyEntities(attacker, livingDefender, 1.5F, level);
 			});

@@ -14,6 +14,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
@@ -37,14 +38,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.core.animatable.GeoAnimatable;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
-import software.bernie.geckolib.core.animation.Animation.LoopType;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.AnimationState;
-import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.animatable.GeoAnimatable;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.AnimatableManager.ControllerRegistrar;
+import software.bernie.geckolib.animation.Animation.LoopType;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
@@ -56,8 +57,7 @@ public class LeapleafEntity extends Monster implements GeoEntity {
 	private static final UUID SPEED_MODIFIER_CHARGING_UUID = UUID
 			.fromString("b380d5fd-85cb-4ac3-9450-d9092a09e0c9");
 	private static final AttributeModifier SPEED_MODIFIER_CHARGING = new AttributeModifier(
-			SPEED_MODIFIER_CHARGING_UUID,
-			"Charging speed increase", 0.1D, AttributeModifier.Operation.ADDITION);
+			ResourceLocation.fromNamespaceAndPath("dungeonsmobs", "charging_speed_increase"), 0.1D, AttributeModifier.Operation.ADD_VALUE);
 
 	private static final EntityDataAccessor<Integer> TIMES_LEAPT = SynchedEntityData.defineId(LeapleafEntity.class,
 			EntityDataSerializers.INT);
@@ -90,7 +90,7 @@ public class LeapleafEntity extends Monster implements GeoEntity {
 	public LeapleafEntity(EntityType<? extends LeapleafEntity> type, Level world) {
 		super(type, world);
 		xpReward = 20;
-		setMaxUpStep(1.0F);
+		this.getAttribute(Attributes.STEP_HEIGHT).setBaseValue(1.0D);
 	}
 
 	@Override
@@ -195,11 +195,11 @@ public class LeapleafEntity extends Monster implements GeoEntity {
 	}
 
 	@Override
-	protected void defineSynchedData() {
-		super.defineSynchedData();
-		entityData.define(TIMES_LEAPT, 0);
-		entityData.define(CAN_LEAP, false);
-		entityData.define(LEAPING, false);
+	protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+		super.defineSynchedData(builder);
+		builder.define(TIMES_LEAPT, 0);
+		builder.define(CAN_LEAP, false);
+		builder.define(LEAPING, false);
 	}
 
 	public int getTimesLeapt() {
@@ -257,7 +257,7 @@ public class LeapleafEntity extends Monster implements GeoEntity {
 		}
 
 		if (canLeap()) {
-			if (!modifiableattributeinstance.hasModifier(SPEED_MODIFIER_CHARGING)) {
+			if (!modifiableattributeinstance.hasModifier(SPEED_MODIFIER_CHARGING.id())) {
 				modifiableattributeinstance.addTransientModifier(SPEED_MODIFIER_CHARGING);
 			}
 		} else {

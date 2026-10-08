@@ -1,7 +1,5 @@
 package net.firefoxsalesman.dungeonsmobs.entity.illagers;
 
-import com.google.common.collect.Maps;
-
 import net.firefoxsalesman.dungeonsmobs.ModSoundEvents;
 import net.firefoxsalesman.dungeonsmobs.entity.AnimatableMeleeAttackMob;
 import net.firefoxsalesman.dungeonsmobs.entity.ModEntities;
@@ -12,10 +10,10 @@ import net.firefoxsalesman.dungeonslibs.client.AnimationTimer;
 import net.firefoxsalesman.dungeonslibs.client.KeyframeEntity;
 import net.firefoxsalesman.dungeonslibs.utils.GoalUtils;
 import net.firefoxsalesman.dungeonsmobs.mod.ModItems;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
@@ -36,9 +34,10 @@ import net.minecraft.world.entity.monster.Vindicator;
 import net.minecraft.world.entity.raid.Raid;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.ServerLevelAccessor;
 import javax.annotation.Nullable;
 import java.util.Map;
@@ -72,9 +71,9 @@ public class MountaineerEntity extends Vindicator implements AnimatableMeleeAtta
 		return new WallClimberNavigation(this, world);
 	}
 
-	protected void defineSynchedData() {
-		super.defineSynchedData();
-		entityData.define(DATA_FLAGS_ID, (byte) 0);
+	protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+		super.defineSynchedData(builder);
+		builder.define(DATA_FLAGS_ID, (byte) 0);
 	}
 
 	public void tick() {
@@ -146,15 +145,15 @@ public class MountaineerEntity extends Vindicator implements AnimatableMeleeAtta
 
 	@Nullable
 	@Override
-	public SpawnGroupData finalizeSpawn(ServerLevelAccessor accessor, DifficultyInstance difficulty,
-			MobSpawnType spawnType, @Nullable SpawnGroupData groupData, @Nullable CompoundTag tag) {
-		SpawnGroupData iLivingEntityData = super.finalizeSpawn(accessor, difficulty, spawnType, groupData, tag);
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor accessor, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData groupData) {
+		SpawnGroupData iLivingEntityData = super.finalizeSpawn(accessor, difficulty, spawnType, groupData);
 		populateDefaultEquipmentSlots(getRandom(), difficulty);
-		populateDefaultEquipmentEnchantments(getRandom(), difficulty);
+		populateDefaultEquipmentEnchantments(accessor, getRandom(), difficulty);
 		return iLivingEntityData;
 	}
 
-	public void applyRaidBuffs(int waveNumber, boolean bool) {
+	@Override
+	public void applyRaidBuffs(ServerLevel serverLevel, int waveNumber, boolean bool) {
 		ItemStack itemStack = new ItemStack(ModItems.MOUNTAINEER_AXE.get());
 		Raid raid = getCurrentRaid();
 		int i = 1;
@@ -167,9 +166,10 @@ public class MountaineerEntity extends Vindicator implements AnimatableMeleeAtta
 			flag = random.nextFloat() <= raid.getEnchantOdds();
 		}
 		if (flag) {
-			Map<Enchantment, Integer> map = Maps.newHashMap();
-			map.put(Enchantments.SHARPNESS, i);
-			EnchantmentHelper.setEnchantments(map, itemStack);
+			Holder<Enchantment> sharpness = level().registryAccess()
+					.registryOrThrow(Registries.ENCHANTMENT)
+					.getHolderOrThrow(Enchantments.SHARPNESS);
+			itemStack.enchant(sharpness, i);
 		}
 
 		SpawnEquipmentHelper.equipMainhand(itemStack, this);

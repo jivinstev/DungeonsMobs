@@ -12,21 +12,21 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.event.entity.living.LivingDamageEvent;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
+import net.neoforged.neoforge.event.tick.EntityTickEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 
-@Mod.EventBusSubscriber(modid = DungeonsMobs.MOD_ID)
+@EventBusSubscriber(modid = DungeonsMobs.MOD_ID)
 public class MobEnchantEvents {
 	@SubscribeEvent
-	public static void onLivingDamage(LivingDamageEvent event) {
+	public static void onLivingDamage(LivingDamageEvent.Pre event) {
 		if (ModHelper.hasMod("enchantwithmob")) {
 			LivingEntity defender = event.getEntity();
 			RushMobEnchant.doEffect(defender);
-			HealsAlliesMobEnchant.doEffect(defender, event.getAmount());
+			HealsAlliesMobEnchant.doEffect(defender, event.getNewDamage());
 			Entity attacker;
 			if (!event.getSource().is(DamageTypeTags.IS_PROJECTILE))
 				attacker = event.getSource().getDirectEntity();
@@ -38,11 +38,11 @@ public class MobEnchantEvents {
 				CriticalHitMobEnchant.doEffect(defender, livingAttacker, event);
 				ChainsMobEnchant.doEffect(defender, livingAttacker);
 				DoubleDamageMobEnchant.doEffect(defender, livingAttacker, event);
-				FrenziedMobEnchant.doEffect(defender, livingAttacker, event.getAmount(),
+				FrenziedMobEnchant.doEffect(defender, livingAttacker, event.getNewDamage(),
 						event);
 				WeakeningMobEnchant.doEffect(defender, livingAttacker);
 				// radiance
-				executeIfPresentWithLevel(livingAttacker, ModMobEnchants.RADIANCE.get(),
+				executeIfPresentWithLevel(livingAttacker, ModMobEnchants.RADIANCE.getKey(),
 						(level) -> {
 							LivingEntity source = event.getSource()
 									.is(DamageTypeTags.IS_PROJECTILE)
@@ -61,9 +61,10 @@ public class MobEnchantEvents {
 	}
 
 	@SubscribeEvent
-	public static void onLivingUpdate(LivingEvent.LivingTickEvent event) {
+	public static void onLivingUpdate(EntityTickEvent.Pre event) {
+	    if (!(event.getEntity() instanceof net.minecraft.world.entity.LivingEntity living)) return;
 		if (ModHelper.hasMod("enchantwithmob")) {
-			LivingEntity entity = event.getEntity();
+			LivingEntity entity = living;
 			BurningMobEnchant.doEffect(entity);
 			ChillingMobEnchant.doEffect(entity);
 			FireTrailMobEnchant.doEffect(entity);
@@ -73,7 +74,7 @@ public class MobEnchantEvents {
 	}
 
 	@SubscribeEvent
-	public static void onLivingAttack(LivingAttackEvent event) {
+	public static void onLivingAttack(LivingIncomingDamageEvent event) {
 		if (ModHelper.hasMod("enchantwithmob")) {
 			LivingEntity defender = event.getEntity();
 			Entity entity = event.getSource().getEntity();

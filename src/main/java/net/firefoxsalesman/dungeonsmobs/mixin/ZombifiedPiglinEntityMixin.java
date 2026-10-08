@@ -31,7 +31,6 @@ import net.minecraft.world.entity.ai.goal.ZombieAttackGoal;
 import net.minecraft.world.entity.monster.CrossbowAttackMob;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.monster.ZombifiedPiglin;
-import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -78,11 +77,8 @@ public abstract class ZombifiedPiglinEntityMixin extends Zombie implements ISmar
 
 	@Nullable
 	@Override
-	public SpawnGroupData finalizeSpawn(ServerLevelAccessor p_213386_1_, DifficultyInstance p_213386_2_,
-			MobSpawnType p_213386_3_, @Nullable SpawnGroupData p_213386_4_,
-			@Nullable CompoundTag p_213386_5_) {
-		SpawnGroupData spawnData = super.finalizeSpawn(p_213386_1_, p_213386_2_, p_213386_3_, p_213386_4_,
-				p_213386_5_);
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor p_213386_1_, DifficultyInstance p_213386_2_, MobSpawnType p_213386_3_, @Nullable SpawnGroupData p_213386_4_) {
+		SpawnGroupData spawnData = super.finalizeSpawn(p_213386_1_, p_213386_2_, p_213386_3_, p_213386_4_);
 		this.setCrossbowUser(this.isHolding(itemStack -> itemStack.getItem() instanceof CrossbowItem));
 		return spawnData;
 	}
@@ -100,10 +96,10 @@ public abstract class ZombifiedPiglinEntityMixin extends Zombie implements ISmar
 	}
 
 	@Override
-	protected void defineSynchedData() {
-		super.defineSynchedData();
-		this.entityData.define(DATA_IS_CHARGING_CROSSBOW, false);
-		this.entityData.define(DATA_IS_CROSSBOW_USER, false);
+	protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+		super.defineSynchedData(builder);
+		builder.define(DATA_IS_CHARGING_CROSSBOW, false);
+		builder.define(DATA_IS_CROSSBOW_USER, false);
 	}
 
 	@Override
@@ -126,11 +122,7 @@ public abstract class ZombifiedPiglinEntityMixin extends Zombie implements ISmar
 		this.entityData.set(DATA_IS_CHARGING_CROSSBOW, chargingCrossbow);
 	}
 
-	@Override
-	public void shootCrossbowProjectile(LivingEntity target, ItemStack weapon, Projectile projectile,
-			float inaccuracy) {
-		this.shootCrossbowProjectile(this, target, projectile, inaccuracy, 1.6F);
-	}
+	// aiming and the shot sound come from CrossbowItem#shootProjectile (target-led, same 1.6 velocity and spread)
 
 	@Override
 	public void onCrossbowAttackPerformed() {

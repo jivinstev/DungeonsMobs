@@ -14,6 +14,7 @@ import net.firefoxsalesman.dungeonslibs.client.KeyframeEntity;
 import net.firefoxsalesman.dungeonsmobs.mod.ModItems;
 import net.firefoxsalesman.dungeonslibs.utils.PositionUtils;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
@@ -55,7 +56,7 @@ public class NecromancerEntity extends Skeleton implements KeyframeEntity {
 	public NecromancerEntity(EntityType<? extends NecromancerEntity> pEntityType, Level worldIn) {
 		super(pEntityType, worldIn);
 		this.xpReward = 20;
-		setMaxUpStep(1.0F);
+		this.getAttribute(Attributes.STEP_HEIGHT).setBaseValue(1.0D);
 		states = genStates("idle", "summon", "shoot");
 	}
 
@@ -63,7 +64,7 @@ public class NecromancerEntity extends Skeleton implements KeyframeEntity {
 		return Skeleton.createAttributes().add(Attributes.MOVEMENT_SPEED, 0.2D)
 				.add(Attributes.FOLLOW_RANGE, 20.0D).add(Attributes.MAX_HEALTH, 40.0D)
 				.add(Attributes.ARMOR, 5.0D).add(Attributes.KNOCKBACK_RESISTANCE, 0.4D)
-				.add(AttributeRegistry.SUMMON_CAP.get(), 4);
+				.add(AttributeRegistry.SUMMON_CAP, 4);
 	}
 
 	@Override
@@ -102,7 +103,7 @@ public class NecromancerEntity extends Skeleton implements KeyframeEntity {
 		if (super.isAlliedTo(entityIn)) {
 			return true;
 		} else if (entityIn instanceof LivingEntity
-				&& ((LivingEntity) entityIn).getMobType() == MobType.UNDEAD) {
+				&& entityIn.getType().is(EntityTypeTags.UNDEAD)) {
 			return this.getTeam() == null && entityIn.getTeam() == null;
 		} else {
 			return false;
@@ -110,8 +111,9 @@ public class NecromancerEntity extends Skeleton implements KeyframeEntity {
 	}
 
 	@Override
-	protected float getStandingEyeHeight(Pose p_213348_1_, EntityDimensions p_213348_2_) {
-		return 2.25F;
+	protected EntityDimensions getDefaultDimensions(Pose p_213348_1_) {
+	    EntityDimensions p_213348_2_ = super.getDefaultDimensions(p_213348_1_);
+	    return p_213348_2_.withEyeHeight(2.25F);
 	}
 
 	@Override

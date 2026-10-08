@@ -1,17 +1,20 @@
 package net.firefoxsalesman.dungeonsmobs.network.message;
 
-import net.firefoxsalesman.dungeonsmobs.capabilities.ancient.Ancient;
-import net.firefoxsalesman.dungeonsmobs.capabilities.ancient.AncientHelper;
-import net.minecraft.client.Minecraft;
+import net.firefoxsalesman.dungeonsmobs.network.message.client.AncientClientHandler;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.PacketFlow;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-import java.util.function.Supplier;
+public class AncientMessage implements CustomPacketPayload {
+	public static final CustomPacketPayload.Type<AncientMessage> TYPE =
+			new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath("dungeonsmobs", "ancient"));
 
-public class AncientMessage {
+	public static final StreamCodec<FriendlyByteBuf, AncientMessage> STREAM_CODEC =
+			StreamCodec.of((buffer, message) -> message.encode(buffer), AncientMessage::decode);
+
 	private final int entityId;
 	private final boolean ancient;
 
@@ -27,19 +30,15 @@ public class AncientMessage {
 		return new AncientMessage(entityId, ancient);
 	}
 
-	public static boolean onPacketReceived(AncientMessage message, Supplier<NetworkEvent.Context> contextSupplier) {
-		NetworkEvent.Context context = contextSupplier.get();
-		if (context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
-			context.enqueueWork(() -> {
-				Entity entity = Minecraft.getInstance().player.level().getEntity(message.entityId);
-				if (entity instanceof LivingEntity) {
-					Ancient cap = AncientHelper.getAncientCapability(entity);
-					cap.setAncient(message.ancient);
-					entity.refreshDimensions();
-				}
-			});
+	@Override
+	public Type<? extends CustomPacketPayload> type() {
+		return TYPE;
+	}
+
+	public void handle(IPayloadContext context) {
+		if (context.flow() == PacketFlow.CLIENTBOUND) {
+			context.enqueueWork(() -> AncientClientHandler.handle(this.entityId, this.ancient));
 		}
-		return true;
 	}
 
 	public void encode(FriendlyByteBuf buffer) {

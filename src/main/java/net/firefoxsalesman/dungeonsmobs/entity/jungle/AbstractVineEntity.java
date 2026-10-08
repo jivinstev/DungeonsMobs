@@ -16,8 +16,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.entity.PartEntity;
 import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.function.Predicate;
@@ -97,7 +98,7 @@ public abstract class AbstractVineEntity extends PathfinderMob implements Enemy,
 	}
 
 	@Override
-	public net.minecraftforge.entity.PartEntity<?>[] getParts() {
+	public PartEntity<?>[] getParts() {
 		return subEntities;
 	}
 
@@ -126,15 +127,15 @@ public abstract class AbstractVineEntity extends PathfinderMob implements Enemy,
 		}
 	}
 
-	protected void defineSynchedData() {
-		super.defineSynchedData();
-		entityData.define(LENGTH, 0);
-		entityData.define(VANISHES, false);
-		entityData.define(STAY_TIME, 0);
-		entityData.define(ALWAYS_OUT, false);
-		entityData.define(SHOULD_RETRACT, false);
-		entityData.define(DETECTION_DISTANCE, 0.0F);
-		entityData.define(OUT, false);
+	protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+		super.defineSynchedData(builder);
+		builder.define(LENGTH, 0);
+		builder.define(VANISHES, false);
+		builder.define(STAY_TIME, 0);
+		builder.define(ALWAYS_OUT, false);
+		builder.define(SHOULD_RETRACT, false);
+		builder.define(DETECTION_DISTANCE, 0.0F);
+		builder.define(OUT, false);
 	}
 
 	@Override
@@ -387,7 +388,7 @@ public abstract class AbstractVineEntity extends PathfinderMob implements Enemy,
 	}
 
 	@Override
-	public EntityDimensions getDimensions(Pose p_213305_1_) {
+	protected EntityDimensions getDefaultDimensions(Pose p_213305_1_) {
 		return !isOut() ? EntityDimensions.scalable(1.0F, 0.1F)
 				: EntityDimensions.scalable(1.5F, getLengthInBlocks() + getExtraHitboxY());
 	}
@@ -415,10 +416,9 @@ public abstract class AbstractVineEntity extends PathfinderMob implements Enemy,
 	}
 
 	@Override
-	public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty,
-			MobSpawnType spawnType, SpawnGroupData groupData, CompoundTag tag) {
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, SpawnGroupData groupData) {
 		setDefaultFeatures();
-		return super.finalizeSpawn(level, difficulty, spawnType, groupData, tag);
+		return super.finalizeSpawn(level, difficulty, spawnType, groupData);
 	}
 
 	@Override

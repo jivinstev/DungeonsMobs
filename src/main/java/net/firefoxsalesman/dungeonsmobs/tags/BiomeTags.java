@@ -20,6 +20,6 @@ public class BiomeTags {
 	}
 
 	private static TagKey<Biome> forgeTag(String name) {
-		return TagKey.create(Registries.BIOME, new ResourceLocation("forge", name));
+		return TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath("forge", name));
 	}
 }

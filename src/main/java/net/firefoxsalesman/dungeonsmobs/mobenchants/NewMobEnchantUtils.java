@@ -1,10 +1,11 @@
 package net.firefoxsalesman.dungeonsmobs.mobenchants;
 
 import java.util.function.Consumer;
-import baguchan.enchantwithmob.api.IEnchantCap;
-import baguchan.enchantwithmob.capability.MobEnchantCapability;
-import baguchan.enchantwithmob.mobenchant.MobEnchant;
-import baguchan.enchantwithmob.utils.MobEnchantUtils;
+import baguchi.enchantwithmob.api.IEnchantCap;
+import baguchi.enchantwithmob.capability.MobEnchantCapability;
+import baguchi.enchantwithmob.mobenchant.MobEnchant;
+import baguchi.enchantwithmob.utils.MobEnchantUtils;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 
@@ -15,7 +16,7 @@ public class NewMobEnchantUtils {
 				: new MobEnchantCapability();
 	}
 
-	public static void executeIfPresentWithLevel(LivingEntity entity, MobEnchant mobEnchantment,
+	public static void executeIfPresentWithLevel(LivingEntity entity, ResourceKey<MobEnchant> mobEnchantment,
 			Consumer<Integer> consumer) {
 		if (entity != null && entity instanceof IEnchantCap cap) {
 			int level = MobEnchantUtils.getMobEnchantLevelFromHandler(cap.getEnchantCap().getMobEnchants(),

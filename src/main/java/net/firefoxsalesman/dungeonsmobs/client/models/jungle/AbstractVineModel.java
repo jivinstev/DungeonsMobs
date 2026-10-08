@@ -1,9 +1,9 @@
 package net.firefoxsalesman.dungeonsmobs.client.models.jungle;
 
 import net.firefoxsalesman.dungeonsmobs.entity.jungle.AbstractVineEntity;
-import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
-import software.bernie.geckolib.core.animation.AnimationState;
-import software.bernie.geckolib.core.molang.MolangParser;
+import software.bernie.geckolib.cache.object.GeoBone;
+import software.bernie.geckolib.loading.math.MathParser;
+import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.model.GeoModel;
 
 public abstract class AbstractVineModel extends GeoModel<AbstractVineEntity> {
@@ -12,12 +12,12 @@ public abstract class AbstractVineModel extends GeoModel<AbstractVineEntity> {
     public void setCustomAnimations(AbstractVineEntity entity, long uniqueID, AnimationState<AbstractVineEntity> customPredicate) {
         super.setCustomAnimations(entity, uniqueID, customPredicate);
 
-        CoreGeoBone everything = getAnimationProcessor().getBone("everything");
+        GeoBone everything = getAnimationProcessor().getBone("everything");
 
         everything.setHidden(entity.tickCount <= entity.getAnimationTransitionTime());
 
         for (int i = 1; i < 26; i++) {
-            CoreGeoBone part = getAnimationProcessor().getBone("part" + i);
+            GeoBone part = getAnimationProcessor().getBone("part" + i);
             int partsToShow = 26 - entity.getLengthInSegments();
             if (part != null) {
                 part.setHidden(i < partsToShow);
@@ -27,10 +27,10 @@ public abstract class AbstractVineModel extends GeoModel<AbstractVineEntity> {
     }
 
     @Override
-    public void applyMolangQueries(AbstractVineEntity animatable, double currentTick) {
-        super.applyMolangQueries(animatable, currentTick);
+    public void applyMolangQueries(AnimationState<AbstractVineEntity> animationState, double currentTick) {
+        super.applyMolangQueries(animationState, currentTick);
 
-        AbstractVineEntity vine = (AbstractVineEntity) animatable;
-        MolangParser.INSTANCE.setValue("query.vine_length", vine::getLengthInSegments);
+        AbstractVineEntity vine = animationState.getAnimatable();
+        MathParser.setVariable("query.vine_length", vine::getLengthInSegments);
     }
 }

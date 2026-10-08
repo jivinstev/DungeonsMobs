@@ -4,10 +4,12 @@ import net.firefoxsalesman.dungeonsmobs.tags.EntityTags;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerEntity;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.Pose;
-import net.minecraftforge.entity.PartEntity;
+import net.neoforged.neoforge.entity.PartEntity;
 
 public class VinePartEntity extends PartEntity<AbstractVineEntity> {
 	public final AbstractVineEntity parentMob;
@@ -21,7 +23,7 @@ public class VinePartEntity extends PartEntity<AbstractVineEntity> {
 		refreshDimensions();
 	}
 
-	protected void defineSynchedData() {
+	protected void defineSynchedData(SynchedEntityData.Builder builder) {
 	}
 
 	protected void readAdditionalSaveData(CompoundTag p_70037_1_) {
@@ -95,12 +97,12 @@ public class VinePartEntity extends PartEntity<AbstractVineEntity> {
 				+ extraHeight;
 	}
 
-	public EntityDimensions getDimensions(Pose pose) {
+	protected EntityDimensions getDefaultDimensions(Pose pose) {
 		return getSizeForSegment();
 	}
 
 	@Override
-	public Packet<ClientGamePacketListener> getAddEntityPacket() {
+	public Packet<ClientGamePacketListener> getAddEntityPacket(ServerEntity serverEntity) {
 		throw new UnsupportedOperationException();
 	}
 }

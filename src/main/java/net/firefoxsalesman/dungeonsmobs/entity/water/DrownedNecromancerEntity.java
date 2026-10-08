@@ -18,6 +18,7 @@ import net.firefoxsalesman.dungeonslibs.utils.PositionUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
@@ -36,7 +37,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.ForgeMod;
 import javax.annotation.Nullable;
 import java.util.EnumSet;
 import java.util.Map;
@@ -69,9 +69,9 @@ public class DrownedNecromancerEntity extends Drowned implements KeyframeEntity 
 
 	public static AttributeSupplier.Builder setCustomAttributes() {
 		return Drowned.createAttributes().add(Attributes.MOVEMENT_SPEED, 0.2D)
-				.add(ForgeMod.SWIM_SPEED.get(), 2.5D).add(Attributes.FOLLOW_RANGE, 30.0D)
+				.add(Attributes.WATER_MOVEMENT_EFFICIENCY, 2.5D).add(Attributes.FOLLOW_RANGE, 30.0D)
 				.add(Attributes.MAX_HEALTH, 75.0D).add(Attributes.ARMOR, 12.5D)
-				.add(Attributes.KNOCKBACK_RESISTANCE, 0.6D).add(AttributeRegistry.SUMMON_CAP.get(), 4);
+				.add(Attributes.KNOCKBACK_RESISTANCE, 0.6D).add(AttributeRegistry.SUMMON_CAP, 4);
 	}
 
 	@Override
@@ -114,7 +114,7 @@ public class DrownedNecromancerEntity extends Drowned implements KeyframeEntity 
 		if (super.isAlliedTo(entityIn)) {
 			return true;
 		} else if (entityIn instanceof LivingEntity
-				&& ((LivingEntity) entityIn).getMobType() == MobType.UNDEAD) {
+				&& ((LivingEntity) entityIn).getType().is(EntityTypeTags.UNDEAD)) {
 			return this.getTeam() == null && entityIn.getTeam() == null;
 		} else {
 			return false;
@@ -122,8 +122,9 @@ public class DrownedNecromancerEntity extends Drowned implements KeyframeEntity 
 	}
 
 	@Override
-	protected float getStandingEyeHeight(Pose p_213348_1_, EntityDimensions p_213348_2_) {
-		return 2.4F;
+	public EntityDimensions getDefaultDimensions(Pose p_213348_1_) {
+	    EntityDimensions p_213348_2_ = super.getDefaultDimensions(p_213348_1_);
+	    return p_213348_2_.withEyeHeight(2.4F);
 	}
 
 	@Override

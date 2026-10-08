@@ -8,6 +8,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.monster.piglin.Piglin;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.event.EventHooks;
 
 public class PiglinHelper {
 
@@ -22,7 +23,7 @@ public class PiglinHelper {
         T convertTo = piglin.convertTo(convertToType, true);
         if (convertTo != null) {
             convertTo.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 200, 0));
-            net.minecraftforge.event.ForgeEventFactory.onLivingConvert(piglin, convertTo);
+            EventHooks.onLivingConvert(piglin, convertTo);
         }
     }
 }

@@ -11,11 +11,15 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ProjectileWeaponItem;
-import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.level.Level;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 public class BlueNethershroomItem extends ProjectileWeaponItem {
@@ -47,10 +51,18 @@ public class BlueNethershroomItem extends ProjectileWeaponItem {
 
     public static BlueNethershroomEntity createBlueNethershroom(Level world, LivingEntity thrower, ItemStack itemstack) {
         BlueNethershroomEntity blueNethershroom = new BlueNethershroomEntity(world, thrower);
-        blueNethershroom.setItem(PotionUtils.setCustomEffects(itemstack, List.of(new MobEffectInstance(ModEffects.WARPED.get(), 200))));
+        itemstack.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.empty(), Optional.empty(), List.of(new MobEffectInstance(
+                BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.WARPED.get()), 200))));
+        blueNethershroom.setItem(itemstack);
         return blueNethershroom;
     }
 
+
+    @Override
+    protected void shootProjectile(LivingEntity shooter, Projectile projectile, int index, float velocity, float inaccuracy, float angle, LivingEntity target) {
+        projectile.shootFromRotation(shooter, shooter.getXRot(), shooter.getYRot() + angle, -20.0F, velocity, inaccuracy);
+        shooter.level().addFreshEntity(projectile);
+    }
 
     public int getDefaultProjectileRange() {
         return 8;
