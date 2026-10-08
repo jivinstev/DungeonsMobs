@@ -1,4 +1,4 @@
-{	"loader": "forge:separate_transforms",
+{	"loader": "neoforge:separate_transforms",
 	"gui_light": "front",
 	"base": {
 		"parent": "dungeonsmobs:item/geomancer_staff_3d"

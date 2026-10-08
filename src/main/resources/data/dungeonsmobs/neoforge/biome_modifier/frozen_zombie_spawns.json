@@ -1,6 +1,6 @@
 {
-  "type": "forge:add_spawns",
-  "biomes": "#forge:is_snowy",
+  "type": "neoforge:add_spawns",
+  "biomes": "#c:is_snowy",
   "spawners": {
     "type": "dungeonsmobs:frozen_zombie",
     "weight": 100,

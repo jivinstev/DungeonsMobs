@@ -1,14 +1,14 @@
 {
-  "type": "forge:add_spawns",
+  "type": "neoforge:add_spawns",
   "biomes": {
-    "type": "forge:and",
+    "type": "neoforge:and",
     "values": [
       "#minecraft:is_mountain",
       {
-        "type": "forge:or",
+        "type": "neoforge:or",
         "values": [
-          "#forge:is_peak",
-          "#forge:is_slope"
+          "#c:is_mountain/peak",
+          "#c:is_mountain/slope"
         ]
       }
     ]
