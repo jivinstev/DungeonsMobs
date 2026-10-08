@@ -16,7 +16,6 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.firefoxsalesman.dungeonslibs.attribute.AttributeRegistry;
 import net.firefoxsalesman.dungeonslibs.data.util.MergeableCodecDataManager;
 import net.firefoxsalesman.dungeonslibs.summon.SummonHelper;
-import net.firefoxsalesman.dungeonsmobs.DungeonsMobs;
 import net.firefoxsalesman.dungeonsmobs.mobenchants.NewMobEnchantUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -31,10 +30,7 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
 
-@EventBusSubscriber(modid = DungeonsMobs.MOD_ID, bus = EventBusSubscriber.Bus.GAME)
 public class AncientDataHelper {
 
 	private static final MergeableCodecDataManager<MobAncientData, MobAncientData> MOB_ANCIENT_DATA = new MergeableCodecDataManager<>(
@@ -163,7 +159,6 @@ public class AncientDataHelper {
 								.get(entity.getRandom().nextInt(nouns.size()));
 	}
 
-	@SubscribeEvent
 	public static void onAddReloadListeners(AddReloadListenerEvent event) {
 		event.addListener(MOB_ANCIENT_DATA);
 		event.addListener(MOB_ENCHANTMENT_ANCIENT_DATA);
