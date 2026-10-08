@@ -1,0 +1,101 @@
+{
+  "schema": 1,
+  "port": "jivinstev/dungeonsmobs",
+  "modid": "dungeonsmobs",
+  "minecraft": "1.21.1",
+  "neoforge": "21.1.228",
+  "files": [
+    {
+      "role": "self",
+      "modid": "dungeonsmobs",
+      "name": "dungeonsmobs-2.2.1.jar",
+      "url": "https://github.com/jivinstev/DungeonsMobs/releases/download/dungeonsmobs-2.2.1-mc1.21.1/dungeonsmobs-2.2.1.jar",
+      "sha256": "ea8ed80f12205f707483af8826258709950f959e0a56e19193421b34b93bb9d4"
+    },
+    {
+      "role": "optional",
+      "modid": "betterstrongholds",
+      "page": "https://modrinth.com/mods?q=betterstrongholds&g=categories:neoforge&v=1.21.1"
+    },
+    {
+      "role": "optional",
+      "modid": "stellarity",
+      "page": "https://modrinth.com/mods?q=stellarity&g=categories:neoforge&v=1.21.1"
+    },
+    {
+      "role": "optional",
+      "modid": "tlc",
+      "page": "https://modrinth.com/mods?q=tlc&g=categories:neoforge&v=1.21.1"
+    },
+    {
+      "role": "optional",
+      "modid": "mr_dungeons_andtavernsstrongholdrework",
+      "page": "https://modrinth.com/mods?q=mr_dungeons_andtavernsstrongholdrework&g=categories:neoforge&v=1.21.1"
+    },
+    {
+      "role": "optional",
+      "modid": "integrated_stronghold",
+      "page": "https://modrinth.com/mods?q=integrated_stronghold&g=categories:neoforge&v=1.21.1"
+    },
+    {
+      "role": "optional",
+      "modid": "idas",
+      "page": "https://modrinth.com/mods?q=idas&g=categories:neoforge&v=1.21.1"
+    },
+    {
+      "role": "optional",
+      "modid": "betterdeserttemples",
+      "page": "https://modrinth.com/mods?q=betterdeserttemples&g=categories:neoforge&v=1.21.1"
+    },
+    {
+      "role": "optional",
+      "modid": "betterjungletemples",
+      "page": "https://modrinth.com/mods?q=betterjungletemples&g=categories:neoforge&v=1.21.1"
+    },
+    {
+      "role": "optional",
+      "modid": "enchantwithmob",
+      "name": "enchantwithmob-1.21.1-21.4.0.jar",
+      "url": "https://www.curseforge.com/api/v1/mods/913523/files/8962455/download",
+      "page": "https://www.curseforge.com/projects/913523",
+      "sha256": "439b0cac853dca6eb45e23d6abb0ca5ed240a44793fc654f211efdf4c5ac33b3"
+    },
+    {
+      "role": "optional",
+      "modid": "goety",
+      "page": "https://modrinth.com/mods?q=goety&g=categories:neoforge&v=1.21.1"
+    },
+    {
+      "role": "required",
+      "modid": "dungeonslibs",
+      "name": "dungeonslibs-1.4.0.jar",
+      "url": "https://github.com/jivinstev/DungeonsLibs/releases/download/dungeonslibs-1.4.0-mc1.21.1/dungeonslibs-1.4.0.jar",
+      "port": "jivinstev/DungeonsLibs",
+      "sha256": "f4fe55e14d3b92f8d06afb753edd08f51dc7574cd4c43cae5a5fccad20f3b949"
+    },
+    {
+      "role": "required",
+      "modid": "curios",
+      "name": "curios-neoforge-9.5.1+1.21.1.jar",
+      "url": "https://cdn.modrinth.com/data/vvuO3ImH/versions/yohfFbgD/curios-neoforge-9.5.1%2B1.21.1.jar",
+      "page": "https://modrinth.com/mod/curios/version/yohfFbgD",
+      "sha256": "a45df2125c26219974aba7507ffc9afe7b83acc941a386af3faacb1cc0056fde"
+    },
+    {
+      "role": "required",
+      "modid": "geckolib",
+      "name": "geckolib-neoforge-1.21.1-4.8.2.jar",
+      "url": "https://cdn.modrinth.com/data/8BmcQJ2H/versions/RVIo5f6E/geckolib-neoforge-1.21.1-4.8.2.jar",
+      "page": "https://modrinth.com/mod/geckolib/version/RVIo5f6E",
+      "sha256": "a733757157bd914b56a24c09d2797c522f0f339eb5e45ec1d70a8a9326ecd9df"
+    },
+    {
+      "role": "extra",
+      "modid": "bagus-lib-866533",
+      "name": "bagus_lib-1.21.1-13.27.0.jar",
+      "url": "https://www.curseforge.com/api/v1/mods/866533/files/8883079/download",
+      "page": "https://www.curseforge.com/projects/866533",
+      "sha256": "0aab93450060fdd6fe2f9da8fae60b5b9ceb72b70bd071528b7afc3e547bd4c8"
+    }
+  ]
+}
