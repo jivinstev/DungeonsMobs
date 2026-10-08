@@ -1,6 +1,5 @@
 package net.firefoxsalesman.dungeonsmobs.entity.projectiles;
 
-import com.google.common.base.MoreObjects;
 
 import net.firefoxsalesman.dungeonsmobs.ModSoundEvents;
 import net.firefoxsalesman.dungeonsmobs.entity.ModEntities;
@@ -115,7 +114,7 @@ public class PoisonQuillEntity extends StraightMovingProjectileEntity implements
 			super.onHitEntity(entity);
 			boolean flag;
 			DamageSource source = damageSources().mobProjectile(this,
-					(LivingEntity) MoreObjects.firstNonNull(getOwner(), this));
+					getOwner() instanceof LivingEntity owner ? owner : null);
 			flag = entity.hurt(source, 5.0F);
 			if (entity instanceof LivingEntity) {
 				int i = 0;
