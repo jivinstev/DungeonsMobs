@@ -9,13 +9,13 @@
       "maxCount": 5
     },
     {
-      "type": "dungeonsmobs:gold_armored_vindicator",
+      "type": "dungeonsmobs:armored_vindicator",
       "weight": 5,
       "minCount": 1,
       "maxCount": 2
     },
     {
-      "type": "dungeonsmobs:diamond_armored_vindicator",
+      "type": "dungeonsmobs:armored_vindicator",
       "weight": 1,
       "minCount": 1,
       "maxCount": 1
