@@ -29,7 +29,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ShovelItem;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.ArmorItem.Type;
-import net.minecraft.world.item.DyeColor;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -108,12 +107,6 @@ public class ModItems {
 	// PROJECTILES
 	public static final Supplier<Item> BLUE_NETHERSHROOM = ITEMS.register("blue_nethershroom",
 			() -> new BlueNethershroomItem(new Item.Properties().stacksTo(16)));
-	// TRIDENTS
-	public static final Supplier<Item> YELLOW_TRIDENT = ITEMS.register("yellow_trident",
-			() -> new ColoredTridentItem((new Item.Properties().durability(250)), DyeColor.YELLOW));
-
-	public static final Supplier<Item> PURPLE_TRIDENT = ITEMS.register("purple_trident",
-			() -> new ColoredTridentItem((new Item.Properties().durability(250)), DyeColor.PURPLE));
 
 	private static ArmorSet registerArmorSet(String armorSetId, String helmetId, String chestId, String legsId,
 			String bootsId, boolean animated) {

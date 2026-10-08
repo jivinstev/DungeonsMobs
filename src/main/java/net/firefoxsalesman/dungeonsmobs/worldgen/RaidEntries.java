@@ -3,6 +3,7 @@ package net.firefoxsalesman.dungeonsmobs.worldgen;
 import java.util.function.Supplier;
 import net.firefoxsalesman.dungeonsmobs.config.DungeonsMobsConfig;
 import net.firefoxsalesman.dungeonsmobs.entity.ModEntities;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.raid.Raid;
 import net.minecraft.world.entity.raid.Raider;
 import net.neoforged.fml.common.asm.enumextension.EnumProxy;
@@ -43,10 +44,6 @@ public class RaidEntries {
 	public static final EnumProxy<Raid.RaiderType> MAGE = new EnumProxy<>(Raid.RaiderType.class,
 			(Supplier<EntityType<? extends Raider>>) () -> ModEntities.MAGE.get(), MAGE_WAVES);
 
-	public static final int[] ILLUSIONER_WAVES = new int[] { 0, 0, 0, 0, 0, 1, 1, 2 };
-	public static final EnumProxy<Raid.RaiderType> ILLUSIONER = new EnumProxy<>(Raid.RaiderType.class,
-			(Supplier<EntityType<? extends Raider>>) () -> EntityType.ILLUSIONER, ILLUSIONER_WAVES);
-
 	public static final int[] ICEOLOGER_WAVES = new int[] { 0, 0, 0, 0, 0, 1, 1, 2 };
 	public static final EnumProxy<Raid.RaiderType> ICEOLOGER = new EnumProxy<>(Raid.RaiderType.class,
 			(Supplier<EntityType<? extends Raider>>) () -> ModEntities.ICEOLOGER.get(), ICEOLOGER_WAVES);
@@ -86,9 +83,6 @@ public class RaidEntries {
 
 		if (!DungeonsMobsConfig.COMMON.ENABLE_MAGES_IN_RAIDS.get())
 			java.util.Arrays.fill(MAGE_WAVES, 0);
-
-		if (!DungeonsMobsConfig.COMMON.ENABLE_ILLUSIONERS_IN_RAIDS.get())
-			java.util.Arrays.fill(ILLUSIONER_WAVES, 0);
 
 		if (!DungeonsMobsConfig.COMMON.ENABLE_ICEOLOGERS_IN_RAIDS.get())
 			java.util.Arrays.fill(ICEOLOGER_WAVES, 0);

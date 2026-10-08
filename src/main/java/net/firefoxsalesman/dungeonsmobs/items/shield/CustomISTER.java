@@ -82,14 +82,4 @@ public class CustomISTER extends BlockEntityWithoutLevelRenderer {
 			matrixStack.popPose();
 		}
 	}
-
-	public static ResourceLocation getTridentTexture(DyeColor dyeColor) {
-		return GeneralHelper.modLoc(String.format("textures/entity/%s_trident.png", dyeColor.getName()));
-	}
-
-	public static ModelResourceLocation getTridentMRL(DyeColor dyeColor, boolean inHand) {
-		ResourceLocation resourceLoc = GeneralHelper
-				.modLoc(String.format("%s_trident%s", dyeColor.getName(), inHand ? "_in_hand" : ""));
-		return new ModelResourceLocation(resourceLoc, ModelResourceLocation.STANDALONE_VARIANT);
-	}
 }

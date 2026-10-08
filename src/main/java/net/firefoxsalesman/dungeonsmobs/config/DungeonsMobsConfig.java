@@ -19,21 +19,19 @@ public class DungeonsMobsConfig {
 		public static ModConfigSpec.ConfigValue<List<? extends String>> DROWNED_NECROMANCER_MOB_SUMMONS;
 
 		public final ModConfigSpec.ConfigValue<Boolean> ENABLE_ICY_CREEPER_GRIEFING;
-		public final ModConfigSpec.ConfigValue<Boolean> ENABLE_BIOME_SPECIFIC_RAIDERS;
+		public final ModConfigSpec.ConfigValue<Boolean> ENABLE_ENDERSENT_BOSS_BAR;
 		public final ModConfigSpec.ConfigValue<Boolean> ENABLE_ARMORED_PILLAGERS_IN_RAIDS;
 		public final ModConfigSpec.ConfigValue<Boolean> ENABLE_ARMORED_VINDICATORS_IN_RAIDS;
 		public final ModConfigSpec.ConfigValue<Boolean> ENABLE_MOUNTAINEERS_IN_RAIDS;
 		public final ModConfigSpec.ConfigValue<Boolean> ENABLE_ROYAL_GUARDS_IN_RAIDS;
 		public final ModConfigSpec.ConfigValue<Boolean> ENABLE_GEOMANCERS_IN_RAIDS;
 		public final ModConfigSpec.ConfigValue<Boolean> ENABLE_MAGES_IN_RAIDS;
-		public final ModConfigSpec.ConfigValue<Boolean> ENABLE_ILLUSIONERS_IN_RAIDS;
 		public final ModConfigSpec.ConfigValue<Boolean> ENABLE_ICEOLOGERS_IN_RAIDS;
 		public final ModConfigSpec.ConfigValue<Boolean> ENABLE_WINDCALLERS_IN_RAIDS;
 		public final ModConfigSpec.ConfigValue<Boolean> ENABLE_SQUALL_GOLEMS_IN_RAIDS;
 		public final ModConfigSpec.ConfigValue<Boolean> ENABLE_REDSTONE_GOLEMS_IN_RAIDS;
 		public final ModConfigSpec.ConfigValue<Boolean> ENABLE_REDSTONE_MONSTROSITIES_IN_RAIDS;
 
-		public final ModConfigSpec.ConfigValue<Boolean> ENABLE_FIREWORK_ILLUSIONERS;
 		public final ModConfigSpec.ConfigValue<Boolean> ENABLE_STRONGER_HUSKS;
 		public final ModConfigSpec.ConfigValue<Boolean> ENABLE_RANGED_SPIDERS;
 		public final ModConfigSpec.ConfigValue<Boolean> ENABLE_HOSTILE_MOOSHROOMS;

@@ -127,10 +127,8 @@ public class NecromancerEntity extends Skeleton implements KeyframeEntity {
 
 	@Nullable
 	public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficultyInstance,
-			MobSpawnType spawnReason, @Nullable SpawnGroupData livingEntityDataIn,
-			@Nullable CompoundTag compoundNBT) {
-		livingEntityDataIn = super.finalizeSpawn(world, difficultyInstance, spawnReason, livingEntityDataIn,
-				compoundNBT);
+			MobSpawnType spawnReason, @Nullable SpawnGroupData livingEntityDataIn) {
+		livingEntityDataIn = super.finalizeSpawn(world, difficultyInstance, spawnReason, livingEntityDataIn);
 
 		return livingEntityDataIn;
 	}

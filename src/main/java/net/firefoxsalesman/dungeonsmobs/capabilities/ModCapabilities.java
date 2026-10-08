@@ -17,15 +17,9 @@ public class ModCapabilities {
 	public static final DeferredRegister<AttachmentType<?>> ATTACHMENTS =
 			DeferredRegister.create(NeoForgeRegistries.Keys.ATTACHMENT_TYPES, DungeonsMobs.MOD_ID);
 
-	public static final DeferredHolder<AttachmentType<?>, AttachmentType<Ancient>> ANCIENT_CAPABILITY =
-			ATTACHMENTS.register("ancient", () -> AttachmentType.builder(Ancient::new)
-					.serialize(nbt(Ancient::new)).build());
 	public static final DeferredHolder<AttachmentType<?>, AttachmentType<Convertible>> CONVERTIBLE_CAPABILITY =
 			ATTACHMENTS.register("convertible", () -> AttachmentType.builder(Convertible::new)
 					.serialize(nbt(Convertible::new)).build());
-	public static final DeferredHolder<AttachmentType<?>, AttachmentType<MobProps>> MOB_PROPS_CAPABILITY =
-			ATTACHMENTS.register("mob_props", () -> AttachmentType.builder(MobProps::new)
-					.serialize(nbt(MobProps::new)).build());
 
 	private static <A extends INBTSerializable<CompoundTag>> IAttachmentSerializer<CompoundTag, A> nbt(
 			Supplier<A> make) {

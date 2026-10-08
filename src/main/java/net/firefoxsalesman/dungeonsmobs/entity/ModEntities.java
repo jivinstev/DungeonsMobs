@@ -225,14 +225,6 @@ public class ModEntities {
 					.build(modLoc("wraith").toString()),
 			0x0a2c40, 0x82d8f8);
 
-	// SLIME
-	public static final Supplier<EntityType<ConjuredSlimeEntity>> CONJURED_SLIME = registerEntityWithoutEgg(
-			"conjured_slime",
-			() -> EntityType.Builder.<ConjuredSlimeEntity>of(ConjuredSlimeEntity::new, MobCategory.MONSTER)
-					.sized(2.04F, 2.04F)
-					.clientTrackingRange(10)
-					.build(modLoc("conjured_slime").toString()));
-
 	// REDSTONE
 	public static final Supplier<EntityType<RedstoneGolemEntity>> REDSTONE_GOLEM = registerEntity(
 			"redstone_golem",
@@ -413,13 +405,6 @@ public class ModEntities {
 			0x8b3401, 0xffd528);
 
 	// PROJECTILES
-	public static final Supplier<EntityType<SlimeballEntity>> SLIMEBALL = registerEntityWithoutEgg(
-			"slimeball",
-			() -> EntityType.Builder.<SlimeballEntity>of(SlimeballEntity::new, MobCategory.MISC)
-					.sized(0.3125F, 0.3125F)
-					.clientTrackingRange(4)
-					.updateInterval(10)
-					.build(modLoc("slimeball").toString()));
 	public static final Supplier<EntityType<BlueNethershroomEntity>> BLUE_NETHERSHROOM = registerEntityWithoutEgg(
 			"blue_nethershroom",
 			() -> EntityType.Builder

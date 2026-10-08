@@ -55,46 +55,9 @@ public class EntityEvents {
 			if (attribute != null) {
 				attribute.setBaseValue(0.17D);
 			}
-			if (ModHelper.hasMod("enchantwithmob")
-					&& livingEntity.getType().equals(ModEntities.ENDERSENT_EYE_HOLDER.get())
-					&& !livingEntity.level().isClientSide()) {
-				MobEnchantCapability cap = NewMobEnchantUtils.getEnchantCapability(livingEntity);
-				if (!cap.hasEnchant()) {
-					int type = livingEntity.getRandom().nextInt(5);
-					switch (type) {
-						case 0:
-							NewMobEnchantUtils.setupEnchants(livingEntity, "Blight Eye",
-									List.of(MobEnchants.POISON_CLOUD,
-											ModMobEnchants.WEAKENING),
-									cap);
-							break;
-						case 1:
-							NewMobEnchantUtils.setupEnchants(livingEntity, "Spiked Eye",
-									List.of(MobEnchants.STRONG,
-											MobEnchants.THORN),
-									cap);
-							break;
-						case 2:
-							NewMobEnchantUtils.setupEnchants(livingEntity, "Reaping Eye",
-									List.of(ModMobEnchants.THUNDERING,
-											ModMobEnchants.SHOCKWAVE),
-									cap);
-							break;
-						case 3:
-							NewMobEnchantUtils.setupEnchants(livingEntity, "Savage Eye", List.of(
-									ModMobEnchants.CRITICAL_HIT,
-									ModMobEnchants.FRENZIED), cap);
-							break;
-						case 4:
-							NewMobEnchantUtils.setupEnchants(livingEntity, "Ravenous Eye",
-									List.of(ModMobEnchants.COMMITTED,
-											ModMobEnchants.RAMPAGING),
-									cap);
-							break;
-						default:
-							break;
-					}
-				}
+			attribute = livingEntity.getAttribute(Attributes.KNOCKBACK_RESISTANCE);
+			if (attribute != null) {
+				attribute.setBaseValue(0.6D);
 			}
 		}
 	}
@@ -216,13 +179,5 @@ public class EntityEvents {
 						4, 4));
 			}
 		}
-	}
-
-	@SubscribeEvent
-	public static void renderNametag(RenderNameTagEvent event) {
-		Entity entity = event.getEntity();
-		if (AncientHelper.getAncientCapability(entity).isAncient()
-				|| (entity instanceof EyeHolderEndersentEntity && ModHelper.hasMod("enchantwithmob")))
-			event.setCanRender(TriState.FALSE);
 	}
 }

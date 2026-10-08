@@ -109,10 +109,7 @@ public class SkeletonVanguardEntity extends Skeleton implements IShieldUser, Ani
 	}
 
 	protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance difficultyInstance) {
-		SpawnEquipmentHelper.equipMainhand(ModHelper.hasMod("dungeonsgear")
-				? new ItemStack(BuiltInRegistries.ITEM
-						.get(ResourceLocation.fromNamespaceAndPath("dungeonsgear", "glaive")))
-				: Items.IRON_SWORD.getDefaultInstance(), this);
+		SpawnEquipmentHelper.equipMainhand(Items.IRON_SWORD.getDefaultInstance(), this);
 		SpawnEquipmentHelper.equipOffhand(ModItems.VANGUARD_SHIELD.get().getDefaultInstance(), this);
 	}
 

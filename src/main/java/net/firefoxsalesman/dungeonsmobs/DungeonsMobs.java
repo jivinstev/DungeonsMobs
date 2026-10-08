@@ -32,8 +32,6 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.config.ModConfig.Type;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.firefoxsalesman.dungeonslibs.network.CommonProxy;
-import net.firefoxsalesman.dungeonslibs.client.ClientProxy;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(DungeonsMobs.MOD_ID)
@@ -44,7 +42,6 @@ public class DungeonsMobs {
 	public static final Logger LOGGER = LogUtils.getLogger();
 
 	public DungeonsMobs(IEventBus modEventBus, ModContainer modContainer) {
-		PROXY = FMLEnvironment.dist == Dist.CLIENT ? new ClientProxy() : new CommonProxy();
 		modContainer.registerConfig(Type.COMMON, DungeonsMobsConfig.COMMON_SPEC,
 				"dungeons-mobs-common.toml");
 		modEventBus.addListener(this::setup);
@@ -59,18 +56,9 @@ public class DungeonsMobs {
 		ModItems.register(modEventBus);
 		ModParticleTypes.register(modEventBus);
 
-		ModCapabilities.ATTACHMENTS.register(modEventBus);
-		modEventBus.addListener(NetworkHandler::register);
-
-		if (ModHelper.hasMod("enchantwithmob")) {
-			ModMobEnchants.register(modEventBus);
-			// Registered here, not by @EventBusSubscriber: scanning the class needs Enchant With Mob's classes.
-			NeoForge.EVENT_BUS.addListener(net.firefoxsalesman.dungeonsmobs.data.AncientDataHelper::onAddReloadListeners);
-		}
-
 		NeoForge.EVENT_BUS.register(this);
 		modEventBus.addListener(this::addCreative);
-		ModStructureModifiers.STRUCTURE_MODIFIER_SERIALIZERS.register(modEventBus);
+		ModStructureModifiers.register(modEventBus);
 	}
 
 	private void commonSetup(final FMLCommonSetupEvent event) {
