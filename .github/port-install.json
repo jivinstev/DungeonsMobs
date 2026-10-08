@@ -9,8 +9,8 @@
       "role": "self",
       "modid": "dungeonsmobs",
       "name": "dungeonsmobs-2.2.1.jar",
-      "url": "https://github.com/jivinstev/DungeonsMobs/releases/download/dungeonsmobs-2.2.1-mc1.21.1-r5/dungeonsmobs-2.2.1.jar",
-      "sha256": "005aa0fd3e9cb355f7d2f9d85ca2935098565dc30f72a14522c099296ea2d143"
+      "url": "https://github.com/jivinstev/DungeonsMobs/releases/download/dungeonsmobs-2.2.1-mc1.21.1-release/dungeonsmobs-2.2.1.jar",
+      "sha256": "f112e4b81965edcb120c648e77d3462af5ad8c10ac91b07bf2047bd0a13ade1d"
     },
     {
       "role": "optional",
