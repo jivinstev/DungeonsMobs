@@ -7,7 +7,6 @@ import static net.minecraft.world.entity.EntityType.HUSK;
 import java.util.List;
 
 import baguchi.enchantwithmob.capability.MobEnchantCapability;
-import baguchi.enchantwithmob.mobenchant.MobEnchant;
 import baguchi.enchantwithmob.registry.MobEnchants;
 import net.firefoxsalesman.dungeonslibs.entities.ai.goal.MeleeAttackGoal;
 import net.firefoxsalesman.dungeonslibs.utils.GoalUtils;
@@ -18,8 +17,6 @@ import net.firefoxsalesman.dungeonsmobs.entity.ender.EyeHolderEndersentEntity;
 import net.firefoxsalesman.dungeonsmobs.goals.ApproachTargetGoal;
 import net.firefoxsalesman.dungeonsmobs.mobenchants.NewMobEnchantUtils;
 import net.firefoxsalesman.dungeonsmobs.mod.ModMobEnchants;
-import net.minecraft.core.Holder;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -57,14 +54,6 @@ import net.neoforged.fml.common.EventBusSubscriber;
 
 @EventBusSubscriber(modid = MOD_ID)
 public class EntityEvents {
-	private static void setupEnchants(LivingEntity entity, String name,
-			List<Holder<MobEnchant>> enchants, MobEnchantCapability cap) {
-		entity.setCustomName(Component.literal(name));
-		enchants.forEach(enchant -> {
-			cap.addMobEnchant(entity, enchant, enchant.value().getMaxLevel());
-		});
-	}
-
 	@SubscribeEvent
 	public static void changeAttributes(EntityJoinLevelEvent event) {
 		if (event.getEntity() instanceof LivingEntity livingEntity) {
@@ -111,30 +100,30 @@ public class EntityEvents {
 					int type = livingEntity.getRandom().nextInt(5);
 					switch (type) {
 						case 0:
-							setupEnchants(livingEntity, "Blight Eye",
+							NewMobEnchantUtils.setupEnchants(livingEntity, "Blight Eye",
 									List.of(MobEnchants.POISON_CLOUD,
 											ModMobEnchants.WEAKENING),
 									cap);
 							break;
 						case 1:
-							setupEnchants(livingEntity, "Spiked Eye",
+							NewMobEnchantUtils.setupEnchants(livingEntity, "Spiked Eye",
 									List.of(MobEnchants.STRONG,
 											MobEnchants.THORN),
 									cap);
 							break;
 						case 2:
-							setupEnchants(livingEntity, "Reaping Eye",
+							NewMobEnchantUtils.setupEnchants(livingEntity, "Reaping Eye",
 									List.of(ModMobEnchants.THUNDERING,
 											ModMobEnchants.SHOCKWAVE),
 									cap);
 							break;
 						case 3:
-							setupEnchants(livingEntity, "Savage Eye", List.of(
+							NewMobEnchantUtils.setupEnchants(livingEntity, "Savage Eye", List.of(
 									ModMobEnchants.CRITICAL_HIT,
 									ModMobEnchants.FRENZIED), cap);
 							break;
 						case 4:
-							setupEnchants(livingEntity, "Ravenous Eye",
+							NewMobEnchantUtils.setupEnchants(livingEntity, "Ravenous Eye",
 									List.of(ModMobEnchants.COMMITTED,
 											ModMobEnchants.RAMPAGING),
 									cap);
