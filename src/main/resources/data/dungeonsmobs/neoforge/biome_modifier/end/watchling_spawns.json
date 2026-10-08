@@ -1,11 +1,11 @@
 {
-  "type": "forge:add_spawns",
+  "type": "neoforge:add_spawns",
   "biomes": {
-  "type": "forge:and",
+  "type": "neoforge:and",
   "values": [
     "#minecraft:is_end",
     {
-      "type": "forge:not",
+      "type": "neoforge:not",
       "value": "minecraft:the_end"
     }
   ]
