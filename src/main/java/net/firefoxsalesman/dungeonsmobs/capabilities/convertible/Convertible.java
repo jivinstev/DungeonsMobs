@@ -1,10 +1,11 @@
 package net.firefoxsalesman.dungeonsmobs.capabilities.convertible;
 
 import net.firefoxsalesman.dungeonsmobs.capabilities.ModCapabilities;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
-import net.minecraftforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 
 import java.util.function.BiConsumer;
 
@@ -68,7 +69,7 @@ public class Convertible implements INBTSerializable<CompoundTag> {
     }
 
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         if (ModCapabilities.CONVERTIBLE_CAPABILITY == null) {
             return new CompoundTag();
         }
@@ -79,7 +80,7 @@ public class Convertible implements INBTSerializable<CompoundTag> {
     }
 
     @Override
-    public void deserializeNBT(CompoundTag tag) {
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
         setPrepareConversionTime(tag.getInt("prepareConversionTime"));
         if (tag.contains("DrownedConversionTime", 99) && tag.getInt("conversionTime") > -1) {
             startConversion(tag.getInt("conversionTime"));

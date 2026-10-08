@@ -3,23 +3,21 @@ package net.firefoxsalesman.dungeonsmobs.entity.summonables;
 import net.firefoxsalesman.dungeonsmobs.client.particle.ModParticleTypes;
 import net.firefoxsalesman.dungeonsmobs.entity.ModEntities;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.network.NetworkHooks;
+
 import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.core.animatable.GeoAnimatable;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
-import software.bernie.geckolib.core.animation.Animation.LoopType;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.AnimationState;
-import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.animatable.GeoAnimatable;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.AnimatableManager.ControllerRegistrar;
+import software.bernie.geckolib.animation.Animation.LoopType;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.List;
@@ -45,8 +43,8 @@ public class WindcallerTornadoEntity extends Entity implements GeoEntity {
 	}
 
 	@Override
-	public EntityDimensions getDimensions(Pose p_213305_1_) {
-		return this.isBlast() ? blastDimensions : super.getDimensions(p_213305_1_);
+	public EntityDimensions getDimensions(Pose pose) {
+		return this.isBlast() ? blastDimensions : super.getDimensions(pose);
 	}
 
 	public void refreshDimensions() {
@@ -121,8 +119,8 @@ public class WindcallerTornadoEntity extends Entity implements GeoEntity {
 	}
 
 	@Override
-	protected void defineSynchedData() {
-		this.entityData.define(BLAST, false);
+	protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+		builder.define(BLAST, false);
 	}
 
 	@Override
@@ -143,8 +141,4 @@ public class WindcallerTornadoEntity extends Entity implements GeoEntity {
 		this.entityData.set(BLAST, attached);
 	}
 
-	@Override
-	public Packet<ClientGamePacketListener> getAddEntityPacket() {
-		return NetworkHooks.getEntitySpawningPacket(this);
-	}
 }

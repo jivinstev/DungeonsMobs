@@ -146,9 +146,9 @@ public abstract class ConstructEntity extends PathfinderMob {
 		entityData.set(LIFE_TICKS, p_189794_1_);
 	}
 
-	protected void defineSynchedData() {
-		super.defineSynchedData();
-		entityData.define(LIFE_TICKS, 0);
+	protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+		super.defineSynchedData(builder);
+		builder.define(LIFE_TICKS, 0);
 	}
 
 	public void handleExistence() {

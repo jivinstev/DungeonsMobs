@@ -12,8 +12,9 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.util.FastColor;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class VanguardShieldModel extends Model {
@@ -44,7 +45,7 @@ public class VanguardShieldModel extends Model {
         return root;
     }
 
-    public void renderToBuffer(PoseStack p_103703_, VertexConsumer p_103704_, int p_103705_, int p_103706_, float p_103707_, float p_103708_, float p_103709_, float p_103710_) {
-        root.render(p_103703_, p_103704_, p_103705_, p_103706_, p_103707_, p_103708_, p_103709_, p_103710_);
+    public void renderToBuffer(PoseStack p_103703_, VertexConsumer p_103704_, int p_103705_, int p_103706_, int color) { float p_103707_ = FastColor.ARGB32.red(color) / 255.0F, p_103708_ = FastColor.ARGB32.green(color) / 255.0F, p_103709_ = FastColor.ARGB32.blue(color) / 255.0F, p_103710_ = FastColor.ARGB32.alpha(color) / 255.0F;
+        root.render(p_103703_, p_103704_, p_103705_, p_103706_, FastColor.ARGB32.colorFromFloat(p_103710_, p_103707_, p_103708_, p_103709_));
     }
 }

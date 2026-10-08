@@ -4,8 +4,8 @@ import net.firefoxsalesman.dungeonslibs.items.gearconfig.ArmorGear;
 import net.firefoxsalesman.dungeonslibs.client.renderer.gearconfig.ArmorGearModel;
 import net.firefoxsalesman.dungeonsmobs.entity.illagers.WindcallerEntity;
 import net.minecraft.world.entity.LivingEntity;
-import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
-import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.cache.object.GeoBone;
+import software.bernie.geckolib.animation.AnimationState;
 
 public class WindcallerArmorGearModel<T extends ArmorGear> extends ArmorGearModel<T> {
 
@@ -23,7 +23,7 @@ public class WindcallerArmorGearModel<T extends ArmorGear> extends ArmorGearMode
 	public void setCustomAnimations(T entity, long uniqueID, AnimationState<T> customPredicate) {
 		super.setCustomAnimations(entity, uniqueID, customPredicate);
 
-		CoreGeoBone cloak = this.getAnimationProcessor().getBone("armorCloak");
+		GeoBone cloak = this.getAnimationProcessor().getBone("armorCloak");
 
 		cloak.setHidden(this.getWearer() != null && this.getWearer() instanceof WindcallerEntity);
 	}

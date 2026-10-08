@@ -19,9 +19,7 @@ public class DrownedNecromancerOrbRenderer extends ProjectileRenderer<DrownedNec
 	}
 
 	@Override
-	public void preRender(PoseStack poseStack, DrownedNecromancerOrbEntity animatable, BakedGeoModel model,
-			MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick,
-			int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void preRender(PoseStack poseStack, DrownedNecromancerOrbEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
 		float scaleFactor = 1.0F;
 		if (animatable.lifeTime <= 3) {
 			scaleFactor = 0.0F;
@@ -30,7 +28,7 @@ public class DrownedNecromancerOrbRenderer extends ProjectileRenderer<DrownedNec
 		}
 		poseStack.scale(scaleFactor, scaleFactor, scaleFactor);
 		super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick,
-				packedLight, packedOverlay, red, green, blue, alpha);
+				packedLight, packedOverlay, colour);
 	}
 
 	@Override

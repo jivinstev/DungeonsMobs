@@ -12,8 +12,8 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.Arrays;
 import java.util.List;
@@ -48,10 +48,10 @@ public class SunkenSkeletonRenderer<T extends SunkenSkeletonEntity>
 	}
 
 	@Override
-	protected void setupRotations(T skeleton, PoseStack matrixStack, float p_225621_3_, float p_225621_4_,
-			float p_225621_5_) {
-		super.setupRotations(skeleton, matrixStack, p_225621_3_, p_225621_4_, p_225621_5_);
-		float swimAmount = skeleton.getSwimAmount(p_225621_5_);
+	protected void setupRotations(T skeleton, PoseStack matrixStack, float bob, float yBodyRot,
+			float partialTick, float scale) {
+		super.setupRotations(skeleton, matrixStack, bob, yBodyRot, partialTick, scale);
+		float swimAmount = skeleton.getSwimAmount(partialTick);
 		if (swimAmount > 0.0F) {
 			// matrixStack.mulPose(Vector3f.rotationTo(Mth.lerp(swimAmount,
 			// skeleton.getXRot(), -10.0F - skeleton.getXRot())));

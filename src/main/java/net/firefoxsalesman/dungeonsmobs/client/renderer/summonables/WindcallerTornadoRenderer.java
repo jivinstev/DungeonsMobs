@@ -17,9 +17,7 @@ public class WindcallerTornadoRenderer extends ProjectileRenderer<WindcallerTorn
 	}
 
 	@Override
-	public void preRender(PoseStack poseStack, WindcallerTornadoEntity animatable, BakedGeoModel model,
-			MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick,
-			int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void preRender(PoseStack poseStack, WindcallerTornadoEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
 		if (!animatable.isBlast()) {
 			float scaleFactor = 1.25F;
 			poseStack.scale(scaleFactor, scaleFactor, scaleFactor);

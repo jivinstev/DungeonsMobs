@@ -6,8 +6,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
+import net.neoforged.neoforge.common.CommonHooks;
+import net.neoforged.neoforge.event.entity.living.LivingKnockBackEvent;
 
 public class AreaAttackHelper {
 	public static void areaAttack(float range, float X, float Y, float Z, float arc, float damage, Mob attacker) {
@@ -59,7 +59,7 @@ public class AreaAttackHelper {
 
 	private static void forceKnockback(LivingEntity attackTarget, float strength, double ratioX, double ratioZ,
 			double knockbackResistanceReduction) {
-		LivingKnockBackEvent event = ForgeHooks.onLivingKnockBack(attackTarget, strength, ratioX,
+		LivingKnockBackEvent event = CommonHooks.onLivingKnockBack(attackTarget, strength, ratioX,
 				ratioZ);
 		if (event.isCanceled())
 			return;

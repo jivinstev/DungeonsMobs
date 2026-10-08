@@ -11,6 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
@@ -27,19 +28,19 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.event.entity.EntityTeleportEvent;
+import net.neoforged.neoforge.event.EventHooks;
+import net.neoforged.neoforge.event.entity.EntityTeleportEvent;
 import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.core.animatable.GeoAnimatable;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
-import software.bernie.geckolib.core.animation.Animation.LoopType;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.AnimationState;
-import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.animatable.GeoAnimatable;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.AnimatableManager.ControllerRegistrar;
+import software.bernie.geckolib.animation.Animation.LoopType;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
@@ -57,7 +58,7 @@ public class WraithEntity extends Monster implements GeoEntity {
 
 	public WraithEntity(EntityType<? extends WraithEntity> type, Level world) {
 		super(type, world);
-		setPathfindingMalus(BlockPathTypes.WATER, -1.0F);
+		setPathfindingMalus(PathType.WATER, -1.0F);
 	}
 
 	protected void registerGoals() {
@@ -100,7 +101,7 @@ public class WraithEntity extends Monster implements GeoEntity {
 		if (super.isAlliedTo(entityIn)) {
 			return true;
 		} else if (entityIn instanceof LivingEntity
-				&& ((LivingEntity) entityIn).getMobType() == MobType.UNDEAD) {
+				&& ((LivingEntity) entityIn).getType().is(EntityTypeTags.UNDEAD)) {
 			return getTeam() == null && entityIn.getTeam() == null;
 		} else {
 			return false;
@@ -145,7 +146,7 @@ public class WraithEntity extends Monster implements GeoEntity {
 						itemstack.setDamageValue(
 								itemstack.getDamageValue() + random.nextInt(2));
 						if (itemstack.getDamageValue() >= itemstack.getMaxDamage()) {
-							broadcastBreakEvent(EquipmentSlot.HEAD);
+							onEquippedItemBroken(itemstack.getItem(), EquipmentSlot.HEAD);
 							setItemSlot(EquipmentSlot.HEAD, ItemStack.EMPTY);
 						}
 					}
@@ -154,7 +155,7 @@ public class WraithEntity extends Monster implements GeoEntity {
 				}
 
 				if (flag) {
-					setSecondsOnFire(8);
+					setRemainingFireTicks(8 * 20);
 				}
 			}
 		}
@@ -196,11 +197,6 @@ public class WraithEntity extends Monster implements GeoEntity {
 	}
 
 	@Override
-	public MobType getMobType() {
-		return MobType.UNDEAD;
-	}
-
-	@Override
 	public void registerControllers(ControllerRegistrar controllers) {
 		controllers.add(new AnimationController<GeoAnimatable>(this, "controller", 2, this::predicate));
 	}
@@ -235,7 +231,7 @@ public class WraithEntity extends Monster implements GeoEntity {
 		boolean flag = blockstate.blocksMotion();
 		boolean flag1 = blockstate.getFluidState().is(FluidTags.WATER);
 		if (flag && !flag1) {
-			EntityTeleportEvent.EnderEntity event = ForgeEventFactory.onEnderTeleport(this, pX, pY, pZ);
+			EntityTeleportEvent.EnderEntity event = EventHooks.onEnderTeleport(this, pX, pY, pZ);
 			if (event.isCanceled()) {
 				return false;
 			} else {

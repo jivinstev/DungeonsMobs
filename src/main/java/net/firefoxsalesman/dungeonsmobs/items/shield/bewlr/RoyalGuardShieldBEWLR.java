@@ -2,7 +2,7 @@ package net.firefoxsalesman.dungeonsmobs.items.shield.bewlr;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.datafixers.util.Pair;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.client.model.ShieldModel;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
@@ -11,14 +11,10 @@ import net.minecraft.client.renderer.blockentity.BannerRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.resources.model.Material;
-import net.minecraft.core.Holder;
 import net.minecraft.world.item.*;
-import net.minecraft.world.level.block.entity.BannerBlockEntity;
-import net.minecraft.world.level.block.entity.BannerPattern;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
-import java.util.List;
+import net.minecraft.world.level.block.entity.BannerPatternLayers;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import static net.firefoxsalesman.dungeonsmobs.items.shield.ShieldTextures.LOCATION_ROYAL_GUARD_SHIELD_BASE;
 import static net.firefoxsalesman.dungeonsmobs.items.shield.ShieldTextures.LOCATION_ROYAL_GUARD_SHIELD_NO_PATTERN;
@@ -37,7 +33,7 @@ public class RoyalGuardShieldBEWLR extends BlockEntityWithoutLevelRenderer {
 	@Override
 	public void renderByItem(ItemStack stack, ItemDisplayContext pDisplayContext, PoseStack matrixStack,
 			MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
-		boolean flag = BlockItem.getBlockEntityData(stack) != null;
+		boolean flag = stack.has(DataComponents.BASE_COLOR);
 		matrixStack.pushPose();
 		matrixStack.scale(1.0F, -1.0F, -1.0F);
 
@@ -46,16 +42,15 @@ public class RoyalGuardShieldBEWLR extends BlockEntityWithoutLevelRenderer {
 				.wrap(ItemRenderer.getFoilBufferDirect(buffer,
 						royalGuardShieldModel.renderType(material.atlasLocation()), true,
 						stack.hasFoil()));
-		royalGuardShieldModel.handle().render(matrixStack, vertexconsumer, combinedLight, combinedOverlay,
-				1.0F, 1.0F, 1.0F, 1.0F);
+		royalGuardShieldModel.handle().render(matrixStack, vertexconsumer, combinedLight, combinedOverlay);
 		if (flag) {
-			List<Pair<Holder<BannerPattern>, DyeColor>> list = BannerBlockEntity.createPatterns(
-					ShieldItem.getColor(stack), BannerBlockEntity.getItemPatterns(stack));
+			BannerPatternLayers list = stack.getOrDefault(DataComponents.BANNER_PATTERNS, BannerPatternLayers.EMPTY);
+			DyeColor baseColor = stack.getOrDefault(DataComponents.BASE_COLOR, DyeColor.WHITE);
 			BannerRenderer.renderPatterns(matrixStack, buffer, combinedLight, combinedOverlay,
-					royalGuardShieldModel.plate(), material, false, list, stack.hasFoil());
+					royalGuardShieldModel.plate(), material, false, baseColor, list, stack.hasFoil());
 		} else {
 			royalGuardShieldModel.plate().render(matrixStack, vertexconsumer, combinedLight,
-					combinedOverlay, 1.0F, 1.0F, 1.0F, 1.0F);
+					combinedOverlay);
 		}
 
 		matrixStack.popPose();

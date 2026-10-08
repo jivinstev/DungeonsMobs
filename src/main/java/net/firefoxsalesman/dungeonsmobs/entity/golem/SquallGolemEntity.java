@@ -33,30 +33,32 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.raid.Raider;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.NaturalSpawner;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.level.pathfinder.PathFinder;
+import net.minecraft.world.level.pathfinder.PathfindingContext;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.core.animatable.GeoAnimatable;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
-import software.bernie.geckolib.core.animation.Animation.LoopType;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.AnimationState;
-import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.animatable.GeoAnimatable;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.animation.AnimatableManager.ControllerRegistrar;
+import software.bernie.geckolib.animation.Animation.LoopType;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
@@ -168,10 +170,10 @@ public class SquallGolemEntity extends Raider implements GeoEntity {
 	}
 
 	@Override
-	protected void defineSynchedData() {
-		super.defineSynchedData();
-		entityData.define(ACTIVATE, false);
-		entityData.define(MELEEATTACKING, false);
+	protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+		super.defineSynchedData(builder);
+		builder.define(ACTIVATE, false);
+		builder.define(MELEEATTACKING, false);
 	}
 
 	public void addAdditionalSaveData(CompoundTag compound) {
@@ -308,8 +310,7 @@ public class SquallGolemEntity extends Raider implements GeoEntity {
 	private void handleLeafCollision() {
 		if (isAlive()) {
 
-			if (horizontalCollision && net.minecraftforge.event.ForgeEventFactory
-					.getMobGriefingEvent(level(), this)) {
+			if (horizontalCollision && level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
 				boolean destroyedLeafBlock = false;
 				AABB axisalignedbb = getBoundingBox().inflate(0.2D);
 
@@ -469,16 +470,17 @@ public class SquallGolemEntity extends Raider implements GeoEntity {
 		private Processor() {
 		}
 
-		protected BlockPathTypes evaluateBlockPathType(BlockGetter blockReader, boolean canBreakDoors,
-				boolean canWalkThroughDoorways, BlockPos blockPos, BlockPathTypes pathNodeType) {
-			return pathNodeType == BlockPathTypes.LEAVES ? BlockPathTypes.OPEN
-					: super.evaluateBlockPathType(blockReader, blockPos, pathNodeType);
+		@Override
+		public PathType getPathType(PathfindingContext context, int x, int y,
+				int z) {
+			PathType pathNodeType = super.getPathType(context, x, y, z);
+			return pathNodeType == PathType.LEAVES ? PathType.OPEN : pathNodeType;
 		}
 	}
 
 	// RAIDER METHODS
 	@Override
-	public void applyRaidBuffs(int p_213660_1_, boolean p_213660_2_) {
+	public void applyRaidBuffs(ServerLevel level, int wave, boolean unused) {
 
 	}
 
@@ -496,9 +498,16 @@ public class SquallGolemEntity extends Raider implements GeoEntity {
 			super(SquallGolemEntity.this, 1.25D, false);
 		}
 
-		protected double getAttackReachSqr(LivingEntity p_179512_1_) {
+		private double getAttackReachSqr(LivingEntity p_179512_1_) {
 			float f = getBbWidth() - 0.1F;
 			return f * 1.8F * f * 1.8F + p_179512_1_.getBbWidth();
+		}
+
+		// reach is now decided by canPerformAttack instead of getAttackReachSqr
+		@Override
+		protected boolean canPerformAttack(LivingEntity entity) {
+			return isTimeToAttack() && mob.distanceToSqr(entity.getX(), entity.getBoundingBox().minY,
+					entity.getZ()) <= getAttackReachSqr(entity);
 		}
 	}
 

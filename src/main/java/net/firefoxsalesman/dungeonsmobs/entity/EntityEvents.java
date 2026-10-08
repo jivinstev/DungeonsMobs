@@ -1,5 +1,25 @@
 package net.firefoxsalesman.dungeonsmobs.entity;
 
+import static net.firefoxsalesman.dungeonsmobs.DungeonsMobs.MOD_ID;
+import static net.firefoxsalesman.dungeonsmobs.mod.ModEffects.ENSNARED;
+import static net.minecraft.world.entity.EntityType.HUSK;
+
+import java.util.List;
+
+import baguchi.enchantwithmob.capability.MobEnchantCapability;
+import baguchi.enchantwithmob.mobenchant.MobEnchant;
+import baguchi.enchantwithmob.registry.MobEnchants;
+import net.firefoxsalesman.dungeonslibs.entities.ai.goal.MeleeAttackGoal;
+import net.firefoxsalesman.dungeonslibs.utils.GoalUtils;
+import net.firefoxsalesman.dungeonslibs.utils.ModHelper;
+import net.firefoxsalesman.dungeonsmobs.capabilities.ancient.AncientHelper;
+import net.firefoxsalesman.dungeonsmobs.config.DungeonsMobsConfig;
+import net.firefoxsalesman.dungeonsmobs.entity.ender.EyeHolderEndersentEntity;
+import net.firefoxsalesman.dungeonsmobs.goals.ApproachTargetGoal;
+import net.firefoxsalesman.dungeonsmobs.mobenchants.NewMobEnchantUtils;
+import net.firefoxsalesman.dungeonsmobs.mod.ModMobEnchants;
+import net.minecraft.core.Holder;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -9,27 +29,31 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
-import net.minecraftforge.event.entity.EntityJoinLevelEvent;
-import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
-import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
-import net.minecraftforge.event.entity.player.AttackEntityEvent;
-import net.minecraftforge.event.entity.player.FillBucketEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent.*;
-import net.minecraftforge.event.level.BlockEvent.BlockToolModificationEvent;
-import net.minecraftforge.event.level.BlockEvent.BreakEvent;
-import net.minecraftforge.event.level.BlockEvent.EntityPlaceEvent;
-import net.minecraftforge.event.level.LevelEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.neoforge.client.event.RenderNameTagEvent;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
+import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
+import net.neoforged.neoforge.event.entity.living.LivingKnockBackEvent;
+import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.LeftClickBlock;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.RightClickItem;
+import net.neoforged.neoforge.event.level.BlockEvent.BlockToolModificationEvent;
+import net.neoforged.neoforge.event.level.BlockEvent.BreakEvent;
+import net.neoforged.neoforge.event.level.BlockEvent.EntityPlaceEvent;
+import net.neoforged.neoforge.common.util.TriState;
+import net.neoforged.neoforge.event.level.LevelEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 
-import static net.firefoxsalesman.dungeonsmobs.DungeonsMobs.MOD_ID;
-import static net.firefoxsalesman.dungeonsmobs.mod.ModEffects.ENSNARED;
-import static net.minecraft.world.entity.EntityType.HUSK;
-
-import net.firefoxsalesman.dungeonsmobs.config.DungeonsMobsConfig;
-
-@Mod.EventBusSubscriber(modid = MOD_ID)
+@EventBusSubscriber(modid = MOD_ID)
 public class EntityEvents {
+	private static void setupEnchants(LivingEntity entity, String name,
+			List<Holder<MobEnchant>> enchants, MobEnchantCapability cap) {
+		entity.setCustomName(Component.literal(name));
+		enchants.forEach(enchant -> {
+			cap.addMobEnchant(entity, enchant, enchant.value().getMaxLevel());
+		});
+	}
 
 	@SubscribeEvent
 	public static void changeAttributes(EntityJoinLevelEvent event) {
@@ -45,9 +69,46 @@ public class EntityEvents {
 			if (attribute != null) {
 				attribute.setBaseValue(0.17D);
 			}
-			attribute = livingEntity.getAttribute(Attributes.KNOCKBACK_RESISTANCE);
-			if (attribute != null) {
-				attribute.setBaseValue(0.6D);
+			if (ModHelper.hasMod("enchantwithmob")
+					&& livingEntity.getType().equals(ModEntities.ENDERSENT_EYE_HOLDER.get())
+					&& !livingEntity.level().isClientSide()) {
+				MobEnchantCapability cap = NewMobEnchantUtils.getEnchantCapability(livingEntity);
+				if (!cap.hasEnchant()) {
+					int type = livingEntity.getRandom().nextInt(5);
+					switch (type) {
+						case 0:
+							setupEnchants(livingEntity, "Blight Eye",
+									List.of(MobEnchants.POISON_CLOUD,
+											ModMobEnchants.WEAKENING),
+									cap);
+							break;
+						case 1:
+							setupEnchants(livingEntity, "Spiked Eye",
+									List.of(MobEnchants.STRONG,
+											MobEnchants.THORN),
+									cap);
+							break;
+						case 2:
+							setupEnchants(livingEntity, "Reaping Eye",
+									List.of(ModMobEnchants.THUNDERING,
+											ModMobEnchants.SHOCKWAVE),
+									cap);
+							break;
+						case 3:
+							setupEnchants(livingEntity, "Savage Eye", List.of(
+									ModMobEnchants.CRITICAL_HIT,
+									ModMobEnchants.FRENZIED), cap);
+							break;
+						case 4:
+							setupEnchants(livingEntity, "Ravenous Eye",
+									List.of(ModMobEnchants.COMMITTED,
+											ModMobEnchants.RAMPAGING),
+									cap);
+							break;
+						default:
+							break;
+					}
+				}
 			}
 		}
 	}
@@ -57,7 +118,7 @@ public class EntityEvents {
 	public static void preventKnockback(LivingKnockBackEvent event) {
 		LivingEntity owner = event.getEntity();
 
-		if (owner.hasEffect(ENSNARED.get()))
+		if (owner.hasEffect(ENSNARED))
 			event.setCanceled(true);
 	}
 
@@ -65,10 +126,8 @@ public class EntityEvents {
 	public static void preventBlockBreaking(BreakEvent event) {
 		Player owner = event.getPlayer();
 
-		if (owner.hasEffect(ENSNARED.get())) {
-			// Prevent crashes, cause sometimes it isn't cancellable
-			if (event.isCancelable())
-				event.setCanceled(true);
+		if (owner.hasEffect(ENSNARED)) {
+			event.setCanceled(true);
 		}
 	}
 
@@ -77,9 +136,8 @@ public class EntityEvents {
 		Entity owner = event.getEntity();
 
 		if (owner instanceof LivingEntity) {
-			if (((LivingEntity) owner).hasEffect(ENSNARED.get())) {
-				if (event.isCancelable())
-					event.setCanceled(true);
+			if (((LivingEntity) owner).hasEffect(ENSNARED)) {
+				event.setCanceled(true);
 			}
 		}
 	}
@@ -88,19 +146,36 @@ public class EntityEvents {
 	public static void preventBlockInteraction(BlockToolModificationEvent event) {
 		Player owner = event.getPlayer();
 
-		if (owner.hasEffect(ENSNARED.get())) {
-			if (event.isCancelable())
-				event.setCanceled(true);
+		if (owner.hasEffect(ENSNARED)) {
+			event.setCanceled(true);
+		}
+	}
+
+	// the old catch-all use-item event is split up; Start, Tick and Stop are the cancellable ones
+	@SubscribeEvent
+	public static void preventItemUseCustom(LivingEntityUseItemEvent.Start event) {
+		LivingEntity owner = event.getEntity();
+
+		if (owner.hasEffect(ENSNARED)) {
+			event.setCanceled(true);
 		}
 	}
 
 	@SubscribeEvent
-	public static void preventItemUseCustom(LivingEntityUseItemEvent event) {
+	public static void preventItemUseCustom(LivingEntityUseItemEvent.Tick event) {
 		LivingEntity owner = event.getEntity();
 
-		if (owner.hasEffect(ENSNARED.get())) {
-			if (event.isCancelable())
-				event.setCanceled(true);
+		if (owner.hasEffect(ENSNARED)) {
+			event.setCanceled(true);
+		}
+	}
+
+	@SubscribeEvent
+	public static void preventItemUseCustom(LivingEntityUseItemEvent.Stop event) {
+		LivingEntity owner = event.getEntity();
+
+		if (owner.hasEffect(ENSNARED)) {
+			event.setCanceled(true);
 		}
 	}
 
@@ -108,49 +183,19 @@ public class EntityEvents {
 	public static void preventEntityAttack(AttackEntityEvent event) {
 		Player owner = event.getEntity();
 
-		if (owner.hasEffect(ENSNARED.get())) {
-			if (event.isCancelable())
-				event.setCanceled(true);
+		if (owner.hasEffect(ENSNARED)) {
+			event.setCanceled(true);
 		}
 	}
 
-	@SubscribeEvent
-	public static void preventBucketFill(FillBucketEvent event) {
-		Player owner = event.getEntity();
-
-		if (owner.hasEffect(ENSNARED.get())) {
-			if (event.isCancelable())
-				event.setCanceled(true);
-		}
-	}
-
-	@SubscribeEvent
-	public static void preventEmptyInteraction(RightClickEmpty event) {
-		Player owner = event.getEntity();
-
-		if (owner.hasEffect(ENSNARED.get())) {
-			if (event.isCancelable())
-				event.setCanceled(true);
-		}
-	}
-
-	@SubscribeEvent
-	public static void preventEmptyInteraction(LeftClickEmpty event) {
-		Player owner = event.getEntity();
-
-		if (owner.hasEffect(ENSNARED.get())) {
-			if (event.isCancelable())
-				event.setCanceled(true);
-		}
-	}
-
+	// FillBucketEvent is gone; bucket use goes through RightClickItem and RightClickBlock, which are cancelled here
+	// RightClickEmpty and LeftClickEmpty can no longer be cancelled, so empty-hand clicks stay allowed
 	@SubscribeEvent
 	public static void preventItemUse(RightClickItem event) {
 		Player owner = event.getEntity();
 
-		if (owner.hasEffect(ENSNARED.get())) {
-			if (event.isCancelable())
-				event.setCanceled(true);
+		if (owner.hasEffect(ENSNARED)) {
+			event.setCanceled(true);
 		}
 	}
 
@@ -158,9 +203,8 @@ public class EntityEvents {
 	public static void preventBlockInteraction(RightClickBlock event) {
 		Player owner = event.getEntity();
 
-		if (owner.hasEffect(ENSNARED.get())) {
-			if (event.isCancelable())
-				event.setCanceled(true);
+		if (owner.hasEffect(ENSNARED)) {
+			event.setCanceled(true);
 		}
 	}
 
@@ -168,9 +212,8 @@ public class EntityEvents {
 	public static void preventBlockInteraction(LeftClickBlock event) {
 		Player owner = event.getEntity();
 
-		if (owner.hasEffect(ENSNARED.get())) {
-			if (event.isCancelable())
-				event.setCanceled(true);
+		if (owner.hasEffect(ENSNARED)) {
+			event.setCanceled(true);
 		}
 	}
 
@@ -187,5 +230,13 @@ public class EntityEvents {
 						4, 4));
 			}
 		}
+	}
+
+	@SubscribeEvent
+	public static void renderNametag(RenderNameTagEvent event) {
+		Entity entity = event.getEntity();
+		if (AncientHelper.getAncientCapability(entity).isAncient()
+				|| (entity instanceof EyeHolderEndersentEntity && ModHelper.hasMod("enchantwithmob")))
+			event.setCanRender(TriState.FALSE);
 	}
 }

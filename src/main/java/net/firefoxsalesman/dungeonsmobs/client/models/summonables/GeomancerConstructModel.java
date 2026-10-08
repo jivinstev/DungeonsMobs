@@ -8,8 +8,8 @@ import static net.firefoxsalesman.dungeonsmobs.utils.GeneralHelper.modLoc;
 
 import net.firefoxsalesman.dungeonsmobs.entity.summonables.ConstructEntity;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib.core.animatable.GeoAnimatable;
-import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.animatable.GeoAnimatable;
+import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.model.GeoModel;
 
 public class GeomancerConstructModel<T extends ConstructEntity & GeoAnimatable> extends GeoModel<T> {

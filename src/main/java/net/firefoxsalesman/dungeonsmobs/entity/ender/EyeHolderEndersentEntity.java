@@ -40,7 +40,7 @@ public class EyeHolderEndersentEntity extends AbstractEndersentEntity {
 		return Monster.createMonsterAttributes().add(Attributes.KNOCKBACK_RESISTANCE, 0.85D)
 				.add(Attributes.MAX_HEALTH, 300.0D).add(Attributes.MOVEMENT_SPEED, 0.2F)
 				.add(Attributes.ATTACK_DAMAGE, 20.0D).add(Attributes.FOLLOW_RANGE, 32.0D)
-				.add(AttributeRegistry.SUMMON_CAP.get(), 5);
+				.add(AttributeRegistry.SUMMON_CAP, 5);
 	}
 
 	protected boolean teleport() {

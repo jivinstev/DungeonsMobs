@@ -27,6 +27,6 @@ public class BlastlingEyeLayer<T extends BlastlingEntity> extends GeoEyeLayer<T>
 				+ (1 + ((int) ((BlastlingEntity) animatable).flameTicks) % 3) + "_eyes.png");
 		getRenderer().reRender(bakedModel, poseStack, bufferSource, animatable, emmissiveRenderType,
 				bufferSource.getBuffer(emmissiveRenderType), partialTick, 15728640,
-				OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+				OverlayTexture.NO_OVERLAY, -1);
 	}
 }

@@ -73,10 +73,10 @@ public class MossySkeletonEntity extends AbstractSkeleton {
 	public void performRangedAttack(LivingEntity p_82196_1_, float damageMultiplier) {
 		ItemStack itemstack = getProjectile(getItemInHand(ProjectileUtil.getWeaponHoldingHand(this,
 				item -> item instanceof net.minecraft.world.item.BowItem)));
-		AbstractArrow abstractarrowentity = getArrow(itemstack, damageMultiplier);
+		AbstractArrow abstractarrowentity = getArrow(itemstack, damageMultiplier, getMainHandItem());
 		if (getMainHandItem().getItem() instanceof net.minecraft.world.item.BowItem)
 			abstractarrowentity = ((net.minecraft.world.item.BowItem) getMainHandItem().getItem())
-					.customArrow(abstractarrowentity);
+					.customArrow(abstractarrowentity, itemstack, getMainHandItem());
 		double d0 = p_82196_1_.getX() - getX();
 		double d1 = p_82196_1_.getY(0.3333333333333333D) - abstractarrowentity.getY();
 		double d2 = p_82196_1_.getZ() - getZ();
@@ -111,8 +111,8 @@ public class MossySkeletonEntity extends AbstractSkeleton {
 		}
 	}
 
-	protected AbstractArrow getArrow(ItemStack stack, float damageMultiplier) {
-		AbstractArrow abstractArrowEntity = super.getArrow(stack, damageMultiplier);
+	protected AbstractArrow getArrow(ItemStack stack, float damageMultiplier, ItemStack weapon) {
+		AbstractArrow abstractArrowEntity = super.getArrow(stack, damageMultiplier, weapon);
 		int i = 0;
 		if (level().getDifficulty() == Difficulty.NORMAL) {
 			i = 4;

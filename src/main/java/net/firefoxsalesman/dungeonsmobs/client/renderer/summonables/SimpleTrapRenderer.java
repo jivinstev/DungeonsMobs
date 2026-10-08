@@ -16,9 +16,7 @@ public class SimpleTrapRenderer extends ProjectileRenderer<SimpleTrapEntity> {
 	}
 
 	@Override
-	public void preRender(PoseStack poseStack, SimpleTrapEntity animatable, BakedGeoModel model,
-			MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick,
-			int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void preRender(PoseStack poseStack, SimpleTrapEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
 		float scaleFactor = 2.0F;
 		if (animatable.lifeTime <= 1) {
 			scaleFactor = 0.0F;

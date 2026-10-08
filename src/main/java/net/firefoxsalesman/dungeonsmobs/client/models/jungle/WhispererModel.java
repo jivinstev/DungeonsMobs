@@ -5,13 +5,10 @@ import static net.firefoxsalesman.dungeonsmobs.utils.GeneralHelper.modLoc;
 import net.firefoxsalesman.dungeonsmobs.client.particle.ModParticleTypes;
 import net.firefoxsalesman.dungeonsmobs.entity.jungle.AbstractWhispererEntity;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib.constant.DataTickets;
-import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
-import software.bernie.geckolib.core.animation.AnimationState;
-import software.bernie.geckolib.core.molang.MolangParser;
+import software.bernie.geckolib.cache.object.GeoBone;
+import software.bernie.geckolib.animation.AnimationState;
+
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.model.data.EntityModelData;
 
@@ -36,18 +33,18 @@ public class WhispererModel<T extends AbstractWhispererEntity> extends GeoModel<
 	public void setCustomAnimations(T entity, long uniqueID, AnimationState<T> customPredicate) {
 		super.setCustomAnimations(entity, uniqueID, customPredicate);
 
-		CoreGeoBone head = getAnimationProcessor().getBone("jaw");
-		CoreGeoBone cape = getAnimationProcessor().getBone("bipedCape");
+		GeoBone head = getAnimationProcessor().getBone("jaw");
+		GeoBone cape = getAnimationProcessor().getBone("bipedCape");
 
 		cape.setHidden(true);
 
-		CoreGeoBone leftHand = getAnimationProcessor().getBone("bipedHandLeft");
-		CoreGeoBone rightHand = getAnimationProcessor().getBone("bipedHandRight");
+		GeoBone leftHand = getAnimationProcessor().getBone("bipedHandLeft");
+		GeoBone rightHand = getAnimationProcessor().getBone("bipedHandRight");
 
-		if (entity.tickCount % 1 == 0 && rightHand instanceof CoreGeoBone && leftHand instanceof CoreGeoBone
+		if (entity.tickCount % 1 == 0 && rightHand instanceof GeoBone && leftHand instanceof GeoBone
 				&& entity.isSpellcasting()) {
-			CoreGeoBone leftHandBone = ((CoreGeoBone) leftHand);
-			CoreGeoBone rightHandBone = ((CoreGeoBone) rightHand);
+			GeoBone leftHandBone = ((GeoBone) leftHand);
+			GeoBone rightHandBone = ((GeoBone) rightHand);
 			entity.level().addParticle(ModParticleTypes.CORRUPTED_MAGIC.get(),
 					leftHandBone.getPosX(), leftHandBone.getPosY(),
 					leftHandBone.getPosZ(), 0, 0, 0);
@@ -56,10 +53,10 @@ public class WhispererModel<T extends AbstractWhispererEntity> extends GeoModel<
 					rightHandBone.getPosZ(), 0, 0, 0);
 		}
 
-		if (entity.tickCount % 2 == 0 && rightHand instanceof CoreGeoBone && leftHand instanceof CoreGeoBone
+		if (entity.tickCount % 2 == 0 && rightHand instanceof GeoBone && leftHand instanceof GeoBone
 				&& entity.isSpellcasting()) {
-			CoreGeoBone leftHandBone = ((CoreGeoBone) leftHand);
-			CoreGeoBone rightHandBone = ((CoreGeoBone) rightHand);
+			GeoBone leftHandBone = ((GeoBone) leftHand);
+			GeoBone rightHandBone = ((GeoBone) rightHand);
 			entity.level().addParticle(ModParticleTypes.CORRUPTED_DUST.get(),
 					leftHandBone.getPosX(), leftHandBone.getPosY(),
 					leftHandBone.getPosZ(), entity.getRandom().nextGaussian() * 0.01,
@@ -79,11 +76,4 @@ public class WhispererModel<T extends AbstractWhispererEntity> extends GeoModel<
 		}
 	}
 
-	@Override
-	public void applyMolangQueries(AbstractWhispererEntity animatable, double currentTick) {
-		LivingEntity livingEntity = (LivingEntity) animatable;
-		Vec3 velocity = livingEntity.getDeltaMovement();
-		float groundSpeed = Mth.sqrt((float) ((velocity.x * velocity.x) + (velocity.z * velocity.z)));
-		MolangParser.INSTANCE.setValue("query.ground_speed", () -> groundSpeed * 12.5);
-	}
 }

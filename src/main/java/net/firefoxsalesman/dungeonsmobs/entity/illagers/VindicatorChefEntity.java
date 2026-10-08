@@ -2,12 +2,12 @@ package net.firefoxsalesman.dungeonsmobs.entity.illagers;
 
 import java.util.Map;
 
-import com.google.common.collect.Maps;
-
 import net.firefoxsalesman.dungeonslibs.client.AnimationTimer;
 import net.firefoxsalesman.dungeonslibs.client.KeyframeEntity;
 import net.firefoxsalesman.dungeonsmobs.mod.ModItems;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.util.RandomSource;
@@ -35,8 +35,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.raid.Raid;
 import net.minecraft.world.entity.raid.Raider;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 
@@ -79,13 +77,13 @@ public class VindicatorChefEntity extends Vindicator implements KeyframeEntity {
 		}
 	}
 
-	protected void defineSynchedData() {
-		super.defineSynchedData();
-		entityData.define(ATTACKING, false);
+	protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+		super.defineSynchedData(builder);
+		builder.define(ATTACKING, false);
 	}
 
 	@Override
-	public void applyRaidBuffs(int pWave, boolean pUnusedFalse) {
+	public void applyRaidBuffs(ServerLevel pLevel, int pWave, boolean pUnusedFalse) {
 		ItemStack itemstack = new ItemStack(ModItems.WOODEN_LADLE.get());
 		Raid raid = this.getCurrentRaid();
 		int i = 1;
@@ -95,9 +93,7 @@ public class VindicatorChefEntity extends Vindicator implements KeyframeEntity {
 
 		boolean flag = this.random.nextFloat() <= raid.getEnchantOdds();
 		if (flag) {
-			Map<Enchantment, Integer> map = Maps.newHashMap();
-			map.put(Enchantments.SHARPNESS, i);
-			EnchantmentHelper.setEnchantments(map, itemstack);
+			itemstack.enchant(pLevel.registryAccess().registryOrThrow(Registries.ENCHANTMENT).getHolderOrThrow(Enchantments.SHARPNESS), i);
 		}
 
 		this.setItemSlot(EquipmentSlot.MAINHAND, itemstack);
@@ -144,10 +140,9 @@ public class VindicatorChefEntity extends Vindicator implements KeyframeEntity {
 		}
 
 		@Override
-		protected void checkAndPerformAttack(LivingEntity pEnemy, double pDistToEnemySqr) {
+		protected void checkAndPerformAttack(LivingEntity pEnemy) {
 
-			double d0 = this.getAttackReachSqr(pEnemy);
-			if (pDistToEnemySqr <= d0 && isTimeToAttack()) {
+			if (entity.isWithinMeleeAttackRange(pEnemy) && isTimeToAttack()) {
 				this.resetAttackCooldown();
 				entity.setAttacking(true);
 				this.mob.swing(InteractionHand.MAIN_HAND);

@@ -7,6 +7,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;
+import net.neoforged.neoforge.common.ItemAbilities;
 
 import javax.annotation.Nullable;
 import java.util.EnumSet;
@@ -80,7 +81,7 @@ public class BasicModdedAttackGoal<T extends Mob & AnimatableMeleeAttackMob> ext
 	public void stop() {
 		if (target != null && !isShieldDisabled(mob) && shouldBlockForTarget(target)
 				&& mob.getOffhandItem()
-						.canPerformAction(net.minecraftforge.common.ToolActions.SHIELD_BLOCK)
+						.canPerformAction(ItemAbilities.SHIELD_BLOCK)
 				&& mob.getRandom().nextInt(4) == 0) {
 			mob.startUsingItem(InteractionHand.OFF_HAND);
 		}

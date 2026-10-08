@@ -17,7 +17,7 @@ public class CustomZombieRenderer extends ZombieRenderer {
 			"textures/entity/zombie/jungle_zombie.png");
 	private static final ResourceLocation FROZEN_ZOMBIE_TEXTURE = modLoc(
 			"textures/entity/zombie/frozen_zombie.png");
-	private static final ResourceLocation HUSK_ZOMBIE_TEXTURE = new ResourceLocation(
+	private static final ResourceLocation HUSK_ZOMBIE_TEXTURE = ResourceLocation.parse(
 			"textures/entity/zombie/husk.png");
 
 	public CustomZombieRenderer(EntityRendererProvider.Context renderContext) {

@@ -20,12 +20,9 @@ public class TridentStormRenderer extends ProjectileRenderer<TridentStormEntity>
 	}
 
 	@Override
-	public void preRender(PoseStack poseStack, TridentStormEntity animatable, BakedGeoModel model,
-			MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick,
-			int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void preRender(PoseStack poseStack, TridentStormEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
 		super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick,
-				packedLight, packedOverlay,
-				red, green, blue, alpha);
+				packedLight, packedOverlay, colour);
 		poseStack.mulPose(Axis.YP.rotationDegrees(animatable.getYRot() * ((float) Math.PI / 180F)));
 
 		if (animatable.lifeTime <= 1) {

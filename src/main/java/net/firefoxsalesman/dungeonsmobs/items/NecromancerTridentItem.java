@@ -6,14 +6,15 @@ import net.firefoxsalesman.dungeonsmobs.interfaces.IHasInventorySprite;
 import net.firefoxsalesman.dungeonslibs.items.artifacts.ArtifactItem;
 import net.firefoxsalesman.dungeonslibs.items.artifacts.ArtifactUseContext;
 import net.firefoxsalesman.dungeonslibs.network.BreakItemMessage;
-import net.firefoxsalesman.dungeonslibs.network.NetworkHandler;
 import net.firefoxsalesman.dungeonslibs.utils.PositionUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 public class NecromancerTridentItem extends ArtifactItem implements IHasInventorySprite {
 	public NecromancerTridentItem(Properties properties) {
@@ -49,12 +50,11 @@ public class NecromancerTridentItem extends ArtifactItem implements IHasInventor
 					itemUseContextPlayer.level().addFreshEntity(tridentStorm);
 					PositionUtils.moveToCorrectHeight(tridentStorm);
 				}
-				itemUseContextItem.hurtAndBreak(1, itemUseContextPlayer,
-						(entity) -> NetworkHandler.INSTANCE.send(
-								PacketDistributor.TRACKING_ENTITY_AND_SELF
-										.with(() -> entity),
-								new BreakItemMessage(entity.getId(),
-										itemUseContextItem)));
+				ServerLevel serverLevel = (ServerLevel) world;
+				ServerPlayer serverPlayer = itemUseContextPlayer instanceof ServerPlayer sp ? sp : null;
+				itemUseContextItem.hurtAndBreak(1, serverLevel, serverPlayer,
+						(item) -> PacketDistributor.sendToPlayersTrackingEntityAndSelf(itemUseContextPlayer,
+								new BreakItemMessage(itemUseContextPlayer.getId(), itemUseContextItem)));
 				ArtifactItem.putArtifactOnCooldown(itemUseContextPlayer, itemUseContextItem.getItem());
 			}
 			return InteractionResultHolder.consume(itemUseContextItem);

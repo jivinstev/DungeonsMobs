@@ -10,9 +10,11 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
@@ -28,7 +30,7 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.raid.Raider;
-import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.NaturalSpawner;
@@ -36,25 +38,26 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
+import net.minecraft.world.level.pathfinder.PathfindingContext;
 import net.minecraft.world.level.pathfinder.PathFinder;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.common.CommonHooks;
+import net.neoforged.neoforge.event.entity.living.LivingKnockBackEvent;
 import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.core.animatable.GeoAnimatable;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimationState;
-import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
-import software.bernie.geckolib.core.animation.Animation.LoopType;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.animatable.GeoAnimatable;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.animation.AnimatableManager.ControllerRegistrar;
+import software.bernie.geckolib.animation.Animation.LoopType;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
@@ -81,16 +84,16 @@ public class RedstoneGolemEntity extends Raider implements GeoEntity {
 
 	public RedstoneGolemEntity(EntityType<? extends RedstoneGolemEntity> type, Level worldIn) {
 		super(type, worldIn);
-		setMaxUpStep(1.25F);
+		this.getAttribute(Attributes.STEP_HEIGHT).setBaseValue(1.25D);
 		xpReward = 40;
 		mineAttackCooldown = 10 * 20;
 	}
 
 	@Override
-	protected void defineSynchedData() {
-		super.defineSynchedData();
-		entityData.define(SUMMONING_MINES, false);
-		entityData.define(MELEEATTACKING, false);
+	protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+		super.defineSynchedData(builder);
+		builder.define(SUMMONING_MINES, false);
+		builder.define(MELEEATTACKING, false);
 	}
 
 	public boolean isSummoningMines() {
@@ -222,8 +225,8 @@ public class RedstoneGolemEntity extends Raider implements GeoEntity {
 	private void handleLeafCollision() {
 		if (isAlive()) {
 
-			if (horizontalCollision && net.minecraftforge.event.ForgeEventFactory
-					.getMobGriefingEvent(level(), this)) {
+			if (horizontalCollision && level().getGameRules()
+					.getBoolean(GameRules.RULE_MOBGRIEFING)) {
 				boolean destroyedLeafBlock = false;
 				AABB axisalignedbb = getBoundingBox().inflate(0.2D);
 
@@ -367,16 +370,16 @@ public class RedstoneGolemEntity extends Raider implements GeoEntity {
 		private Processor() {
 		}
 
-		protected BlockPathTypes evaluateBlockPathType(BlockGetter blockReader, boolean canBreakDoors,
-				boolean canWalkThroughDoorways, BlockPos blockPos, BlockPathTypes pathNodeType) {
-			return pathNodeType == BlockPathTypes.LEAVES ? BlockPathTypes.OPEN
-					: super.evaluateBlockPathType(blockReader, blockPos, pathNodeType);
+		@Override
+		public PathType getPathType(PathfindingContext context, int x, int y, int z) {
+			PathType pathNodeType = super.getPathType(context, x, y, z);
+			return pathNodeType == PathType.LEAVES ? PathType.OPEN : pathNodeType;
 		}
 	}
 
 	// RAIDER METHODS
 	@Override
-	public void applyRaidBuffs(int p_213660_1_, boolean p_213660_2_) {
+	public void applyRaidBuffs(ServerLevel level, int wave, boolean unused) {
 
 	}
 
@@ -392,7 +395,7 @@ public class RedstoneGolemEntity extends Raider implements GeoEntity {
 	public boolean isAlliedTo(Entity entityIn) {
 		if (super.isAlliedTo(entityIn)) {
 			return true;
-		} else if (entityIn instanceof LivingEntity && ((LivingEntity) entityIn).getMobType() == MobType.ILLAGER
+		} else if (entityIn instanceof LivingEntity && ((LivingEntity) entityIn).getType().is(EntityTypeTags.ILLAGER)
 				|| entityIn instanceof Raider) {
 			return getTeam() == null && entityIn.getTeam() == null;
 		} else {
@@ -436,12 +439,17 @@ public class RedstoneGolemEntity extends Raider implements GeoEntity {
 			}
 
 			attackTimer = Math.max(attackTimer - 1, 0);
-			checkAndPerformAttack(livingentity, distanceToSqr(livingentity.getX(),
-					livingentity.getBoundingBox().minY, livingentity.getZ()));
+			checkAndPerformAttack(livingentity);
 		}
 
+		private double getAttackReachSqr(LivingEntity enemy) {
+			return getBbWidth() * 2.0F * getBbWidth() * 2.0F + enemy.getBbWidth();
+		}
+
+		// the goal's attack hook no longer takes the distance, so work it out here
 		@Override
-		protected void checkAndPerformAttack(LivingEntity enemy, double distToEnemySqr) {
+		protected void checkAndPerformAttack(LivingEntity enemy) {
+			double distToEnemySqr = distanceToSqr(enemy.getX(), enemy.getBoundingBox().minY, enemy.getZ());
 			if ((distToEnemySqr <= getAttackReachSqr(enemy)
 					|| getBoundingBox().intersects(enemy.getBoundingBox()))
 					&& attackTimer <= 0) {
@@ -513,7 +521,7 @@ public class RedstoneGolemEntity extends Raider implements GeoEntity {
 
 		private void forceKnockback(LivingEntity attackTarget, float strength, double ratioX, double ratioZ,
 				double knockbackResistanceReduction) {
-			LivingKnockBackEvent event = ForgeHooks.onLivingKnockBack(attackTarget, strength, ratioX,
+			LivingKnockBackEvent event = CommonHooks.onLivingKnockBack(attackTarget, strength, ratioX,
 					ratioZ);
 			if (event.isCanceled())
 				return;

@@ -4,16 +4,15 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.LazyLoadedValue;
 import net.minecraft.world.item.ArmorItem.Type;
-import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.Tags;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.common.Tags;
 
 import java.util.function.Supplier;
 
-public enum CustomArmorMaterial implements ArmorMaterial {
-	PURE_NETHERITE("pure_netherite", 15, new int[] { 2, 5, 6, 2 }, 9, SoundEvents.ARMOR_EQUIP_NETHERITE, 0.0F, 0.0F,
+public enum CustomArmorMaterial {
+	PURE_NETHERITE("pure_netherite", 15, new int[] { 2, 5, 6, 2 }, 9, SoundEvents.ARMOR_EQUIP_NETHERITE.value(), 0.0F, 0.0F,
 			() -> {
 				return Ingredient.of(Tags.Items.INGOTS_NETHERITE);
 			});
@@ -41,12 +40,10 @@ public enum CustomArmorMaterial implements ArmorMaterial {
 		this.repairIngredient = new LazyLoadedValue<>(repairIngredient);
 	}
 
-	@Override
 	public int getDurabilityForType(Type pType) {
 		return HEALTH_PER_SLOT[pType.getSlot().getIndex()] * durabilityMultiplier;
 	}
 
-	@Override
 	public int getDefenseForType(Type pType) {
 		return slotProtections[pType.getSlot().getIndex()];
 	}

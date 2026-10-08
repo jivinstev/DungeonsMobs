@@ -30,13 +30,13 @@ import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
-import software.bernie.geckolib.core.animatable.GeoAnimatable;
-import software.bernie.geckolib.core.animation.Animation.LoopType;
-import software.bernie.geckolib.core.animation.AnimationState;
-import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.animatable.GeoAnimatable;
+import software.bernie.geckolib.animation.Animation.LoopType;
+import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.animation.PlayState;
 
 public class WaveWhispererEntity extends AbstractWhispererEntity implements IAquaticMob {
 
@@ -44,7 +44,7 @@ public class WaveWhispererEntity extends AbstractWhispererEntity implements IAqu
 		super(type, world);
 		if (isWavewhisperer()) {
 			moveControl = new AquaticMoveHelperController<>(this);
-			setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
+			setPathfindingMalus(PathType.WATER, 0.0F);
 		}
 		waterNavigation = new WaterBoundPathNavigation(this, world);
 		groundNavigation = new GroundPathNavigation(this, world);

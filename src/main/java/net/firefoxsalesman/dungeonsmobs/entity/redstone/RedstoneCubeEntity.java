@@ -21,6 +21,8 @@ import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -39,7 +41,7 @@ public class RedstoneCubeEntity extends Monster implements KeyframeEntity {
 	public RedstoneCubeEntity(EntityType<? extends RedstoneCubeEntity> type, Level worldIn) {
 		super(type, worldIn);
 		this.moveControl = new RedstoneCubeEntity.MoveHelperController(this);
-		setMaxUpStep(1.0F);
+		this.getAttribute(Attributes.STEP_HEIGHT).setBaseValue(1.0D);
 	}
 
 	public static AttributeSupplier.Builder setCustomAttributes() {
@@ -50,9 +52,9 @@ public class RedstoneCubeEntity extends Monster implements KeyframeEntity {
 	}
 
 	@Override
-	protected void defineSynchedData() {
-		super.defineSynchedData();
-		this.entityData.define(IS_ROLLING, false);
+	protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+		super.defineSynchedData(builder);
+		builder.define(IS_ROLLING, false);
 	}
 
 	protected void registerGoals() {
@@ -93,7 +95,9 @@ public class RedstoneCubeEntity extends Monster implements KeyframeEntity {
 							this.getAttackDamageAmount())) {
 				this.playSound(SoundEvents.STONE_HIT, 1.0F,
 						(this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
-				this.doEnchantDamageEffects(this, entityIn);
+				if (this.level() instanceof ServerLevel serverLevel) {
+					EnchantmentHelper.doPostAttackEffects(serverLevel, entityIn, damageSources().mobAttack(this));
+				}
 			}
 		}
 
@@ -103,8 +107,9 @@ public class RedstoneCubeEntity extends Monster implements KeyframeEntity {
 		return (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE);
 	}
 
-	protected float getStandingEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
-		return 0.625F * sizeIn.height;
+	protected EntityDimensions getDefaultDimensions(Pose poseIn) {
+	    EntityDimensions sizeIn = super.getDefaultDimensions(poseIn);
+	    return sizeIn.withEyeHeight(0.625F * sizeIn.height());
 	}
 
 	/**

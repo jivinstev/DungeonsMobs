@@ -7,15 +7,13 @@ import net.firefoxsalesman.dungeonsmobs.entity.summonables.WindcallerTornadoEnti
 import net.firefoxsalesman.dungeonsmobs.interfaces.IHasInventorySprite;
 import net.firefoxsalesman.dungeonslibs.items.artifacts.ArtifactItem;
 import net.firefoxsalesman.dungeonslibs.items.artifacts.ArtifactUseContext;
-import net.firefoxsalesman.dungeonslibs.network.BreakItemMessage;
-import net.firefoxsalesman.dungeonslibs.network.NetworkHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.network.PacketDistributor;
 
 public class WindcallerStaffItem extends ArtifactItem implements IHasInventorySprite {
 	public WindcallerStaffItem(Properties properties) {
@@ -35,9 +33,9 @@ public class WindcallerStaffItem extends ArtifactItem implements IHasInventorySp
 			if (player != null) {
 				shoot(player, itemUseContextPos.getX(), itemUseContextPos.getY() + 0.5,
 						itemUseContextPos.getZ());
-				itemUseContextItem.hurtAndBreak(1, player, (entity) -> NetworkHandler.INSTANCE.send(
-						PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity),
-						new BreakItemMessage(entity.getId(), itemUseContextItem)));
+				EquipmentSlot slot = player.getOffhandItem() == itemUseContextItem ? EquipmentSlot.OFFHAND
+						: EquipmentSlot.MAINHAND;
+				itemUseContextItem.hurtAndBreak(1, player, slot);
 				ArtifactItem.putArtifactOnCooldown(player, itemUseContextItem.getItem());
 			}
 			return InteractionResultHolder.consume(itemUseContextItem);

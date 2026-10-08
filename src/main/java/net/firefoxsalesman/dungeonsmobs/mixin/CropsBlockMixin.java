@@ -5,6 +5,7 @@ import net.firefoxsalesman.dungeonsmobs.entity.redstone.RedstoneGolemEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
@@ -17,9 +18,9 @@ public abstract class CropsBlockMixin {
 
     @Inject(at = @At("HEAD"), method = "entityInside(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/entity/Entity;)V")
     private void onEntityCollision(BlockState p_52277_, Level worldIn, BlockPos pos, Entity entityIn, CallbackInfo ci) {
-        if (entityIn instanceof RedstoneGolemEntity && net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(worldIn, entityIn)) {
+        if (entityIn instanceof RedstoneGolemEntity && worldIn.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
             worldIn.destroyBlock(pos, true, entityIn);
-        } else if (entityIn instanceof SquallGolemEntity && net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(worldIn, entityIn)) {
+        } else if (entityIn instanceof SquallGolemEntity && worldIn.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
             worldIn.destroyBlock(pos, true, entityIn);
         }
     }

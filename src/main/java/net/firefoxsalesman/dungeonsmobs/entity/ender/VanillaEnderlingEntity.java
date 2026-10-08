@@ -26,10 +26,11 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.event.entity.EntityTeleportEvent;
+import net.neoforged.neoforge.event.entity.EntityTeleportEvent;
+import net.neoforged.neoforge.event.EventHooks;
 
 import javax.annotation.Nullable;
 import java.util.EnumSet;
@@ -50,8 +51,8 @@ public abstract class VanillaEnderlingEntity extends Monster {
 	protected VanillaEnderlingEntity(EntityType<? extends VanillaEnderlingEntity> pEntityType,
 			Level pLevel) {
 		super(pEntityType, pLevel);
-		setMaxUpStep(1.0F);
-		setPathfindingMalus(BlockPathTypes.WATER, -1.0F);
+		getAttribute(Attributes.STEP_HEIGHT).setBaseValue(1.0D);
+		setPathfindingMalus(PathType.WATER, -1.0F);
 	}
 
 	public static AttributeSupplier.Builder setCustomAttributes() {
@@ -70,11 +71,11 @@ public abstract class VanillaEnderlingEntity extends Monster {
 		super.setTarget(p_70624_1_); // Forge: Moved down to allow event handlers to write data manager values.
 	}
 
-	protected void defineSynchedData() {
-		super.defineSynchedData();
-		entityData.define(ATTACKING, 0);
-		entityData.define(RUNNING, 0);
-		entityData.define(DATA_STARED_AT, false);
+	protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+		super.defineSynchedData(builder);
+		builder.define(ATTACKING, 0);
+		builder.define(RUNNING, 0);
+		builder.define(DATA_STARED_AT, false);
 	}
 
 	public boolean hasBeenStaredAt() {
@@ -206,7 +207,7 @@ public abstract class VanillaEnderlingEntity extends Monster {
 		boolean flag = blockstate.blocksMotion();
 		boolean flag1 = blockstate.getFluidState().is(FluidTags.WATER);
 		if (flag && !flag1) {
-			EntityTeleportEvent.EnderEntity event = net.minecraftforge.event.ForgeEventFactory
+			EntityTeleportEvent.EnderEntity event = EventHooks
 					.onEnderTeleport(this, x, y, z);
 			if (event.isCanceled())
 				return false;

@@ -12,16 +12,19 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.EntityTypeTags;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.phys.EntityHitResult;
 import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.core.animatable.GeoAnimatable;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
-import software.bernie.geckolib.core.animation.AnimationState;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.animation.Animation.LoopType;
-import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.animatable.GeoAnimatable;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.AnimatableManager.ControllerRegistrar;
+import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.animation.Animation.LoopType;
+import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class NecromancerOrbEntity extends StraightMovingProjectileEntity implements GeoEntity {
@@ -169,9 +172,9 @@ public class NecromancerOrbEntity extends StraightMovingProjectileEntity impleme
 	}
 
 	@Override
-	protected void defineSynchedData() {
-		super.defineSynchedData();
-		entityData.define(DELAYED_FORM, false);
+	protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+		super.defineSynchedData(builder);
+		builder.define(DELAYED_FORM, false);
 	}
 
 	public boolean hasDelayedForm() {
@@ -196,7 +199,7 @@ public class NecromancerOrbEntity extends StraightMovingProjectileEntity impleme
 	}
 
 	public void onHitEntity(Entity entity) {
-		if (entity instanceof Mob && ((Mob) entity).getMobType() == MobType.UNDEAD) {
+		if (entity instanceof Mob && entity.getType().is(EntityTypeTags.UNDEAD)) {
 
 		} else if (!level().isClientSide) {
 			super.onHitEntity(entity);
@@ -204,10 +207,11 @@ public class NecromancerOrbEntity extends StraightMovingProjectileEntity impleme
 			boolean flag;
 			if (entity1 instanceof LivingEntity) {
 				LivingEntity livingentity = (LivingEntity) entity1;
-				flag = entity.hurt(damageSources().indirectMagic(this, livingentity), 6.0F);
+				DamageSource source = damageSources().indirectMagic(this, livingentity);
+				flag = entity.hurt(source, 6.0F);
 				if (flag) {
 					if (entity.isAlive()) {
-						doEnchantDamageEffects(livingentity, entity);
+						EnchantmentHelper.doPostAttackEffects((ServerLevel) level(), entity, source);
 					}
 				}
 			} else {

@@ -7,8 +7,9 @@ import net.firefoxsalesman.dungeonsmobs.goals.ApproachTargetGoal;
 import net.firefoxsalesman.dungeonsmobs.goals.LookAtTargetGoal;
 import net.firefoxsalesman.dungeonslibs.client.AnimationTimer;
 import net.firefoxsalesman.dungeonslibs.client.KeyframeEntity;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
@@ -108,13 +109,11 @@ public class IceologerEntity extends AbstractIllager implements KeyframeEntity {
 
 	@Nullable
 	@Override
-	public SpawnGroupData finalizeSpawn(ServerLevelAccessor p_213386_1_, DifficultyInstance p_213386_2_,
-			MobSpawnType p_213386_3_, @Nullable SpawnGroupData p_213386_4_,
-			@Nullable CompoundTag p_213386_5_) {
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor p_213386_1_, DifficultyInstance p_213386_2_, MobSpawnType p_213386_3_, @Nullable SpawnGroupData p_213386_4_) {
 		SpawnGroupData iLivingEntityData = super.finalizeSpawn(p_213386_1_, p_213386_2_, p_213386_3_,
-				p_213386_4_, p_213386_5_);
+				p_213386_4_);
 		this.populateDefaultEquipmentSlots(this.getRandom(), p_213386_2_);
-		this.populateDefaultEquipmentEnchantments(this.getRandom(), p_213386_2_);
+		this.populateDefaultEquipmentEnchantments(p_213386_1_, this.getRandom(), p_213386_2_);
 		return iLivingEntityData;
 	}
 
@@ -130,7 +129,7 @@ public class IceologerEntity extends AbstractIllager implements KeyframeEntity {
 		if (super.isAlliedTo(entityIn)) {
 			return true;
 		} else if (entityIn instanceof LivingEntity
-				&& ((LivingEntity) entityIn).getMobType() == MobType.ILLAGER) {
+				&& ((LivingEntity) entityIn).getType().is(EntityTypeTags.ILLAGER)) {
 			return this.getTeam() == null && entityIn.getTeam() == null;
 		} else {
 			return false;
@@ -138,7 +137,7 @@ public class IceologerEntity extends AbstractIllager implements KeyframeEntity {
 	}
 
 	@Override
-	public void applyRaidBuffs(int p_213660_1_, boolean p_213660_2_) {
+	public void applyRaidBuffs(ServerLevel level, int wave, boolean unused) {
 	}
 
 	@Override

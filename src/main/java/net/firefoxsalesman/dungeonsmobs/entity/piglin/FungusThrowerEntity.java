@@ -11,7 +11,6 @@ import net.firefoxsalesman.dungeonsmobs.mixin.PiglinAccessor;
 import net.firefoxsalesman.dungeonsmobs.mod.ModItems;
 import net.firefoxsalesman.dungeonsmobs.utils.PiglinHelper;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
@@ -55,11 +54,9 @@ public class FungusThrowerEntity extends Piglin {
 
 	@Nullable
 	@Override
-	public SpawnGroupData finalizeSpawn(ServerLevelAccessor serverWorld, DifficultyInstance difficultyInstance,
-			MobSpawnType spawnReason, @Nullable SpawnGroupData spawnDataIn,
-			@Nullable CompoundTag compoundNBT) {
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor serverWorld, DifficultyInstance difficultyInstance, MobSpawnType spawnReason, @Nullable SpawnGroupData spawnDataIn) {
 		SpawnGroupData spawnData = super.finalizeSpawn(serverWorld, difficultyInstance, spawnReason,
-				spawnDataIn, compoundNBT);
+				spawnDataIn);
 		if (this instanceof ISmartCrossBowUser && ((ISmartCrossBowUser) this).isCrossbowUser()) {
 			((ISmartCrossBowUser) this).setCrossbowUser(false);
 		}
@@ -85,7 +82,7 @@ public class FungusThrowerEntity extends Piglin {
 	}
 
 	@Override
-	protected void populateDefaultEquipmentEnchantments(RandomSource randomSource, DifficultyInstance p_180483_1_) {
+	protected void populateDefaultEquipmentEnchantments(ServerLevelAccessor levelAccessor, RandomSource randomSource, DifficultyInstance p_180483_1_) {
 		// NO-OP
 	}
 

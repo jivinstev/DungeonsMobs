@@ -17,9 +17,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.monster.AbstractIllager;
 import net.minecraft.world.item.ArmorItem;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.util.FastColor;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.world.item.component.DyedItemColor;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class IllagerBipedArmorLayer<T extends AbstractIllager, M extends IllagerBipedModel<T>, A extends HumanoidModel<T>> extends HumanoidArmorLayer<T, M, A> {
@@ -47,8 +50,8 @@ public class IllagerBipedArmorLayer<T extends AbstractIllager, M extends Illager
                 setPartVisibilityCrossedArms(crossedArmsModel, slot, armsCanBeCrossed);
                 if (!armsCanBeCrossed) return;
                 boolean flag1 = itemstack.hasFoil();
-                if (armoritem instanceof net.minecraft.world.item.DyeableLeatherItem) {
-                    int i = ((net.minecraft.world.item.DyeableLeatherItem) armoritem).getColor(itemstack);
+                if (itemstack.is(ItemTags.DYEABLE)) {
+                    int i = DyedItemColor.getOrDefault(itemstack, 0xA06540);
                     float f = (float) (i >> 16 & 255) / 255.0F;
                     float f1 = (float) (i >> 8 & 255) / 255.0F;
                     float f2 = (float) (i & 255) / 255.0F;
@@ -62,8 +65,8 @@ public class IllagerBipedArmorLayer<T extends AbstractIllager, M extends Illager
     }
 
     private void renderModel(PoseStack p_241738_1_, MultiBufferSource p_241738_2_, int p_241738_3_, boolean p_241738_5_, IllagerBipedModel<T> p_241738_6_, float p_241738_8_, float p_241738_9_, float p_241738_10_, ResourceLocation armorResource) {
-        VertexConsumer ivertexbuilder = ItemRenderer.getArmorFoilBuffer(p_241738_2_, RenderType.armorCutoutNoCull(armorResource), false, p_241738_5_);
-        p_241738_6_.renderToBuffer(p_241738_1_, ivertexbuilder, p_241738_3_, OverlayTexture.NO_OVERLAY, p_241738_8_, p_241738_9_, p_241738_10_, 1.0F);
+        VertexConsumer ivertexbuilder = ItemRenderer.getArmorFoilBuffer(p_241738_2_, RenderType.armorCutoutNoCull(armorResource), p_241738_5_);
+        p_241738_6_.renderToBuffer(p_241738_1_, ivertexbuilder, p_241738_3_, OverlayTexture.NO_OVERLAY, FastColor.ARGB32.colorFromFloat(1.0F, p_241738_8_, p_241738_9_, p_241738_10_));
     }
 
     @Override
@@ -73,6 +76,12 @@ public class IllagerBipedArmorLayer<T extends AbstractIllager, M extends Illager
             entityModel.rightArm.visible = true;
             entityModel.leftArm.visible = true;
         }
+    }
+
+    private ResourceLocation getArmorResource(T entity, ItemStack stack, EquipmentSlot slot, String type) {
+        ArmorItem armorItem = (ArmorItem) stack.getItem();
+        String material = armorItem.getMaterial().unwrapKey().map(k -> k.location().getPath()).orElse("leather");
+        return ResourceLocation.withDefaultNamespace("textures/models/armor/" + material + "_layer_" + (slot == EquipmentSlot.LEGS ? 2 : 1) + (type == null ? "" : "_" + type) + ".png");
     }
 
     private void setPartVisibilityCrossedArms(IllagerBipedModel<T> illagerEntityModel, EquipmentSlot slot, boolean armsCanBeCrossed) {

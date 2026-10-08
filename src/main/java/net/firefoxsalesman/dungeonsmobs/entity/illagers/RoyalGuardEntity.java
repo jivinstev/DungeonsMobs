@@ -1,6 +1,7 @@
 package net.firefoxsalesman.dungeonsmobs.entity.illagers;
 
-import com.google.common.collect.Maps;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 import net.firefoxsalesman.dungeonsmobs.ModSoundEvents;
 import net.firefoxsalesman.dungeonsmobs.entity.ModEntities;
@@ -14,7 +15,6 @@ import net.firefoxsalesman.dungeonslibs.client.KeyframeEntity;
 import net.firefoxsalesman.dungeonslibs.utils.ModHelper;
 import net.firefoxsalesman.dungeonsmobs.mod.ModItems;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -51,8 +51,10 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.core.Holder;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.common.ItemAbilities;
 import javax.annotation.Nullable;
 import java.util.EnumSet;
 import java.util.Map;
@@ -64,8 +66,7 @@ public class RoyalGuardEntity extends AbstractIllager implements IShieldUser, Ke
 	private static final UUID SPEED_MODIFIER_BLOCKING_UUID = UUID
 			.fromString("05cd371b-0ff4-4ded-8630-b380232ed7b1");
 	private static final AttributeModifier SPEED_MODIFIER_BLOCKING = new AttributeModifier(
-			SPEED_MODIFIER_BLOCKING_UUID,
-			"Blocking speed decrease", -0.1D, AttributeModifier.Operation.ADDITION);
+			ResourceLocation.fromNamespaceAndPath("dungeonsmobs", "blocking_speed_decrease"), -0.1D, AttributeModifier.Operation.ADD_VALUE);
 
 	private int shieldCooldownTime;
 
@@ -108,15 +109,12 @@ public class RoyalGuardEntity extends AbstractIllager implements IShieldUser, Ke
 	}
 
     @Nullable
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor accessor, DifficultyInstance difficulty,
-	MobSpawnType spawnType, @Nullable SpawnGroupData groupData,
-	@Nullable CompoundTag compoundTag) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor accessor, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData groupData) {
 	SpawnGroupData ilivingentitydata = super.finalizeSpawn(accessor, difficulty, spawnType,
-	    groupData,
-	    compoundTag);
+	    groupData);
 	((GroundPathNavigation) getNavigation()).setCanOpenDoors(true);
 	populateDefaultEquipmentSlots(getRandom(), difficulty);
-	populateDefaultEquipmentEnchantments(getRandom(), difficulty);
+	populateDefaultEquipmentEnchantments(accessor, getRandom(), difficulty);
 	return ilivingentitydata;
     }
 
@@ -175,11 +173,11 @@ public class RoyalGuardEntity extends AbstractIllager implements IShieldUser, Ke
 		AttributeInstance modifiableattributeinstance = getAttribute(Attributes.MOVEMENT_SPEED);
 
 		if (isBlocking()) {
-			if (!modifiableattributeinstance.hasModifier(SPEED_MODIFIER_BLOCKING)) {
+			if (!modifiableattributeinstance.hasModifier(SPEED_MODIFIER_BLOCKING.id())) {
 				modifiableattributeinstance.addTransientModifier(SPEED_MODIFIER_BLOCKING);
 			}
 		} else {
-			modifiableattributeinstance.removeModifier(SPEED_MODIFIER_BLOCKING);
+			modifiableattributeinstance.removeModifier(SPEED_MODIFIER_BLOCKING.id());
 		}
 
 		attackTimer.dec();
@@ -199,7 +197,7 @@ public class RoyalGuardEntity extends AbstractIllager implements IShieldUser, Ke
 	@Override
 	protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance difficultyInstance) {
 		if (ModHelper.hasMod("dungeonsgear")) {
-			Item MACE = ForgeRegistries.ITEMS.getValue(new ResourceLocation("dungeonsgear", "mace"));
+			Item MACE = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("dungeonsgear", "mace"));
 
 			ItemStack mace = new ItemStack(MACE);
 			if (getCurrentRaid() == null) {
@@ -214,10 +212,10 @@ public class RoyalGuardEntity extends AbstractIllager implements IShieldUser, Ke
 	}
 
 	@Override
-	public void applyRaidBuffs(int waveAmount, boolean b) {
+	public void applyRaidBuffs(ServerLevel level, int waveAmount, boolean b) {
 		ItemStack mainhandWeapon = new ItemStack(Items.IRON_AXE);
 		if (ModHelper.hasMod("dungeonsgear")) {
-			Item MACE = ForgeRegistries.ITEMS.getValue(new ResourceLocation("dungeonsgear", "mace"));
+			Item MACE = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("dungeonsgear", "mace"));
 
 			mainhandWeapon = new ItemStack(MACE);
 		}
@@ -232,9 +230,10 @@ public class RoyalGuardEntity extends AbstractIllager implements IShieldUser, Ke
 			applyEnchant = random.nextFloat() <= raid.getEnchantOdds();
 		}
 		if (applyEnchant) {
-			Map<Enchantment, Integer> enchantmentIntegerMap = Maps.newHashMap();
-			enchantmentIntegerMap.put(Enchantments.SHARPNESS, enchantmentLevel);
-			EnchantmentHelper.setEnchantments(enchantmentIntegerMap, mainhandWeapon);
+			Holder<Enchantment> sharpness = level.registryAccess()
+					.registryOrThrow(Registries.ENCHANTMENT)
+					.getHolderOrThrow(Enchantments.SHARPNESS);
+			mainhandWeapon.enchant(sharpness, enchantmentLevel);
 		}
 
 		SpawnEquipmentHelper.equipMainhand(mainhandWeapon, this);
@@ -278,7 +277,11 @@ public class RoyalGuardEntity extends AbstractIllager implements IShieldUser, Ke
 
 	@Override
 	public void disableShield(boolean guaranteeDisable) {
-		float f = 0.25F + (float) EnchantmentHelper.getBlockEfficiency(this) * 0.05F;
+		Holder<Enchantment> efficiencyHolder = level().registryAccess()
+				.registryOrThrow(Registries.ENCHANTMENT)
+				.getHolderOrThrow(Enchantments.EFFICIENCY);
+		int efficiency = EnchantmentHelper.getEnchantmentLevel(efficiencyHolder, this);
+		float f = 0.25F + (float) efficiency * 0.05F;
 		if (guaranteeDisable) {
 			f += 0.75F;
 		}
@@ -310,14 +313,14 @@ public class RoyalGuardEntity extends AbstractIllager implements IShieldUser, Ke
 
 	@Override
 	protected void hurtCurrentlyUsedShield(float amount) {
-		if (useItem.canPerformAction(net.minecraftforge.common.ToolActions.SHIELD_BLOCK)) {
+		if (useItem.canPerformAction(ItemAbilities.SHIELD_BLOCK)) {
 			if (amount >= 3.0F) {
 				int i = 1 + Mth.floor(amount);
 				InteractionHand hand = getUsedItemHand();
-				useItem.hurtAndBreak(i, this, (royalGuardEntity) -> {
-					royalGuardEntity.broadcastBreakEvent(hand);
-					// Forge would have called onPlayerDestroyItem here
-				});
+				EquipmentSlot breakSlot = hand == InteractionHand.MAIN_HAND
+						? EquipmentSlot.MAINHAND
+						: EquipmentSlot.OFFHAND;
+				useItem.hurtAndBreak(i, this, breakSlot);
 				if (useItem.isEmpty()) {
 					if (hand == InteractionHand.MAIN_HAND) {
 						setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
@@ -392,7 +395,7 @@ public class RoyalGuardEntity extends AbstractIllager implements IShieldUser, Ke
 		public void stop() {
 			if (target != null && !isShieldDisabled(mob) && shouldBlockForTarget(target)
 					&& mob.getOffhandItem().canPerformAction(
-							net.minecraftforge.common.ToolActions.SHIELD_BLOCK)
+							ItemAbilities.SHIELD_BLOCK)
 					&& mob.random.nextInt(6) == 0) {
 				mob.startUsingItem(InteractionHand.OFF_HAND);
 			}

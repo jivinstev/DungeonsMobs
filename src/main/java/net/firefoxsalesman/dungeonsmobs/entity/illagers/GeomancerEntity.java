@@ -13,8 +13,8 @@ import net.firefoxsalesman.dungeonsmobs.mod.ModItems;
 import net.firefoxsalesman.dungeonsmobs.utils.GeomancyHelper;
 import net.minecraft.Util;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
@@ -30,6 +30,7 @@ import net.minecraft.world.entity.monster.SpellcasterIllager;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.raid.Raider;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import javax.annotation.Nullable;
@@ -134,11 +135,10 @@ public class GeomancerEntity extends SpellcasterIllager implements KeyframeEntit
 	}
 
 	@Nullable
-	public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn,
-			MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn) {
 		this.populateDefaultEquipmentSlots(this.getRandom(), difficultyIn);
-		this.populateDefaultEquipmentEnchantments(this.getRandom(), difficultyIn);
-		return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+		this.populateDefaultEquipmentEnchantments(worldIn, this.getRandom(), difficultyIn);
+		return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
 	}
 
 	/**
@@ -148,7 +148,7 @@ public class GeomancerEntity extends SpellcasterIllager implements KeyframeEntit
 		if (super.isAlliedTo(entityIn)) {
 			return true;
 		} else if (entityIn instanceof LivingEntity
-				&& ((LivingEntity) entityIn).getMobType() == MobType.ILLAGER) {
+				&& entityIn.getType().is(EntityTypeTags.ILLAGER)) {
 			return this.getTeam() == null && entityIn.getTeam() == null;
 		} else {
 			return false;
@@ -156,7 +156,7 @@ public class GeomancerEntity extends SpellcasterIllager implements KeyframeEntit
 	}
 
 	@Override
-	public void applyRaidBuffs(int p_213660_1_, boolean p_213660_2_) {
+	public void applyRaidBuffs(ServerLevel level, int wave, boolean unused) {
 
 	}
 

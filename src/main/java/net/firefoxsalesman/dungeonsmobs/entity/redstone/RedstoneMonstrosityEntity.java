@@ -5,6 +5,7 @@ import java.util.List;
 import net.firefoxsalesman.dungeonsmobs.config.DungeonsMobsConfig;
 import net.firefoxsalesman.dungeonsmobs.entity.ModEntities;
 import net.firefoxsalesman.dungeonsmobs.entity.projectiles.RedstoneMonstrosityProjectileEntity;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -51,5 +52,10 @@ public class RedstoneMonstrosityEntity extends AbstractMonstrosityEntity {
 	@Override
 	protected List<? extends String> getSummonConfig() {
 		return DungeonsMobsConfig.Common.REDSTONE_MONSTROSITY_MOB_SUMMONS.get();
+	}
+
+	@Override
+	public void applyRaidBuffs(ServerLevel level, int wave, boolean unused) {
+		// Raid buffs do not apply to monstrosities; no behaviour to carry over.
 	}
 }

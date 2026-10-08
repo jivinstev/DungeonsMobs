@@ -25,6 +25,8 @@ import net.minecraft.world.entity.monster.AbstractIllager;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import javax.annotation.Nullable;
@@ -70,10 +72,10 @@ public class MageCloneEntity extends AbstractIllager implements KeyframeEntity {
 	}
 
 	@Override
-	protected void defineSynchedData() {
-		super.defineSynchedData();
+	protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+		super.defineSynchedData(builder);
 
-		entityData.define(DELAYED_APPEAR, false);
+		builder.define(DELAYED_APPEAR, false);
 	}
 
 	public boolean hasDelayedAppear() {
@@ -212,7 +214,7 @@ public class MageCloneEntity extends AbstractIllager implements KeyframeEntity {
 		if (super.isAlliedTo(entityIn)) {
 			return true;
 		} else if (entityIn instanceof LivingEntity
-				&& ((LivingEntity) entityIn).getMobType() == MobType.ILLAGER) {
+				&& entityIn.getType().is(EntityTypeTags.ILLAGER)) {
 			return getTeam() == null && entityIn.getTeam() == null;
 		} else {
 			return false;
@@ -220,7 +222,7 @@ public class MageCloneEntity extends AbstractIllager implements KeyframeEntity {
 	}
 
 	@Override
-	public void applyRaidBuffs(int p_213660_1_, boolean p_213660_2_) {
+	public void applyRaidBuffs(ServerLevel level, int wave, boolean unused) {
 	}
 
 	@Override

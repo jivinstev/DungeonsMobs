@@ -12,8 +12,8 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import static net.firefoxsalesman.dungeonsmobs.client.models.geom.ModModelLayers.VANGUARD_SHIELD;
 import static net.firefoxsalesman.dungeonsmobs.items.shield.ShieldTextures.LOCATION_VANGUARD_SHIELD;
@@ -39,7 +39,7 @@ public class VanguardShieldBEWLR extends BlockEntityWithoutLevelRenderer {
 						modelVanguardShield.renderType(rendermaterial.atlasLocation()),
 						true, stack.hasFoil()));
 		modelVanguardShield.getRoot().render(matrixStack, ivertexbuilder, combinedLight, combinedOverlay,
-				1.0F, 1.0F, 1.0F, 1.0F);
+				-1);
 
 		matrixStack.popPose();
 	}

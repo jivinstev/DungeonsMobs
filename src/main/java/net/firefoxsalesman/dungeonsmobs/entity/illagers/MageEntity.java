@@ -17,7 +17,6 @@ import net.firefoxsalesman.dungeonslibs.entities.LibEntityTypes;
 import net.firefoxsalesman.dungeonslibs.utils.PositionUtils;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -30,7 +29,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.MobType;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.WalkAnimationState;
@@ -176,13 +175,11 @@ public class MageEntity extends AbstractIllager implements KeyframeEntity {
 
 	@Nullable
 	@Override
-	public SpawnGroupData finalizeSpawn(ServerLevelAccessor p_213386_1_, DifficultyInstance p_213386_2_,
-			MobSpawnType p_213386_3_, @Nullable SpawnGroupData p_213386_4_,
-			@Nullable CompoundTag p_213386_5_) {
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor p_213386_1_, DifficultyInstance p_213386_2_, MobSpawnType p_213386_3_, @Nullable SpawnGroupData p_213386_4_) {
 		SpawnGroupData iLivingEntityData = super.finalizeSpawn(p_213386_1_, p_213386_2_, p_213386_3_,
-				p_213386_4_, p_213386_5_);
+				p_213386_4_);
 		populateDefaultEquipmentSlots(getRandom(), p_213386_2_);
-		populateDefaultEquipmentEnchantments(getRandom(), p_213386_2_);
+		populateDefaultEquipmentEnchantments(p_213386_1_, getRandom(), p_213386_2_);
 		return iLivingEntityData;
 	}
 
@@ -198,7 +195,7 @@ public class MageEntity extends AbstractIllager implements KeyframeEntity {
 		if (super.isAlliedTo(entityIn)) {
 			return true;
 		} else if (entityIn instanceof LivingEntity
-				&& ((LivingEntity) entityIn).getMobType() == MobType.ILLAGER) {
+				&& entityIn.getType().is(EntityTypeTags.ILLAGER)) {
 			return getTeam() == null && entityIn.getTeam() == null;
 		} else {
 			return false;
@@ -206,7 +203,7 @@ public class MageEntity extends AbstractIllager implements KeyframeEntity {
 	}
 
 	@Override
-	public void applyRaidBuffs(int p_213660_1_, boolean p_213660_2_) {
+	public void applyRaidBuffs(ServerLevel level, int wave, boolean unused) {
 	}
 
 	@Override
@@ -338,7 +335,7 @@ public class MageEntity extends AbstractIllager implements KeyframeEntity {
 					clone.finalizeSpawn(((ServerLevel) mob.level()),
 							mob.level().getCurrentDifficultyAt(
 									cloneSummonSpot.blockPosition()),
-							MobSpawnType.MOB_SUMMONED, null, null);
+							MobSpawnType.MOB_SUMMONED, null);
 					clone.setOwner(mob);
 					clone.setHealth(mob.getHealth());
 					for (EquipmentSlot equipmentslottype : EquipmentSlot.values()) {

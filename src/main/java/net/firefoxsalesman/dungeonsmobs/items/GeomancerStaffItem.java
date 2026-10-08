@@ -4,16 +4,14 @@ import net.firefoxsalesman.dungeonsmobs.entity.ModEntities;
 import net.firefoxsalesman.dungeonsmobs.interfaces.IHasInventorySprite;
 import net.firefoxsalesman.dungeonslibs.items.artifacts.ArtifactItem;
 import net.firefoxsalesman.dungeonslibs.items.artifacts.ArtifactUseContext;
-import net.firefoxsalesman.dungeonslibs.network.BreakItemMessage;
-import net.firefoxsalesman.dungeonslibs.network.NetworkHandler;
 import net.firefoxsalesman.dungeonsmobs.utils.GeomancyHelper;
 import net.minecraft.Util;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.network.PacketDistributor;
 
 public class GeomancerStaffItem extends ArtifactItem implements IHasInventorySprite {
 	public GeomancerStaffItem(Properties properties) {
@@ -33,9 +31,7 @@ public class GeomancerStaffItem extends ArtifactItem implements IHasInventorySpr
 					ModEntities.GEOMANCER_WALL.get(), rowToRemove);
 		}
 		itemstack.hurtAndBreak(1, playerIn,
-				(entity) -> NetworkHandler.INSTANCE.send(
-						PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity),
-						new BreakItemMessage(entity.getId(), itemstack)));
+				itemstack == playerIn.getMainHandItem() ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
 		ArtifactItem.putArtifactOnCooldown(playerIn, itemstack.getItem());
 		return new InteractionResultHolder<>(InteractionResult.SUCCESS, itemstack);
 	}

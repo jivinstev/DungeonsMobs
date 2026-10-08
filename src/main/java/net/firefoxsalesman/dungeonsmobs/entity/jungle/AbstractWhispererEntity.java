@@ -26,12 +26,12 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.core.animatable.GeoAnimatable;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager.ControllerRegistrar;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.AnimationState;
-import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.animatable.GeoAnimatable;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.AnimatableManager.ControllerRegistrar;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
@@ -64,7 +64,7 @@ public abstract class AbstractWhispererEntity extends Monster implements GeoEnti
 
 	public AbstractWhispererEntity(EntityType<? extends AbstractWhispererEntity> type, Level world) {
 		super(type, world);
-		setMaxUpStep(1.0F);
+		this.getAttribute(Attributes.STEP_HEIGHT).setBaseValue(1.0D);
 		climberNavigation = new WallClimberNavigation(this, world);
 	}
 
@@ -73,9 +73,9 @@ public abstract class AbstractWhispererEntity extends Monster implements GeoEnti
 				|| grappleTimer.isRunning();
 	}
 
-	protected void defineSynchedData() {
-		super.defineSynchedData();
-		entityData.define(DATA_FLAGS_ID, (byte) 0);
+	protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+		super.defineSynchedData(builder);
+		builder.define(DATA_FLAGS_ID, (byte) 0);
 	}
 
 	@Override

@@ -1,0 +1,112 @@
+{
+  "entries": [
+    {
+      "enum": "net/minecraft/world/entity/raid/Raid$RaiderType",
+      "name": "DUNGEONSMOBS_ARMORED_PILLAGER",
+      "constructor": "(Ljava/util/function/Supplier;[I)V",
+      "parameters": {
+        "class": "net/firefoxsalesman/dungeonsmobs/worldgen/RaidEntries",
+        "field": "ARMORED_PILLAGER"
+      }
+    },
+    {
+      "enum": "net/minecraft/world/entity/raid/Raid$RaiderType",
+      "name": "DUNGEONSMOBS_ARMORED_VINDICATOR",
+      "constructor": "(Ljava/util/function/Supplier;[I)V",
+      "parameters": {
+        "class": "net/firefoxsalesman/dungeonsmobs/worldgen/RaidEntries",
+        "field": "ARMORED_VINDICATOR"
+      }
+    },
+    {
+      "enum": "net/minecraft/world/entity/raid/Raid$RaiderType",
+      "name": "DUNGEONSMOBS_MOUNTAINEER",
+      "constructor": "(Ljava/util/function/Supplier;[I)V",
+      "parameters": {
+        "class": "net/firefoxsalesman/dungeonsmobs/worldgen/RaidEntries",
+        "field": "MOUNTAINEER"
+      }
+    },
+    {
+      "enum": "net/minecraft/world/entity/raid/Raid$RaiderType",
+      "name": "DUNGEONSMOBS_ROYAL_GUARD",
+      "constructor": "(Ljava/util/function/Supplier;[I)V",
+      "parameters": {
+        "class": "net/firefoxsalesman/dungeonsmobs/worldgen/RaidEntries",
+        "field": "ROYAL_GUARD"
+      }
+    },
+    {
+      "enum": "net/minecraft/world/entity/raid/Raid$RaiderType",
+      "name": "DUNGEONSMOBS_GEOMANCER",
+      "constructor": "(Ljava/util/function/Supplier;[I)V",
+      "parameters": {
+        "class": "net/firefoxsalesman/dungeonsmobs/worldgen/RaidEntries",
+        "field": "GEOMANCER"
+      }
+    },
+    {
+      "enum": "net/minecraft/world/entity/raid/Raid$RaiderType",
+      "name": "DUNGEONSMOBS_MAGE",
+      "constructor": "(Ljava/util/function/Supplier;[I)V",
+      "parameters": {
+        "class": "net/firefoxsalesman/dungeonsmobs/worldgen/RaidEntries",
+        "field": "MAGE"
+      }
+    },
+    {
+      "enum": "net/minecraft/world/entity/raid/Raid$RaiderType",
+      "name": "DUNGEONSMOBS_ILLUSIONER",
+      "constructor": "(Ljava/util/function/Supplier;[I)V",
+      "parameters": {
+        "class": "net/firefoxsalesman/dungeonsmobs/worldgen/RaidEntries",
+        "field": "ILLUSIONER"
+      }
+    },
+    {
+      "enum": "net/minecraft/world/entity/raid/Raid$RaiderType",
+      "name": "DUNGEONSMOBS_ICEOLOGER",
+      "constructor": "(Ljava/util/function/Supplier;[I)V",
+      "parameters": {
+        "class": "net/firefoxsalesman/dungeonsmobs/worldgen/RaidEntries",
+        "field": "ICEOLOGER"
+      }
+    },
+    {
+      "enum": "net/minecraft/world/entity/raid/Raid$RaiderType",
+      "name": "DUNGEONSMOBS_WINDCALLER",
+      "constructor": "(Ljava/util/function/Supplier;[I)V",
+      "parameters": {
+        "class": "net/firefoxsalesman/dungeonsmobs/worldgen/RaidEntries",
+        "field": "WINDCALLER"
+      }
+    },
+    {
+      "enum": "net/minecraft/world/entity/raid/Raid$RaiderType",
+      "name": "DUNGEONSMOBS_SQUALL_GOLEM",
+      "constructor": "(Ljava/util/function/Supplier;[I)V",
+      "parameters": {
+        "class": "net/firefoxsalesman/dungeonsmobs/worldgen/RaidEntries",
+        "field": "SQUALL_GOLEM"
+      }
+    },
+    {
+      "enum": "net/minecraft/world/entity/raid/Raid$RaiderType",
+      "name": "DUNGEONSMOBS_REDSTONE_GOLEM",
+      "constructor": "(Ljava/util/function/Supplier;[I)V",
+      "parameters": {
+        "class": "net/firefoxsalesman/dungeonsmobs/worldgen/RaidEntries",
+        "field": "REDSTONE_GOLEM"
+      }
+    },
+    {
+      "enum": "net/minecraft/world/entity/raid/Raid$RaiderType",
+      "name": "DUNGEONSMOBS_REDSTONE_MONSTROSITY",
+      "constructor": "(Ljava/util/function/Supplier;[I)V",
+      "parameters": {
+        "class": "net/firefoxsalesman/dungeonsmobs/worldgen/RaidEntries",
+        "field": "REDSTONE_MONSTROSITY"
+      }
+    }
+  ]
+}

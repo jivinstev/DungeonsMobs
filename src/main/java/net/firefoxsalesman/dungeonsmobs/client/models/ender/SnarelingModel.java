@@ -6,8 +6,8 @@ import net.firefoxsalesman.dungeonsmobs.entity.ender.AbstractEnderlingEntity;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import software.bernie.geckolib.constant.DataTickets;
-import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
-import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.cache.object.GeoBone;
+import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.model.data.EntityModelData;
 
@@ -32,7 +32,7 @@ public class SnarelingModel extends GeoModel<AbstractEnderlingEntity> {
 	public void setCustomAnimations(AbstractEnderlingEntity entity, long uniqueID,
 			AnimationState<AbstractEnderlingEntity> customPredicate) {
 		super.setCustomAnimations(entity, uniqueID, customPredicate);
-		CoreGeoBone head = getAnimationProcessor().getBone("head");
+		GeoBone head = getAnimationProcessor().getBone("head");
 
 		if (head != null) {
 			EntityModelData extraData = customPredicate.getData(DataTickets.ENTITY_MODEL_DATA);

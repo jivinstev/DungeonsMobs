@@ -1,5 +1,8 @@
 package net.firefoxsalesman.dungeonsmobs.entity.undead;
 
+import net.minecraft.core.registries.Registries;
+import net.minecraft.core.registries.BuiltInRegistries;
+
 import java.util.Map;
 import java.util.UUID;
 
@@ -17,7 +20,7 @@ import net.firefoxsalesman.dungeonsmobs.interfaces.IShieldUser;
 import net.firefoxsalesman.dungeonslibs.client.AnimationTimer;
 import net.firefoxsalesman.dungeonslibs.client.KeyframeEntity;
 import net.firefoxsalesman.dungeonsmobs.mod.ModItems;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
@@ -49,8 +52,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.neoforged.neoforge.common.ItemAbilities;
 
 public class SkeletonVanguardEntity extends Skeleton implements IShieldUser, AnimatableMeleeAttackMob, KeyframeEntity {
 	private Map<String, AnimationState> states;
@@ -58,8 +63,7 @@ public class SkeletonVanguardEntity extends Skeleton implements IShieldUser, Ani
 	private static final UUID SPEED_MODIFIER_BLOCKING_UUID = UUID
 			.fromString("e4c96392-42f5-4028-ac44-cad469c10d51");
 	private static final AttributeModifier SPEED_MODIFIER_BLOCKING = new AttributeModifier(
-			SPEED_MODIFIER_BLOCKING_UUID,
-			"Blocking speed decrease", -0.05D, AttributeModifier.Operation.ADDITION);
+			ResourceLocation.fromNamespaceAndPath("dungeonsmobs", "blocking_speed_decrease"), -0.05D, AttributeModifier.Operation.ADD_VALUE);
 
 	private int shieldCooldownTime;
 
@@ -105,16 +109,16 @@ public class SkeletonVanguardEntity extends Skeleton implements IShieldUser, Ani
 	}
 
 	protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance difficultyInstance) {
-		SpawnEquipmentHelper.equipMainhand(Items.IRON_SWORD.getDefaultInstance(), this);
+		SpawnEquipmentHelper.equipMainhand(ModHelper.hasMod("dungeonsgear")
+				? new ItemStack(BuiltInRegistries.ITEM
+						.get(ResourceLocation.fromNamespaceAndPath("dungeonsgear", "glaive")))
+				: Items.IRON_SWORD.getDefaultInstance(), this);
 		SpawnEquipmentHelper.equipOffhand(ModItems.VANGUARD_SHIELD.get().getDefaultInstance(), this);
 	}
 
 	@Nullable
-	public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficultyInstance,
-			MobSpawnType spawnReason, @Nullable SpawnGroupData livingEntityDataIn,
-			@Nullable CompoundTag compoundNBT) {
-		livingEntityDataIn = super.finalizeSpawn(world, difficultyInstance, spawnReason, livingEntityDataIn,
-				compoundNBT);
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficultyInstance, MobSpawnType spawnReason, @Nullable SpawnGroupData livingEntityDataIn) {
+		livingEntityDataIn = super.finalizeSpawn(world, difficultyInstance, spawnReason, livingEntityDataIn);
 
 		return livingEntityDataIn;
 	}
@@ -169,7 +173,7 @@ public class SkeletonVanguardEntity extends Skeleton implements IShieldUser, Ani
 		AttributeInstance modifiableattributeinstance = getAttribute(Attributes.MOVEMENT_SPEED);
 
 		if (isBlocking()) {
-			if (!modifiableattributeinstance.hasModifier(SPEED_MODIFIER_BLOCKING)) {
+			if (!modifiableattributeinstance.hasModifier(SPEED_MODIFIER_BLOCKING.id())) {
 				modifiableattributeinstance.addTransientModifier(SPEED_MODIFIER_BLOCKING);
 			}
 		} else {
@@ -217,14 +221,11 @@ public class SkeletonVanguardEntity extends Skeleton implements IShieldUser, Ani
 
 	@Override
 	protected void hurtCurrentlyUsedShield(float amount) {
-		if (useItem.canPerformAction(net.minecraftforge.common.ToolActions.SHIELD_BLOCK)) {
+		if (useItem.canPerformAction(ItemAbilities.SHIELD_BLOCK)) {
 			if (amount >= 3.0F) {
 				int i = 1 + Mth.floor(amount);
 				InteractionHand hand = getUsedItemHand();
-				useItem.hurtAndBreak(i, this, (skeletonVanguardEntity) -> {
-					skeletonVanguardEntity.broadcastBreakEvent(hand);
-					// Forge would have called onPlayerDestroyItem here
-				});
+				useItem.hurtAndBreak(i, this, hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
 				if (useItem.isEmpty()) {
 					if (hand == InteractionHand.MAIN_HAND) {
 						setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
@@ -252,7 +253,8 @@ public class SkeletonVanguardEntity extends Skeleton implements IShieldUser, Ani
 
 	@Override
 	public void disableShield(boolean guaranteeDisable) {
-		float f = 0.25F + (float) EnchantmentHelper.getBlockEfficiency(this) * 0.05F;
+		float f = 0.25F + (float) EnchantmentHelper.getEnchantmentLevel(
+				level().registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.EFFICIENCY), this) * 0.05F;
 		if (guaranteeDisable) {
 			f += 0.75F;
 		}

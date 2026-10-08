@@ -4,8 +4,8 @@ import static net.firefoxsalesman.dungeonsmobs.utils.GeneralHelper.modLoc;
 
 import net.firefoxsalesman.dungeonsmobs.entity.projectiles.NecromancerOrbEntity;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
-import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.cache.object.GeoBone;
+import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.model.GeoModel;
 
 public class OrbProjectileModel extends GeoModel<NecromancerOrbEntity> {
@@ -36,7 +36,7 @@ public class OrbProjectileModel extends GeoModel<NecromancerOrbEntity> {
 			AnimationState<NecromancerOrbEntity> customPredicate) {
 		super.setCustomAnimations(entity, uniqueID, customPredicate);
 		if (!renderTrail) {
-			CoreGeoBone trail = getAnimationProcessor().getBone("trail1");
+			GeoBone trail = getAnimationProcessor().getBone("trail1");
 			trail.setHidden(true);
 		}
 	}

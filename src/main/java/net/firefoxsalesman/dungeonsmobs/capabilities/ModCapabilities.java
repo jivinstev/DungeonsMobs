@@ -1,31 +1,48 @@
 package net.firefoxsalesman.dungeonsmobs.capabilities;
 
 import net.firefoxsalesman.dungeonsmobs.DungeonsMobs;
-import net.firefoxsalesman.dungeonsmobs.capabilities.convertible.AttacherConvertible;
+import net.firefoxsalesman.dungeonsmobs.capabilities.ancient.Ancient;
 import net.firefoxsalesman.dungeonsmobs.capabilities.convertible.Convertible;
-import net.minecraft.world.entity.Entity;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.common.capabilities.CapabilityToken;
-import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.firefoxsalesman.dungeonsmobs.capabilities.properties.MobProps;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.attachment.AttachmentType;
+import net.neoforged.neoforge.attachment.IAttachmentHolder;
+import net.neoforged.neoforge.attachment.IAttachmentSerializer;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import java.util.function.Supplier;
 
-@Mod.EventBusSubscriber(modid = DungeonsMobs.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModCapabilities {
-	public static final Capability<Convertible> CONVERTIBLE_CAPABILITY = CapabilityManager
-			.get(new CapabilityToken<>() {
-			});
+	public static final DeferredRegister<AttachmentType<?>> ATTACHMENTS =
+			DeferredRegister.create(NeoForgeRegistries.Keys.ATTACHMENT_TYPES, DungeonsMobs.MOD_ID);
 
-	public static void setupCapabilities() {
-		IEventBus forgeBus = MinecraftForge.EVENT_BUS;
-		forgeBus.addGenericListener(Entity.class, AttacherConvertible::attach);
-	}
+	public static final DeferredHolder<AttachmentType<?>, AttachmentType<Ancient>> ANCIENT_CAPABILITY =
+			ATTACHMENTS.register("ancient", () -> AttachmentType.builder(Ancient::new)
+					.serialize(nbt(Ancient::new)).build());
+	public static final DeferredHolder<AttachmentType<?>, AttachmentType<Convertible>> CONVERTIBLE_CAPABILITY =
+			ATTACHMENTS.register("convertible", () -> AttachmentType.builder(Convertible::new)
+					.serialize(nbt(Convertible::new)).build());
+	public static final DeferredHolder<AttachmentType<?>, AttachmentType<MobProps>> MOB_PROPS_CAPABILITY =
+			ATTACHMENTS.register("mob_props", () -> AttachmentType.builder(MobProps::new)
+					.serialize(nbt(MobProps::new)).build());
 
-	@SubscribeEvent
-	public static void registerCaps(RegisterCapabilitiesEvent event) {
-		event.register(Convertible.class);
+	private static <A extends INBTSerializable<CompoundTag>> IAttachmentSerializer<CompoundTag, A> nbt(
+			Supplier<A> make) {
+		return new IAttachmentSerializer<>() {
+			@Override
+			public A read(IAttachmentHolder holder, CompoundTag tag, HolderLookup.Provider provider) {
+				A value = make.get();
+				value.deserializeNBT(provider, tag);
+				return value;
+			}
+
+			@Override
+			public CompoundTag write(A value, HolderLookup.Provider provider) {
+				return value.serializeNBT(provider);
+			}
+		};
 	}
 }

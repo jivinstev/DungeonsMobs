@@ -14,8 +14,8 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import static net.firefoxsalesman.dungeonsmobs.client.models.geom.ModModelLayers.SNARELING_GLOB;
 
@@ -43,8 +43,7 @@ public class SnarelingGlobRenderer extends EntityRenderer<SnarelingGlobEntity> {
 		stack.mulPose(Axis.XP.rotationDegrees(180));
 		model.setupAnim(glob, p_225623_3_, 0.0F, -0.1F, 0.0F, 0.0F);
 		VertexConsumer ivertexbuilder = BufferSource.getBuffer(model.renderType(LLAMA_SPIT_LOCATION));
-		model.renderToBuffer(stack, ivertexbuilder, p_225623_6_, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F,
-				1.0F);
+		model.renderToBuffer(stack, ivertexbuilder, p_225623_6_, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF);
 		stack.popPose();
 		super.render(glob, p_225623_2_, p_225623_3_, stack, BufferSource, p_225623_6_);
 	}

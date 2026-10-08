@@ -5,8 +5,8 @@ import static net.firefoxsalesman.dungeonsmobs.utils.GeneralHelper.modLoc;
 import net.firefoxsalesman.dungeonsmobs.entity.golem.SquallGolemEntity;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.constant.DataTickets;
-import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
-import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.cache.object.GeoBone;
+import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.model.data.EntityModelData;
 
@@ -32,9 +32,9 @@ public class SquallGolemModel extends GeoModel<SquallGolemEntity> {
 			AnimationState<SquallGolemEntity> customPredicate) {
 		super.setCustomAnimations(entity, uniqueID, customPredicate);
 
-		CoreGeoBone head = getAnimationProcessor().getBone("head");
-		CoreGeoBone eye = getAnimationProcessor().getBone("head2");
-		CoreGeoBone eyeBrow = getAnimationProcessor().getBone("head3");
+		GeoBone head = getAnimationProcessor().getBone("head");
+		GeoBone eye = getAnimationProcessor().getBone("head2");
+		GeoBone eyeBrow = getAnimationProcessor().getBone("head3");
 		EntityModelData extraData = customPredicate.getData(DataTickets.ENTITY_MODEL_DATA);
 		if (extraData.headPitch() != 0 || extraData.netHeadYaw() != 0) {
 			eye.setPosX((float) Math.max(Math.min(

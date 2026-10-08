@@ -54,7 +54,7 @@ import net.minecraft.world.entity.raid.Raider;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
 
 public class WildfireEntity extends Monster implements KeyframeEntity {
@@ -83,10 +83,10 @@ public class WildfireEntity extends Monster implements KeyframeEntity {
 
 	public WildfireEntity(EntityType<? extends WildfireEntity> type, Level world) {
 		super(type, world);
-		this.setPathfindingMalus(BlockPathTypes.WATER, -1.0F);
-		this.setPathfindingMalus(BlockPathTypes.LAVA, 8.0F);
-		this.setPathfindingMalus(BlockPathTypes.DANGER_FIRE, 0.0F);
-		this.setPathfindingMalus(BlockPathTypes.DAMAGE_FIRE, 0.0F);
+		this.setPathfindingMalus(PathType.WATER, -1.0F);
+		this.setPathfindingMalus(PathType.LAVA, 8.0F);
+		this.setPathfindingMalus(PathType.DANGER_FIRE, 0.0F);
+		this.setPathfindingMalus(PathType.DAMAGE_FIRE, 0.0F);
 		this.xpReward = 25;
 		states = genStates("idle", "shoot", "shockwave", "summon");
 	}
@@ -94,7 +94,7 @@ public class WildfireEntity extends Monster implements KeyframeEntity {
 	public static AttributeSupplier.Builder setCustomAttributes() {
 		return Monster.createMonsterAttributes().add(Attributes.MOVEMENT_SPEED, 0.2D)
 				.add(Attributes.FOLLOW_RANGE, 24D).add(Attributes.MAX_HEALTH, 50.0D)
-				.add(Attributes.KNOCKBACK_RESISTANCE, 0.5D).add(SUMMON_CAP.get(), 6D);
+				.add(Attributes.KNOCKBACK_RESISTANCE, 0.5D).add(SUMMON_CAP, 6D);
 	}
 
 	private void setupAnimationStates() {
@@ -147,7 +147,7 @@ public class WildfireEntity extends Monster implements KeyframeEntity {
 			for (Entity entity : level().getEntitiesOfClass(LivingEntity.class,
 					this.getBoundingBox().inflate(5.0D), NO_BLAZE_AND_ALIVE)) {
 				entity.hurt(damageSources().mobAttack(this), 7.0F);
-				entity.setSecondsOnFire(3);
+				entity.igniteForSeconds(3);
 
 				this.strongKnockback(entity);
 			}
@@ -163,13 +163,12 @@ public class WildfireEntity extends Monster implements KeyframeEntity {
 	}
 
 	@Override
-	public SpawnGroupData finalizeSpawn(ServerLevelAccessor p_213386_1_, DifficultyInstance p_213386_2_,
-			MobSpawnType p_213386_3_, SpawnGroupData p_213386_4_, CompoundTag p_213386_5_) {
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor p_213386_1_, DifficultyInstance p_213386_2_, MobSpawnType p_213386_3_, SpawnGroupData p_213386_4_) {
 		this.setShieldHealth(individualShieldHealth * 4);
 		this.setShields(4);
 		this.populateDefaultEquipmentSlots(this.getRandom(), p_213386_2_);
-		this.populateDefaultEquipmentEnchantments(this.getRandom(), p_213386_2_);
-		return super.finalizeSpawn(p_213386_1_, p_213386_2_, p_213386_3_, p_213386_4_, p_213386_5_);
+		this.populateDefaultEquipmentEnchantments(p_213386_1_, this.getRandom(), p_213386_2_);
+		return super.finalizeSpawn(p_213386_1_, p_213386_2_, p_213386_3_, p_213386_4_);
 	}
 
 	public int getShields() {
@@ -188,10 +187,10 @@ public class WildfireEntity extends Monster implements KeyframeEntity {
 		this.entityData.set(SHIELD_HEALTH, p_191997_1_);
 	}
 
-	protected void defineSynchedData() {
-		super.defineSynchedData();
-		this.entityData.define(SHIELDS, 0);
-		this.entityData.define(SHIELD_HEALTH, 0.0F);
+	protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+		super.defineSynchedData(builder);
+		builder.define(SHIELDS, 0);
+		builder.define(SHIELD_HEALTH, 0.0F);
 	}
 
 	public void addAdditionalSaveData(CompoundTag p_213281_1_) {
@@ -386,7 +385,7 @@ public class WildfireEntity extends Monster implements KeyframeEntity {
 		public boolean canUse() {
 			Leader master = FollowerLeaderHelper.getLeaderCapability(mob);
 			List<Entity> summons = master.getSummonedMobs();
-			AttributeInstance attribute = mob.getAttribute(SUMMON_CAP.get());
+			AttributeInstance attribute = mob.getAttribute(SUMMON_CAP);
 			return super.canUse() && mob.random.nextInt((80 * (summons.size() + 1))) == 0
 					&& attribute != null && master.getSummonedMobsCost() < attribute.getValue();
 		}
@@ -521,7 +520,7 @@ public class WildfireEntity extends Monster implements KeyframeEntity {
 				double d1 = target.getX() - mob.getX();
 				double d2 = target.getY(0.5D) - mob.getY(0.75D);
 				double d3 = target.getZ() - mob.getZ();
-				SmallFireball smallfireballentity = new SmallFireball(mob.level(), mob, d1, d2, d3);
+				SmallFireball smallfireballentity = new SmallFireball(mob.level(), mob, new net.minecraft.world.phys.Vec3(d1, d2, d3));
 				smallfireballentity.setPos(smallfireballentity.getX(), mob.getY(0.5D) + 0.5D,
 						smallfireballentity.getZ());
 				mob.level().addFreshEntity(smallfireballentity);
