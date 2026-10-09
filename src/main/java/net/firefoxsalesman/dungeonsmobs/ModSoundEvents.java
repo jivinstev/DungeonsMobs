@@ -351,7 +351,7 @@ public class ModSoundEvents {
 	public static final Supplier<SoundEvent> POISON_ANEMONE_IDLE = registerSoundEvents(
 			"entity.poison_anemone.idle");
 	public static final Supplier<SoundEvent> POISON_ANEMONE_HURT = registerSoundEvents(
-			"entity.poison_anemone.hurt_vocal");
+			"entity.poison_anemone.hurt");
 	public static final Supplier<SoundEvent> POISON_ANEMONE_DEATH = registerSoundEvents(
 			"entity.poison_anemone.death");
 	public static final Supplier<SoundEvent> POISON_ANEMONE_CLOSE = registerSoundEvents(
