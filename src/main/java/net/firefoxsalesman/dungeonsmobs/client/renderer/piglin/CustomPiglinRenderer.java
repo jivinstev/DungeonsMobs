@@ -25,11 +25,13 @@ import net.minecraft.world.item.Items;
 
 public class CustomPiglinRenderer extends PiglinRenderer {
 	public static final Map<EntityType<?>, Map<String, ResourceLocation>> RESOURCE_LOCATION_MAP = new HashMap<>();
+	public boolean isFungusThrower;
 
 	public CustomPiglinRenderer(EntityRendererProvider.Context rendererContext, ModelLayerLocation p_174345_,
 			ModelLayerLocation p_174346_, ModelLayerLocation p_174347_, boolean isZombified,
 			boolean isFungusThrower) {
 		super(rendererContext, p_174345_, p_174346_, p_174347_, isZombified);
+		this.isFungusThrower = isFungusThrower;
 		if (isFungusThrower) {
 			addLayer(new FungusSackLayer<>(this, new FungusSackModel<Mob>(
 					rendererContext.bakeLayer(ModModelLayers.FUNGUS_SACK))));
@@ -47,6 +49,9 @@ public class CustomPiglinRenderer extends PiglinRenderer {
 		// want to use the vanilla path for its texture
 		boolean isVanillaMob = mobEntity.getType() == EntityType.PIGLIN
 				|| mobEntity.getType() == EntityType.ZOMBIFIED_PIGLIN;
+		if (isFungusThrower) {	// no armoured skins exist for throwers: their own skin, zombified or not
+			return GeneralHelper.modLoc(getPath(BuiltInRegistries.ENTITY_TYPE.getKey(mobEntity.getType()).getPath()));
+		}
 		if (isVanillaMob && mobEntity instanceof ISmartCrossBowUser
 				&& !((ISmartCrossBowUser) mobEntity).isCrossbowUser()) {
 			return super.getTextureLocation(mobEntity);
