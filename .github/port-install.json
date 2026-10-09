@@ -9,8 +9,8 @@
       "role": "self",
       "modid": "dungeonsmobs",
       "name": "dungeonsmobs-2.2.1.jar",
-      "url": "https://github.com/jivinstev/DungeonsMobs/releases/download/dungeonsmobs-2.2.1-mc1.21.1-release/dungeonsmobs-2.2.1.jar",
-      "sha256": "f112e4b81965edcb120c648e77d3462af5ad8c10ac91b07bf2047bd0a13ade1d"
+      "url": "https://github.com/jivinstev/DungeonsMobs/releases/download/dungeonsmobs-2.2.1-mc1.21.1-release-r2/dungeonsmobs-2.2.1.jar",
+      "sha256": "7f1eb1b25358656b1cb4a11960f3c15c2b4a7798d30fc9c0749e374358d30ef7"
     },
     {
       "role": "optional",
@@ -69,9 +69,9 @@
       "role": "required",
       "modid": "dungeonslibs",
       "name": "dungeonslibs-1.4.0.jar",
-      "url": "https://github.com/jivinstev/DungeonsLibs/releases/download/dungeonslibs-1.4.0-mc1.21.1-r4/dungeonslibs-1.4.0.jar",
+      "url": "https://github.com/jivinstev/DungeonsLibs/releases/download/dungeonslibs-1.4.0-mc1.21.1-r5/dungeonslibs-1.4.0.jar",
       "port": "jivinstev/DungeonsLibs",
-      "sha256": "6e50914efd2d6e6c1abc735283178f3503ff46e86cf5ea2b76bbb25bf58847ee"
+      "sha256": "600e9a32470e54eff501a120610bfd44d218a3de58621f5915f0ebba6448f51d"
     },
     {
       "role": "required",
