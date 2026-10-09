@@ -1579,10 +1579,6 @@
       {
 	"name": "dungeonsmobs:entities/geomancer/attack1",
 	"stream": true
-      },
-      {
-	"name": "dungeonsmobs:entities/geomancer/attack",
-	"stream": true
       }
     ]
   },
