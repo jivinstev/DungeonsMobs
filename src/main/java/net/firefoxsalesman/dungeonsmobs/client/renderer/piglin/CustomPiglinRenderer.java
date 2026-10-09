@@ -49,8 +49,8 @@ public class CustomPiglinRenderer extends PiglinRenderer {
 		// want to use the vanilla path for its texture
 		boolean isVanillaMob = mobEntity.getType() == EntityType.PIGLIN
 				|| mobEntity.getType() == EntityType.ZOMBIFIED_PIGLIN;
-		if (isFungusThrower) {
-			return GeneralHelper.modLoc("textures/entity/piglin/fungus_thrower.png");
+		if (isFungusThrower) {	// no armoured skins exist for throwers: their own skin, zombified or not
+			return GeneralHelper.modLoc(getPath(BuiltInRegistries.ENTITY_TYPE.getKey(mobEntity.getType()).getPath()));
 		}
 		if (isVanillaMob && mobEntity instanceof ISmartCrossBowUser
 				&& !((ISmartCrossBowUser) mobEntity).isCrossbowUser()) {
