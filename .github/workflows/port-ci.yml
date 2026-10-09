@@ -61,7 +61,7 @@ jobs:
       - name: dungeonslibs 1.4.0 from the dungeonslibs-1.4.0-mc1.21.1-r4 release into mavenLocal (pinned by sha256)
         run: |
           mkdir -p "$HOME/.m2/repository/net/firefoxsalesman/dungeonslibs/dungeonslibs/1.4.0"
-          curl -fsSL -o "$HOME/.m2/repository/net/firefoxsalesman/dungeonslibs/dungeonslibs/1.4.0/dungeonslibs-1.4.0.jar" "https://github.com/jivinstev/DungeonsLibs/releases/download/dungeonslibs-1.4.0-mc1.21.1-r4/dungeonslibs-1.4.0.jar"
+          curl -fsSL -o "$HOME/.m2/repository/net/firefoxsalesman/dungeonslibs/dungeonslibs/1.4.0/dungeonslibs-1.4.0.jar" "https://github.com/jivinstev/DungeonsLibs/releases/download/dungeonslibs-1.4.0-mc1.21.1-r5/dungeonslibs-1.4.0.jar"
           echo "6e50914efd2d6e6c1abc735283178f3503ff46e86cf5ea2b76bbb25bf58847ee  $HOME/.m2/repository/net/firefoxsalesman/dungeonslibs/dungeonslibs/1.4.0/dungeonslibs-1.4.0.jar" | sha256sum -c -
           echo '<project><modelVersion>4.0.0</modelVersion><groupId>net.firefoxsalesman.dungeonslibs</groupId><artifactId>dungeonslibs</artifactId><version>1.4.0</version><packaging>jar</packaging></project>' > "$HOME/.m2/repository/net/firefoxsalesman/dungeonslibs/dungeonslibs/1.4.0/dungeonslibs-1.4.0.pom"
       - name: Build and gates
