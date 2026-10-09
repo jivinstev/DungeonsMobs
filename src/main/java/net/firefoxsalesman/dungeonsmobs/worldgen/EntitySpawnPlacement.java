@@ -184,6 +184,10 @@ public class EntitySpawnPlacement {
 				EntitySpawnPlacement::checkAquaticMobSpawnRules);
 
 		// Enderlings
+		SpawnPlacements.register(ModEntities.ENDERSENT.get(),
+				SpawnPlacementTypes.ON_GROUND,
+				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+				Monster::checkMonsterSpawnRules);
 		SpawnPlacements.register(ModEntities.ENDERSENT_EYE_HOLDER.get(),
 				SpawnPlacementTypes.ON_GROUND,
 				Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
